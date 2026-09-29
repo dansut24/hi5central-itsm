@@ -3,6 +3,15 @@
     respond "ok" 200
   }
 
+  @runtimeConfig path /runtime-config.js
+  handle @runtimeConfig {
+    header Cache-Control "no-store, no-cache, must-revalidate"
+    header Pragma "no-cache"
+    header Expires "0"
+    root * /srv
+    file_server
+  }
+
   handle {
     encode zstd gzip
     root * /srv
