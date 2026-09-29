@@ -6,14 +6,15 @@ import {
   ChevronRight,
   CircleGauge,
   LogOut,
-  Moon,
+  Menu,
+  Monitor,
   PanelLeftClose,
   PanelLeftOpen,
   Plus,
   RefreshCw,
   Search,
   Settings,
-  Sun,
+  ShieldCheck,
   UserRound,
   X,
 } from 'lucide-react'
@@ -29,6 +30,7 @@ import {
 import { createNotification } from './runtimeNotifications.js'
 import { buildLifecycleTransition } from '../lib/lifecycle.js'
 import { portalHomePath, portalRequestPath, portalRouteFromLocation, resolveTenantSurface, rmmPath } from '../lib/tenantSurface.js'
+import { deploymentConfig } from '../lib/deploymentConfig.js'
 import {
   buildOrganisationAuditEntry,
   resolveCurrentPerson,
@@ -315,6 +317,7 @@ function addWorkspaceTab(currentTabs, tab) {
 
 function WorkspaceRuntime() {
   const tenantSurface = resolveTenantSurface()
+  const platform = deploymentConfig()
   const isPortalSurface = tenantSurface.kind === 'portal'
   const isRmmSurface = tenantSurface.kind === 'rmm'
   const [initialTickets] = useState(loadTickets)
@@ -2410,6 +2413,16 @@ function WorkspaceRuntime() {
     setProfileMenuOpen(false)
   }
 
+  function togglePrimaryNavigation() {
+    const compactViewport = window.matchMedia?.('(max-width: 900px)').matches
+    if (compactViewport) {
+      setMobileNavOpen((open) => !open)
+      return
+    }
+
+    setSidebarMode((current) => current === 'expanded' ? 'collapsed' : 'expanded')
+  }
+
   function openTicketRecord(ticket) {
     if (!ticket) return
     closeHeaderOverlays()
@@ -2872,11 +2885,11 @@ function WorkspaceRuntime() {
           <div className="itsm-topbar-title">
             <button
               className="itsm-menu-button"
-              onClick={() => setMobileNavOpen(true)}
-              title="Open navigation"
+              onClick={togglePrimaryNavigation}
+              title="Toggle navigation"
               type="button"
             >
-              <PanelLeftOpen size={19} aria-hidden="true" />
+              <Menu size={19} aria-hidden="true" />
             </button>
             <div>
               <span>ITSM</span>
@@ -2945,6 +2958,32 @@ function WorkspaceRuntime() {
                   <Settings size={15} aria-hidden="true" />
                   Settings
                 </button>
+                {platform.rmmUrl && (
+                  <button
+                    onClick={() => {
+                      setProfileMenuOpen(false)
+                      window.location.assign(platform.rmmUrl)
+                    }}
+                    role="menuitem"
+                    type="button"
+                  >
+                    <Monitor size={15} aria-hidden="true" />
+                    Open RMM
+                  </button>
+                )}
+                {platform.adminUrl && (
+                  <button
+                    onClick={() => {
+                      setProfileMenuOpen(false)
+                      window.location.assign(platform.adminUrl)
+                    }}
+                    role="menuitem"
+                    type="button"
+                  >
+                    <ShieldCheck size={15} aria-hidden="true" />
+                    Open Admin
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     setProfileMenuOpen(false)
@@ -3032,36 +3071,6 @@ function WorkspaceRuntime() {
             </button>
           </div>
 
-          <div className="chrome-actions">
-            <RecordCreateMenu className="chrome-record-create" openNewRecord={openNewRecord} />
-            <label className="chrome-search">
-              <Search size={16} aria-hidden="true" />
-              <input
-                aria-label="Search Hi5Central"
-                onChange={(event) => {
-                  setGlobalSearchQuery(event.target.value)
-                  setGlobalSearchOpen(true)
-                  setNotificationsOpen(false)
-                }}
-                onFocus={() => {
-                  setGlobalSearchOpen(true)
-                  setNotificationsOpen(false)
-                }}
-                placeholder="Search records"
-                type="search"
-                value={globalSearchQuery}
-              />
-            </label>
-            <button
-              aria-label="Sign out"
-              className="icon-button chrome-logout"
-              onClick={handleLogout}
-              title="Sign out"
-              type="button"
-            >
-              <LogOut size={17} aria-hidden="true" />
-            </button>
-          </div>
         </header>
 
         {tabContextMenu && contextMenuTab && (
@@ -3115,114 +3124,6 @@ function WorkspaceRuntime() {
           </div>
         )}
 
-        <nav className="breadcrumbs" aria-label="Breadcrumb">
-          <div className="breadcrumb-trail">
-            {breadcrumbs.map((crumb, index) => (
-              <span className="breadcrumb-segment" key={`${crumb.label}-${crumb.key || index}`}>
-                {index > 0 && <ChevronRight className="breadcrumb-separator" size={14} aria-hidden="true" />}
-                <button
-                  aria-current={index === breadcrumbs.length - 1 ? 'page' : undefined}
-                  className={index === breadcrumbs.length - 1 ? 'breadcrumb-item current' : 'breadcrumb-item'}
-                  onClick={() => openBreadcrumb(crumb)}
-                  type="button"
-                >
-                  {crumb.label}
-                </button>
-              </span>
-            ))}
-          </div>
-
-          <label className="breadcrumb-compact-search">
-            <Search size={15} aria-hidden="true" />
-            <input
-              aria-label="Search Hi5Central"
-              onChange={(event) => {
-                setGlobalSearchQuery(event.target.value)
-                setGlobalSearchOpen(true)
-                setNotificationsOpen(false)
-              }}
-              onFocus={() => {
-                setGlobalSearchOpen(true)
-                setNotificationsOpen(false)
-              }}
-              placeholder="Search records"
-              type="search"
-              value={globalSearchQuery}
-            />
-          </label>
-
-          <div className="breadcrumb-desktop-actions" aria-label="Workspace quick actions">
-            {sidebarHidden && (
-              <button
-                className="breadcrumb-desktop-action"
-                onClick={() => setSidebarMode('expanded')}
-                title="Show sidebar"
-                type="button"
-              >
-                <PanelLeftOpen size={16} aria-hidden="true" />
-              </button>
-            )}
-            <button
-              className="breadcrumb-desktop-action"
-              onClick={() => setTheme(resolvedTheme === 'light' ? 'dark' : 'light')}
-              title={resolvedTheme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-              type="button"
-            >
-              {resolvedTheme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-            </button>
-            <button
-              aria-expanded={notificationsOpen}
-              className="breadcrumb-desktop-action notification-trigger"
-              onClick={toggleNotifications}
-              title="Notifications"
-              type="button"
-            >
-              <Bell size={16} aria-hidden="true" />
-              {unreadNotificationCount > 0 && (
-                <span className="notification-badge" aria-label={`${unreadNotificationCount} unread notifications`}>
-                  {unreadNotificationCount}
-                </span>
-              )}
-            </button>
-            <button
-              className="breadcrumb-desktop-action"
-              onClick={() => openTab('settings')}
-              title="Settings"
-              type="button"
-            >
-              <Settings size={16} aria-hidden="true" />
-            </button>
-          </div>
-
-          <div className="breadcrumb-mobile-actions" aria-label="Mobile quick actions">
-            <button
-              aria-expanded={notificationsOpen}
-              className="breadcrumb-mobile-action notification-trigger"
-              onClick={toggleNotifications}
-              title="Notifications"
-              type="button"
-            >
-              <Bell size={16} aria-hidden="true" />
-              {unreadNotificationCount > 0 && <span className="notification-dot" aria-hidden="true" />}
-            </button>
-            <button
-              className="breadcrumb-mobile-action"
-              onClick={() => openTab('settings')}
-              title="Settings"
-              type="button"
-            >
-              <Settings size={16} aria-hidden="true" />
-            </button>
-            <button
-              className="breadcrumb-mobile-action"
-              onClick={handleLogout}
-              title="Sign out"
-              type="button"
-            >
-              <LogOut size={16} aria-hidden="true" />
-            </button>
-          </div>
-        </nav>
 
         {(notificationsOpen || globalSearchOpen || profileMenuOpen) && (
           <button
