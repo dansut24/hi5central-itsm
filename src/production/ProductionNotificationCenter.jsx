@@ -8,6 +8,15 @@ const LOCAL_NOTIFICATIONS_KEY = 'hi5central-notifications-v1'
 const BRIDGE_KEY = 'hi5central-server-notification-bridge-v1'
 const BROWSER_SHOWN_KEY = 'hi5central-browser-notifications-shown-v1'
 
+const REQUESTER_EVENT_LABELS = {
+  customerUpdates: ['Customer-visible updates', 'Send replies and notes explicitly marked for the customer'],
+  statusChanges: ['Status changes', 'Notify requesters when a record moves to another lifecycle status'],
+  recordCreated: ['Creation acknowledgements', 'Confirm when a new Incident, Request, Problem or Change is raised'],
+  approvals: ['Approval updates', 'Send approval requests and approval decision updates'],
+  taskUpdates: ['Task updates', 'Send fulfilment task progress to requesters'],
+  systemUpdates: ['Other system updates', 'Send other automated/internal lifecycle events to requesters'],
+}
+
 const CATEGORY_LABELS = {
   incidents: ['Incidents', 'Incident activity, status and assignment changes'],
   serviceRequests: ['Service Requests', 'Request progress and lifecycle updates'],
@@ -102,6 +111,7 @@ function PreferencePanel({ preferences, setPreferences, onSave, saving, tenant =
   if (!preferences) return null
   const updateChannel = (key, value) => setPreferences((current) => ({ ...current, channels: { ...current.channels, [key]: value } }))
   const updateCategory = (key, value) => setPreferences((current) => ({ ...current, categories: { ...current.categories, [key]: value } }))
+  const updateRequesterEvent = (key, value) => setPreferences((current) => ({ ...current, requesterEvents: { ...(current.requesterEvents || {}), [key]: value } }))
 
   async function toggleBrowser(value) {
     if (value && typeof Notification !== 'undefined' && Notification.permission === 'default') {
@@ -122,6 +132,12 @@ function PreferencePanel({ preferences, setPreferences, onSave, saving, tenant =
     <div className="hi5-notification-category-grid">
       {Object.entries(CATEGORY_LABELS).map(([key, [label, copy]]) => <PreferenceToggle checked={preferences.categories[key] !== false} copy={copy} key={key} onChange={(value) => updateCategory(key, value)} title={label} />)}
     </div>
+    {tenant && preferences.requesterEvents ? <>
+      <header className="hi5-notification-policy-heading"><div><span>Requester delivery</span><strong>Choose which ITSM events customers receive</strong><small>Internal notes remain internal. These controls decide which customer-facing lifecycle events are delivered by enabled channels.</small></div></header>
+      <div className="hi5-notification-category-grid">
+        {Object.entries(REQUESTER_EVENT_LABELS).map(([key, [label, copy]]) => <PreferenceToggle checked={preferences.requesterEvents[key] !== false} copy={copy} key={key} onChange={(value) => updateRequesterEvent(key, value)} title={label} />)}
+      </div>
+    </> : null}
     <footer><button disabled={saving} onClick={onSave} type="button"><Check size={14} />{saving ? 'Saving…' : tenant ? 'Save tenant defaults' : 'Save my preferences'}</button></footer>
   </section>
 }

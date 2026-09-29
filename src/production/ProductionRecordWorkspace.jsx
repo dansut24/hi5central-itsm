@@ -318,7 +318,7 @@ function ActionComposer({ mode, detail, saving, onClose, onPost, onReassign, onR
   const [fileError, setFileError] = useState('')
   const customer = mode === 'customer'
   const noteMode = mode === 'internal' || mode === 'customer'
-  const attachmentsSupported = noteMode && detail.type !== 'Service Request'
+  const attachmentsSupported = noteMode
   const teams = detail.options?.teams || []
   const allPeople = detail.options?.people || []
   const selectedTeam = teams.find((item) => item.name === team) || null
@@ -421,7 +421,7 @@ function ActionComposer({ mode, detail, saving, onClose, onPost, onReassign, onR
     {mode === 'pending' ? <div className="record-lab-composer-fields is-single"><label><span>Pending status</span><select value={pendingStatus} onChange={(event) => setPendingStatus(event.target.value)}><option>Pending Customer</option><option>Pending Vendor</option></select></label></div> : null}
     <textarea autoFocus={mode !== 'reassign'} value={text} onChange={(event) => setText(event.target.value)} placeholder={customer ? 'Write a customer-visible update…' : mode === 'reassign' ? 'Add a handoff note…' : mode === 'resolve' ? 'Add resolution notes…' : mode === 'pending' ? 'Why is this record being placed on hold?' : 'Write an internal work note…'} />
     {attachmentsSupported ? <div className="record-lab-composer-attachments"><label><Paperclip size={14} />Attach files<input type="file" multiple onChange={(event) => { addFiles(event.target.files); event.target.value = '' }} /></label>{files.length ? <div className="record-lab-composer-file-list">{files.map((file, index) => <span key={`${file.name}-${file.size}-${index}`}><Paperclip size={12} /><b>{file.name}</b><small>{formatBytes(file.size)}</small><button type="button" onClick={() => removeFile(index)} aria-label={`Remove ${file.name}`}><X size={12} /></button></span>)}</div> : null}{fileError ? <small className="record-lab-composer-file-error">{fileError}</small> : null}</div> : null}
-    <footer><span>{customer ? 'Visible to requester' : mode === 'reassign' ? `Selected: ${assignee || 'Unassigned'}` : files.length ? `${files.length} attachment${files.length === 1 ? '' : 's'} will be added with this note` : 'Technician workspace'}</span><button type="button" disabled={saving || ((mode === 'internal' || mode === 'customer') && !text.trim())} onClick={submit}><Send size={16} />{saving ? 'Saving…' : label}</button></footer>
+    <footer><span>{customer ? 'Visible to requester' : mode === 'reassign' ? `Selected: ${assignee || 'Unassigned'}` : files.length ? `${files.length} attachment${files.length === 1 ? '' : 's'} will be added with this note` : 'Technician workspace'}</span><button type="button" disabled={saving || ((mode === 'internal' || mode === 'customer') && !text.trim() && !files.length)} onClick={submit}><Send size={16} />{saving ? 'Saving…' : label}</button></footer>
   </div>
 }
 
@@ -542,7 +542,27 @@ function RecordWorkspace({ route }) {
 
   const postNote = ({ visibility, text, files = [] }) => run(async () => {
     if (route.type === 'Service Request') {
-      await addProductionServiceRequestActivity(route.reference, { kind: visibility === 'customer' ? 'customer' : 'work', text, html: '', attachments: [] })
+      const uploaded = []
+      for (const file of files) {
+        const contentBase64 = await fileBase64(file)
+        const saved = await apiJson(`/api/v1/service-requests/${encodeURIComponent(route.reference)}/attachments`, {
+          method: 'POST',
+          body: JSON.stringify({
+            fileName: file.name,
+            mimeType: file.type || 'application/octet-stream',
+            contentBase64,
+            visibility,
+            recordActivity: false,
+          }),
+        })
+        uploaded.push({ id: saved.id, name: saved.fileName, size: saved.byteSize, type: saved.mimeType })
+      }
+      await addProductionServiceRequestActivity(route.reference, {
+        kind: visibility === 'customer' ? 'customer' : 'work',
+        text,
+        html: '',
+        attachments: uploaded,
+      })
     } else {
       const uploaded = []
       for (const file of files) {
@@ -597,18 +617,23 @@ function RecordWorkspace({ route }) {
   }
 
   const uploadAttachment = () => run(async () => {
-    if (!attachment || route.type === 'Service Request') return
+    if (!attachment) return
     const contentBase64 = await fileBase64(attachment)
-    await apiJson(`/api/v1/itsm-lifecycle/${encodeURIComponent(route.reference)}/attachments`, {
+    const path = route.type === 'Service Request'
+      ? `/api/v1/service-requests/${encodeURIComponent(route.reference)}/attachments`
+      : `/api/v1/itsm-lifecycle/${encodeURIComponent(route.reference)}/attachments`
+    await apiJson(path, {
       method: 'POST',
-      body: JSON.stringify({ fileName: attachment.name, mimeType: attachment.type || 'application/octet-stream', contentBase64 }),
+      body: JSON.stringify({ fileName: attachment.name, mimeType: attachment.type || 'application/octet-stream', contentBase64, visibility: 'internal' }),
     })
     setAttachment(null)
   }, 'Attachment uploaded')
 
   const removeAttachment = (attachmentId) => run(async () => {
-    if (route.type === 'Service Request') return
-    await apiJson(`/api/v1/itsm-lifecycle/${encodeURIComponent(route.reference)}/attachments/remove`, {
+    const path = route.type === 'Service Request'
+      ? `/api/v1/service-requests/${encodeURIComponent(route.reference)}/attachments/remove`
+      : `/api/v1/itsm-lifecycle/${encodeURIComponent(route.reference)}/attachments/remove`
+    await apiJson(path, {
       method: 'POST',
       body: JSON.stringify({ attachmentId }),
     })
@@ -865,11 +890,11 @@ function RecordWorkspace({ route }) {
 
   const renderAttachments = () => <section className="record-lab-panel record-lab-tab-panel record-lab-attachments-panel">
     <header><span>Evidence</span><h2>Attachments</h2><LabPill tone="neutral">{attachments.length}</LabPill></header>
-    {route.type !== 'Service Request' ? <div className="record-lab-upload-zone">
+    <div className="record-lab-upload-zone">
       <label><Upload size={19} /><span><strong>{attachment ? attachment.name : 'Choose a file'}</strong><small>{attachment ? formatBytes(attachment.size) : 'Add supporting evidence to this record'}</small></span><input type="file" onChange={(event) => setAttachment(event.target.files?.[0] || null)} /></label>
       <button type="button" disabled={!attachment || saving} onClick={uploadAttachment}><Upload size={16} />{saving ? 'Uploading…' : 'Upload'}</button>
-    </div> : <div className="record-lab-attachment-note">Files included with request activity are collected here so the activity timeline stays focused on the conversation.</div>}
-    {attachments.length ? <div className="record-lab-attachment-list">{attachments.map((item, index) => <div className="record-lab-attachment-row" key={item.id || item._key || index}><span className="record-lab-attachment-icon"><FileText size={18} /></span><div><strong>{item.fileName || item.name || 'Attachment'}</strong><small>{formatBytes(item.byteSize ?? item.size)}{item.uploadedBy ? ` · ${item.uploadedBy}` : ''}{item.createdAt ? ` · ${formatDate(item.createdAt)}` : ''}</small></div>{route.type !== 'Service Request' && item.id ? <><a href={`${API_BASE}/api/v1/itsm-lifecycle/${encodeURIComponent(detail.id)}/attachments/${encodeURIComponent(item.id)}`} target="_blank" rel="noreferrer" title="Download"><Download size={16} /></a><button type="button" onClick={() => removeAttachment(item.id)} title="Remove attachment"><Trash2 size={16} /></button></> : null}</div>)}</div> : <div className="record-lab-empty">No attachments have been added to this record.</div>}
+    </div>
+    {attachments.length ? <div className="record-lab-attachment-list">{attachments.map((item, index) => { const downloadPath = route.type === 'Service Request' ? `/api/v1/service-requests/${encodeURIComponent(detail.id)}/attachments/${encodeURIComponent(item.id)}` : `/api/v1/itsm-lifecycle/${encodeURIComponent(detail.id)}/attachments/${encodeURIComponent(item.id)}`; return <div className="record-lab-attachment-row" key={item.id || item._key || index}><span className="record-lab-attachment-icon"><FileText size={18} /></span><div><strong>{item.fileName || item.name || 'Attachment'}</strong><small>{formatBytes(item.byteSize ?? item.size)}{item.uploadedBy ? ` · ${item.uploadedBy}` : ''}{item.createdAt ? ` · ${formatDate(item.createdAt)}` : ''}</small></div>{item.id ? <><a href={`${API_BASE}${downloadPath}`} target="_blank" rel="noreferrer" title="Download"><Download size={16} /></a><button type="button" onClick={() => removeAttachment(item.id)} title="Remove attachment"><Trash2 size={16} /></button></> : null}</div> })}</div> : <div className="record-lab-empty">No attachments have been added to this record.</div>}
   </section>
 
   const renderAudit = () => <section className="record-lab-panel record-lab-tab-panel"><header><span>Forensic history</span><h2>Audit Log</h2></header>{auditActivities.length ? <div className="record-lab-audit-list">{auditActivities.map((item) => { const changes = Array.isArray(item.metadata?.changes) ? item.metadata.changes : []; return <div className="record-lab-audit-row" key={item.id}><time>{formatDate(item.createdAt, true)}</time><div><strong>{activityText(item)}</strong>{changes.length ? changes.map((change, index) => <small key={`${change.field}-${index}`}><b>{change.field}</b><span>{String(change.from || '—')}</span><i>→</i><span>{String(change.to || '—')}</span></small>) : <small>{item.actor ? `By ${item.actor}` : 'System event'}</small>}</div></div> })}</div> : <div className="record-lab-empty">No system audit events are available for this record yet.</div>}</section>
@@ -973,17 +998,3 @@ export function ProductionRecordWorkspace() {
       node.classList.add('production-record-workspace-mounted')
       setTarget(node)
       return true
-    }
-    if (attach()) return () => mounted?.classList.remove('production-record-workspace-mounted')
-    const observer = new MutationObserver(() => { if (attach()) observer.disconnect() })
-    observer.observe(document.body, { childList: true, subtree: true })
-    return () => {
-      observer.disconnect()
-      mounted?.classList.remove('production-record-workspace-mounted')
-    }
-  }, [route])
-
-  const key = useMemo(() => route ? `${route.type}:${route.reference}` : 'none', [route])
-  if (!route || !target) return null
-  return createPortal(<RecordWorkspace key={key} route={route} />, target)
-}

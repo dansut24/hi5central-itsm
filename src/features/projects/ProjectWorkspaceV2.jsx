@@ -338,7 +338,7 @@ function ProjectTaskList({ onAddTask, onOpenRecord, onUpdateTask, people, projec
                   <td><span className="project-task-title-cell"><strong>{task.title}</strong><small>{task.id}</small></span></td>
                   <td><select aria-label={`Status for ${task.title}`} onChange={(event) => onUpdateTask(task.id, { status: event.target.value })} value={task.status}>{projectTaskStatuses.map((item) => <option key={item}>{item}</option>)}</select></td>
                   <td><ProjectState>{task.priority}</ProjectState></td>
-                  <td><div className="project-owner-cell"><ProjectAvatar person={person} small /><span><strong>{person?.name || 'Unassigned'}</strong></span></div></td>
+                  <td><div className="project-owner-cell"><ProjectAvatar person={person} small /><select aria-label={`Assignee for ${task.title}`} onChange={(event) => onUpdateTask(task.id, { assigneeId: event.target.value })} value={task.assigneeId || ''}><option value="">Unassigned</option>{people.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.name}</option>)}</select></div></td>
                   <td>{formatDate(derivedTaskStart(project, task, index))}</td>
                   <td>{formatDate(task.dueDate)}</td>
                   <td>{Number(task.plannedHours) || 0}h</td>
@@ -357,7 +357,7 @@ function ProjectTaskList({ onAddTask, onOpenRecord, onUpdateTask, people, projec
               <header><strong>{task.id}</strong><ProjectState>{task.status}</ProjectState></header>
               <strong>{task.title}</strong>
               <small>{person?.name || 'Unassigned'} · {Number(task.plannedHours) || 0}h · Due {formatDate(task.dueDate)}</small>
-              <footer><span>{formatDate(derivedTaskStart(project, task, index))}</span><select aria-label={`Move ${task.title}`} onChange={(event) => onUpdateTask(task.id, { status: event.target.value })} value={task.status}>{projectTaskStatuses.map((item) => <option key={item}>{item}</option>)}</select></footer>
+              <footer><span>{formatDate(derivedTaskStart(project, task, index))}</span><select aria-label={`Assignee for ${task.title}`} onChange={(event) => onUpdateTask(task.id, { assigneeId: event.target.value })} value={task.assigneeId || ''}><option value="">Unassigned</option>{people.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.name}</option>)}</select><select aria-label={`Move ${task.title}`} onChange={(event) => onUpdateTask(task.id, { status: event.target.value })} value={task.status}>{projectTaskStatuses.map((item) => <option key={item}>{item}</option>)}</select></footer>
             </article>
           )
         })}</div>
@@ -436,10 +436,12 @@ function ProjectWorkload({ people, project }) {
   )
 }
 
-function ProjectDetailView({ onOpenRecord, onUpdateProject, people, project, tickets }) {
+function ProjectDetailView({ onAddActivity, onAddTask, onCreateMilestone, onCreateRisk, onOpenRecord, onUpdateMilestone, onUpdateProject, onUpdateRisk, onUpdateTask, people, project, teams, tickets }) {
   const [activeSection, setActiveSection] = useState('overview')
   const [taskComposerOpen, setTaskComposerOpen] = useState(false)
   const [activityNote, setActivityNote] = useState('')
+  const [milestoneDraft, setMilestoneDraft] = useState({ title: '', dueDate: project.targetDate || '' })
+  const [riskDraft, setRiskDraft] = useState({ kind: 'Risk', title: '', severity: 'Medium', ownerId: project.ownerId || '', response: '' })
   const progress = projectProgress(project)
   const owner = personById(people, project.ownerId)
   const sponsor = personById(people, project.sponsorId)
@@ -448,52 +450,60 @@ function ProjectDetailView({ onOpenRecord, onUpdateProject, people, project, tic
   const openRisks = (project.risks || []).filter((risk) => risk.status !== 'Closed')
   const activityItems = project.activity || []
 
-  const addActivity = (action) => ({
-    id: `ACT-${project.id}-${activityItems.length + 1}-${Date.now()}`,
-    actor: 'Hi5Central User',
-    action,
-    meta: 'Just now',
-  })
-
   const updateTask = (taskId, updates) => {
-    const task = (project.tasks || []).find((item) => item.id === taskId)
-    onUpdateProject(project.id, {
-      tasks: (project.tasks || []).map((item) => item.id === taskId ? { ...item, ...updates } : item),
-      activity: [addActivity(`updated “${task?.title || taskId}”${updates.status ? ` to ${updates.status}` : ''}`), ...activityItems],
-    })
+    void onUpdateTask(project.id, taskId, updates).catch(() => {})
   }
 
-  const addTask = (draft) => {
-    const nextNumber = (project.tasks || []).length + 1
-    const task = { ...draft, id: `${project.id}-TASK-${nextNumber}` }
-    onUpdateProject(project.id, {
-      tasks: [...(project.tasks || []), task],
-      activity: [addActivity(`added project task “${task.title}”`), ...activityItems],
-    })
-    setTaskComposerOpen(false)
+  const addTask = async (draft) => {
+    try {
+      await onAddTask(project.id, draft)
+      setTaskComposerOpen(false)
+    } catch {
+      // Runtime surfaces the backend validation message in the shared toast.
+    }
   }
 
   const updateMilestone = (milestoneId) => {
     const milestone = (project.milestones || []).find((item) => item.id === milestoneId)
     const nextStatus = milestone?.status === 'Complete' ? 'In Progress' : 'Complete'
-    onUpdateProject(project.id, {
-      milestones: (project.milestones || []).map((item) => item.id === milestoneId ? { ...item, status: nextStatus } : item),
-      activity: [addActivity(`${nextStatus === 'Complete' ? 'completed' : 'reopened'} milestone “${milestone?.title || milestoneId}”`), ...activityItems],
-    })
+    void onUpdateMilestone(project.id, milestoneId, { status: nextStatus }).catch(() => {})
   }
 
   const closeRisk = (riskId) => {
-    const risk = (project.risks || []).find((item) => item.id === riskId)
-    onUpdateProject(project.id, {
-      risks: (project.risks || []).map((item) => item.id === riskId ? { ...item, status: 'Closed' } : item),
-      activity: [addActivity(`closed ${(risk?.kind || 'item').toLowerCase()} “${risk?.title || riskId}”`), ...activityItems],
-    })
+    void onUpdateRisk(project.id, riskId, { status: 'Closed' }).catch(() => {})
   }
 
-  const postActivity = () => {
-    if (!activityNote.trim()) return
-    onUpdateProject(project.id, { activity: [addActivity(activityNote.trim()), ...activityItems] })
-    setActivityNote('')
+  const postActivity = async () => {
+    const note = activityNote.trim()
+    if (!note) return
+    try {
+      await onAddActivity(project.id, note)
+      setActivityNote('')
+    } catch {
+      // Runtime surfaces the backend validation message in the shared toast.
+    }
+  }
+
+  const createMilestone = async (event) => {
+    event.preventDefault()
+    if (!milestoneDraft.title.trim()) return
+    try {
+      await onCreateMilestone(project.id, { ...milestoneDraft, title: milestoneDraft.title.trim() })
+      setMilestoneDraft({ title: '', dueDate: project.targetDate || '' })
+    } catch {
+      // Runtime surfaces the backend validation message in the shared toast.
+    }
+  }
+
+  const createRisk = async (event) => {
+    event.preventDefault()
+    if (!riskDraft.title.trim()) return
+    try {
+      await onCreateRisk(project.id, { ...riskDraft, title: riskDraft.title.trim(), response: riskDraft.response.trim() })
+      setRiskDraft({ kind: 'Risk', title: '', severity: 'Medium', ownerId: project.ownerId || '', response: '' })
+    } catch {
+      // Runtime surfaces the backend validation message in the shared toast.
+    }
   }
 
   const renderLinkedRecord = (recordId) => {
@@ -570,6 +580,7 @@ function ProjectDetailView({ onOpenRecord, onUpdateProject, people, project, tic
   const milestones = (
     <div className="project-milestone-view">
       <header><div><span className="eyebrow">Delivery checkpoints</span><h3>Milestones</h3><p>Track significant outcomes against the project target.</p></div><strong>{(project.milestones || []).filter((item) => item.status === 'Complete').length}/{(project.milestones || []).length} complete</strong></header>
+      <form className="project-inline-create" onSubmit={createMilestone}><label>New milestone<input onChange={(event) => setMilestoneDraft({ ...milestoneDraft, title: event.target.value })} placeholder="Milestone title" value={milestoneDraft.title} /></label><label>Due date<input onChange={(event) => setMilestoneDraft({ ...milestoneDraft, dueDate: event.target.value })} type="date" value={milestoneDraft.dueDate} /></label><button className="primary-action compact" disabled={!milestoneDraft.title.trim()} type="submit"><Plus size={15} />Add milestone</button></form>
       <div className="project-milestone-list">{(project.milestones || []).map((milestone, index) => {
         const tasks = (project.tasks || []).filter((task) => task.milestoneId === milestone.id)
         const done = tasks.filter((task) => task.status === 'Done').length
@@ -583,6 +594,7 @@ function ProjectDetailView({ onOpenRecord, onUpdateProject, people, project, tic
   const risks = (
     <div className="project-risk-view">
       <header><div><span className="eyebrow">Project assurance</span><h3>Risks & issues</h3><p>Keep threats, active delivery problems and their responses visible.</p></div><div><strong>{openRisks.length}</strong><span>open</span></div></header>
+      <form className="project-inline-create project-risk-create" onSubmit={createRisk}><label>Type<select onChange={(event) => setRiskDraft({ ...riskDraft, kind: event.target.value })} value={riskDraft.kind}><option>Risk</option><option>Issue</option></select></label><label>Title<input onChange={(event) => setRiskDraft({ ...riskDraft, title: event.target.value })} placeholder="Risk or issue title" value={riskDraft.title} /></label><label>Severity<select onChange={(event) => setRiskDraft({ ...riskDraft, severity: event.target.value })} value={riskDraft.severity}><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></label><label>Owner<select onChange={(event) => setRiskDraft({ ...riskDraft, ownerId: event.target.value })} value={riskDraft.ownerId || ''}><option value="">Unassigned</option>{people.map((person) => <option key={person.id} value={person.id}>{person.name}</option>)}</select></label><label className="project-inline-wide">Response<input onChange={(event) => setRiskDraft({ ...riskDraft, response: event.target.value })} placeholder="Mitigation or response" value={riskDraft.response} /></label><button className="primary-action compact" disabled={!riskDraft.title.trim()} type="submit"><Plus size={15} />Add {riskDraft.kind.toLowerCase()}</button></form>
       <div className="project-risk-list">{(project.risks || []).map((risk) => {
         const riskOwner = personById(people, risk.ownerId)
         return <article className={risk.status === 'Closed' ? 'closed' : ''} key={risk.id}><div className={`project-risk-icon severity-${slug(risk.severity)}`}><AlertTriangle size={18} /></div><div><span>{risk.kind} · {risk.id}</span><h4>{risk.title}</h4><p>{risk.response}</p><small><ProjectAvatar person={riskOwner} small />Owned by {riskOwner?.name || 'Unassigned'}</small></div><div><ProjectState>{risk.severity}</ProjectState><ProjectState>{risk.status}</ProjectState>{risk.status !== 'Closed' && <button onClick={() => closeRisk(risk.id)} type="button">Close item</button>}</div></article>
@@ -615,9 +627,9 @@ function ProjectDetailView({ onOpenRecord, onUpdateProject, people, project, tic
     <div className="project-detail-view">
       <header className="project-detail-header">
         <div className="project-detail-title"><span className="eyebrow">{project.id}</span><h2>{project.name}</h2><p>{project.description}</p><div><ProjectState>{project.status}</ProjectState><ProjectState kind="health">{project.health}</ProjectState><span>{project.priority} priority</span><span>{project.team}</span></div></div>
-        <div className="project-detail-controls"><label>Status<select onChange={(event) => onUpdateProject(project.id, { status: event.target.value })} value={project.status}>{projectStatuses.map((item) => <option key={item}>{item}</option>)}</select></label><label>Health<select onChange={(event) => onUpdateProject(project.id, { health: event.target.value })} value={project.health}>{projectHealthOptions.map((item) => <option key={item}>{item}</option>)}</select></label></div>
+        <div className="project-detail-controls"><label>Owner<select onChange={(event) => onUpdateProject(project.id, { ownerId: event.target.value })} value={project.ownerId || ''}><option value="">Unassigned</option>{people.map((person) => <option key={person.id} value={person.id}>{person.name}</option>)}</select></label><label>Team<select onChange={(event) => onUpdateProject(project.id, { team: event.target.value })} value={project.team || ''}><option value="">Unassigned</option>{teams.map((team) => <option key={team.id || team.name} value={team.name}>{team.name}</option>)}</select></label><label>Target<input onChange={(event) => onUpdateProject(project.id, { targetDate: event.target.value })} type="date" value={project.targetDate || ''} /></label><label>Status<select onChange={(event) => onUpdateProject(project.id, { status: event.target.value })} value={project.status}>{projectStatuses.map((item) => <option key={item}>{item}</option>)}</select></label><label>Health<select onChange={(event) => onUpdateProject(project.id, { health: event.target.value })} value={project.health}>{projectHealthOptions.map((item) => <option key={item}>{item}</option>)}</select></label></div>
       </header>
-      <section className="project-detail-summary"><div><span>Progress</span><strong>{progress}%</strong></div><div><span>Open tasks</span><strong>{openTasks.length}</strong></div><div><span>Open risks/issues</span><strong>{openRisks.length}</strong></div><div><span>Target date</span><strong>{formatDate(project.targetDate)}</strong></div><div className="project-detail-members"><span>Project team</span><strong>{(project.memberIds || []).slice(0, 4).map((id) => <ProjectAvatar key={id} person={personById(people, id)} small />)}{(project.memberIds || []).length > 4 && <em>+{project.memberIds.length - 4}</em>}</strong></div></section>
+      <section className="project-detail-summary"><div><span>Progress</span><strong>{progress}%</strong></div><div><span>Open tasks</span><strong>{openTasks.length}</strong></div><div><span>Open risks/issues</span><strong>{openRisks.length}</strong></div><div><span>Target date</span><strong>{formatDate(project.targetDate)}</strong></div><div><span>Delivery SLA</span><strong>{project.sla?.state ? project.sla.state.replace('_', ' ') : 'Not set'}</strong></div><div className="project-detail-members"><span>Project team</span><strong>{(project.memberIds || []).slice(0, 4).map((id) => <ProjectAvatar key={id} person={personById(people, id)} small />)}{(project.memberIds || []).length > 4 && <em>+{project.memberIds.length - 4}</em>}</strong></div></section>
       <nav aria-label="Project sections" className="project-detail-tabs">{projectSections.map(({ id, label, icon: Icon }) => <button aria-current={activeSection === id ? 'page' : undefined} className={activeSection === id ? 'active' : ''} key={id} onClick={() => setActiveSection(id)} type="button"><Icon size={15} />{label}</button>)}</nav>
       <main className="project-detail-panel">{panels[activeSection]}</main>
       {taskComposerOpen && <ProjectTaskComposer onAdd={addTask} onClose={() => setTaskComposerOpen(false)} people={people} project={project} tickets={tickets} />}
@@ -626,10 +638,17 @@ function ProjectDetailView({ onOpenRecord, onUpdateProject, people, project, tic
 }
 
 export function ProjectManagementView({
+  onAddProjectActivity,
+  onAddProjectTask,
   onCreateProject,
+  onCreateProjectMilestone,
+  onCreateProjectRisk,
   onOpenProject,
   onOpenRecord,
   onUpdateProject,
+  onUpdateProjectMilestone,
+  onUpdateProjectRisk,
+  onUpdateProjectTask,
   people,
   projects,
   selectedProject,
@@ -637,7 +656,21 @@ export function ProjectManagementView({
   tickets,
 }) {
   if (selectedProject) {
-    return <ProjectDetailView onOpenRecord={onOpenRecord} onUpdateProject={onUpdateProject} people={people} project={selectedProject} tickets={tickets} />
+    return <ProjectDetailView
+      onAddActivity={onAddProjectActivity}
+      onAddTask={onAddProjectTask}
+      onCreateMilestone={onCreateProjectMilestone}
+      onCreateRisk={onCreateProjectRisk}
+      onOpenRecord={onOpenRecord}
+      onUpdateMilestone={onUpdateProjectMilestone}
+      onUpdateProject={onUpdateProject}
+      onUpdateRisk={onUpdateProjectRisk}
+      onUpdateTask={onUpdateProjectTask}
+      people={people}
+      project={selectedProject}
+      teams={teams}
+      tickets={tickets}
+    />
   }
 
   return <ProjectListView onCreateProject={onCreateProject} onOpenProject={onOpenProject} people={people} projects={projects} teams={teams} />

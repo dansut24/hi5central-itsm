@@ -101,7 +101,25 @@ function defaults(session) {
     itsm: {
       numberingMode: 'default', recordPrefixes: { ...defaultPrefixes }, recordDigits: '5',
       supportEmail: 'support', defaultTeam: 'Service Desk', businessHours: 'uk-business', defaultPriority: 'Medium',
-      p1ResponseMinutes: '15', p1ResolutionMinutes: '240', managerApprovalThreshold: '500',
+      slaTargets: {
+        Critical: { responseMinutes: '15', resolutionMinutes: '240' },
+        High: { responseMinutes: '30', resolutionMinutes: '480' },
+        Medium: { responseMinutes: '240', resolutionMinutes: '1440' },
+        Low: { responseMinutes: '480', resolutionMinutes: '2880' },
+      },
+      serviceRequestSlaTargets: {
+        Critical: { responseMinutes: '30', resolutionMinutes: '480' },
+        High: { responseMinutes: '60', resolutionMinutes: '960' },
+        Medium: { responseMinutes: '240', resolutionMinutes: '2880' },
+        Low: { responseMinutes: '480', resolutionMinutes: '5760' },
+      },
+      projectSlaTargets: {
+        Critical: { targetDays: '14' },
+        High: { targetDays: '30' },
+        Medium: { targetDays: '60' },
+        Low: { targetDays: '90' },
+      },
+      managerApprovalThreshold: '500',
       portalName: 'IT Help Centre', portalKnowledge: true, requesterComments: true, liveChat: true, aiAssistant: false,
       cabName: 'Change Advisory Board', standardChangeAutoApprove: true,
       requesterNotifications: true, slaWarnings: true, knowledgeFeedback: true,
@@ -122,12 +140,24 @@ function defaults(session) {
   }
 }
 
+function mergeSlaTargets(base = {}, stored = {}) {
+  return Object.fromEntries(['Critical', 'High', 'Medium', 'Low'].map((priority) => [priority, {
+    ...(base?.[priority] || {}),
+    ...(stored?.[priority] || {}),
+  }]))
+}
+
 function mergeConfig(base, stored) {
   const next = { ...base }
   for (const [key, value] of Object.entries(stored || {})) {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
       next[key] = { ...(base[key] || {}), ...value }
-      if (key === 'itsm') next[key].recordPrefixes = { ...defaultPrefixes, ...(value.recordPrefixes || {}) }
+      if (key === 'itsm') {
+        next[key].recordPrefixes = { ...defaultPrefixes, ...(value.recordPrefixes || {}) }
+        next[key].slaTargets = mergeSlaTargets(base[key]?.slaTargets, value.slaTargets)
+        next[key].serviceRequestSlaTargets = mergeSlaTargets(base[key]?.serviceRequestSlaTargets, value.serviceRequestSlaTargets)
+        next[key].projectSlaTargets = mergeSlaTargets(base[key]?.projectSlaTargets, value.projectSlaTargets)
+      }
     } else {
       next[key] = value
     }
@@ -461,7 +491,58 @@ function Security({ config, update }) {
 
 function ItsmNumbering({ config, update, updateNested }) { return <Panel title="Record numbering" description="Control the prefix and numeric length used when Hi5Central creates new service records."><div className="production-settings-grid"><Field label="Numbering mode"><select value={config.numberingMode || 'default'} onChange={(e) => update('numberingMode', e.target.value)}><option value="default">Hi5Central defaults</option><option value="custom">Custom prefixes</option></select></Field><Field label="Numeric digits"><select value={config.recordDigits || '5'} onChange={(e) => update('recordDigits', e.target.value)}>{['4','5','6','7','8'].map((d) => <option key={d} value={d}>{d} digits</option>)}</select></Field>{[['incident','Incident'],['serviceRequest','Service Request'],['problem','Problem'],['change','Change']].map(([key,label]) => <Field key={key} label={`${label} prefix`}><input disabled={config.numberingMode !== 'custom'} value={config.numberingMode === 'custom' ? config.recordPrefixes?.[key] || defaultPrefixes[key] : defaultPrefixes[key]} onChange={(e) => updateNested('recordPrefixes', key, e.target.value)} /></Field>)}</div><div className="production-number-preview"><span>Preview</span><strong>{config.numberingMode === 'custom' ? config.recordPrefixes?.incident || 'INC-' : 'INC-'}{String(1).padStart(Number(config.recordDigits || 5), '0')}</strong></div></Panel> }
 
-function ItsmSlas({ config, update }) { return <Panel title="SLAs" description="Default service-level targets used by the tenant ITSM policy engine."><div className="production-settings-grid"><Field label="Business hours"><select value={config.businessHours || 'uk-business'} onChange={(e) => update('businessHours', e.target.value)}><option value="uk-business">UK business hours</option><option value="24x7">24 × 7</option><option value="custom">Custom schedule</option></select></Field><Field label="P1 response (minutes)"><input type="number" min="1" value={config.p1ResponseMinutes || '15'} onChange={(e) => update('p1ResponseMinutes', e.target.value)} /></Field><Field label="P1 resolution (minutes)"><input type="number" min="1" value={config.p1ResolutionMinutes || '240'} onChange={(e) => update('p1ResolutionMinutes', e.target.value)} /></Field><Field label="Default priority"><select value={config.defaultPriority || 'Medium'} onChange={(e) => update('defaultPriority', e.target.value)}><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(config.slaWarnings)} onChange={(v) => update('slaWarnings', v)} title="SLA warning notifications" description="Warn analysts before response or resolution targets breach." /></div></Panel> }
+function SlaTargetGrid({ title, description, bucket, config, update }) {
+  const priorities = ['Critical', 'High', 'Medium', 'Low']
+  const updateTarget = (priority, field, value) => update(bucket, {
+    ...(config[bucket] || {}),
+    [priority]: {
+      ...(config[bucket]?.[priority] || {}),
+      [field]: value,
+    },
+  })
+
+  return <section className="production-settings-sla-block">
+    <header><strong>{title}</strong><small>{description}</small></header>
+    <div className="production-settings-sla-table">
+      <div className="production-settings-sla-row is-heading"><span>Priority</span><span>First response</span><span>Resolution</span></div>
+      {priorities.map((priority) => <div className="production-settings-sla-row" key={priority}>
+        <strong>{priority}</strong>
+        <label><input aria-label={`${title} ${priority} response minutes`} min="1" type="number" value={config[bucket]?.[priority]?.responseMinutes || ''} onChange={(event) => updateTarget(priority, 'responseMinutes', event.target.value)} /><small>minutes</small></label>
+        <label><input aria-label={`${title} ${priority} resolution minutes`} min="1" type="number" value={config[bucket]?.[priority]?.resolutionMinutes || ''} onChange={(event) => updateTarget(priority, 'resolutionMinutes', event.target.value)} /><small>minutes</small></label>
+      </div>)}
+    </div>
+  </section>
+}
+
+function ProjectTargetGrid({ config, update }) {
+  const priorities = ['Critical', 'High', 'Medium', 'Low']
+  const updateTarget = (priority, value) => update('projectSlaTargets', {
+    ...(config.projectSlaTargets || {}),
+    [priority]: { ...(config.projectSlaTargets?.[priority] || {}), targetDays: value },
+  })
+
+  return <section className="production-settings-sla-block">
+    <header><strong>Project delivery targets</strong><small>Used when a new project has no explicit target date. The project deadline and task/milestone due dates are then tracked in Projects and Calendar.</small></header>
+    <div className="production-settings-project-sla-table">
+      {priorities.map((priority) => <label key={priority}><strong>{priority}</strong><input aria-label={`Project ${priority} target days`} min="1" type="number" value={config.projectSlaTargets?.[priority]?.targetDays || ''} onChange={(event) => updateTarget(priority, event.target.value)} /><small>days</small></label>)}
+    </div>
+  </section>
+}
+
+function ItsmSlas({ config, update }) {
+  return <Panel title="SLAs" description="Service-level targets used directly by the production ITSM policy engine. Response is captured on the first technician customer-visible update.">
+    <div className="production-settings-grid">
+      <Field label="Business hours"><select value={config.businessHours || 'uk-business'} onChange={(e) => update('businessHours', e.target.value)}><option value="uk-business">UK business hours</option><option value="24x7">24 × 7</option><option value="custom">Custom schedule</option></select></Field>
+      <Field label="Default priority"><select value={config.defaultPriority || 'Medium'} onChange={(e) => update('defaultPriority', e.target.value)}><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></Field>
+    </div>
+    <div className="production-settings-sla-targets">
+      <SlaTargetGrid title="Incident targets" description="Applied to Incident response and resolution clocks." bucket="slaTargets" config={config} update={update} />
+      <SlaTargetGrid title="Service Request targets" description="Applied to Service Request response and fulfilment clocks, including approval pause/resume." bucket="serviceRequestSlaTargets" config={config} update={update} />
+      <ProjectTargetGrid config={config} update={update} />
+    </div>
+    <div className="production-settings-toggle-list"><Toggle checked={Boolean(config.slaWarnings)} onChange={(v) => update('slaWarnings', v)} title="SLA warning notifications" description="Warn analysts before response or resolution targets breach." /></div>
+  </Panel>
+}
 
 function ItsmServiceDesk({ config, update, tenant }) { return <Panel title="Service desk" description="Core assignment, inbound support and approval defaults."><div className="production-settings-grid"><Field label="Support address"><div className="production-prefix-field"><input value={config.supportEmail || 'support'} onChange={(e) => update('supportEmail', e.target.value)} /><span>@{tenant?.slug}.hi5central.com</span></div></Field><Field label="Default assignment team"><input value={config.defaultTeam || ''} onChange={(e) => update('defaultTeam', e.target.value)} /></Field><Field label="Manager approval threshold (£)"><input type="number" min="0" value={config.managerApprovalThreshold || '500'} onChange={(e) => update('managerApprovalThreshold', e.target.value)} /></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(config.liveChat)} onChange={(v) => update('liveChat', v)} title="Live Chat" description="Expose live support in the technician workspace and Portal." /><Toggle checked={Boolean(config.aiAssistant)} onChange={(v) => update('aiAssistant', v)} title="AI assistant" description="Tenant preference. AI features remain unavailable until the production AI service is connected." /></div></Panel> }
 
