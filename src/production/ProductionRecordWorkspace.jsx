@@ -428,7 +428,7 @@ function RecordWorkspace({ route }) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
-  const [tab, setTab] = useState('activity')
+  const [tab, setTab] = useState('overview')
   const [composerMode, setComposerMode] = useState('')
   const [showSystemEvents, setShowSystemEvents] = useState(() => window.localStorage.getItem('hi5central-record-lab-activity-mode') === 'all')
   const [activityQuery, setActivityQuery] = useState('')
@@ -699,6 +699,7 @@ function RecordWorkspace({ route }) {
 
   const tabs = route.type === 'Service Request'
     ? [
+        ['overview', 'Overview'],
         ['activity', `Activity${meaningfulActivities.length ? ` ${meaningfulActivities.length}` : ''}`],
         ['request', `Request${requestInformation.length ? ` ${requestInformation.length}` : ''}`],
         ['tasks', `Tasks${tasks.length ? ` ${tasks.length}` : ''}`],
@@ -710,6 +711,7 @@ function RecordWorkspace({ route }) {
         ['details', 'Details'],
       ]
     : [
+        ['overview', 'Overview'],
         ['activity', `Activity${meaningfulActivities.length ? ` ${meaningfulActivities.length}` : ''}`],
         ['tasks', `Tasks${tasks.length ? ` ${tasks.length}` : ''}`],
         ['sla', 'SLA'],
@@ -877,7 +879,8 @@ function RecordWorkspace({ route }) {
 
   const renderAudit = () => <section className="record-lab-panel record-lab-tab-panel"><header><span>Forensic history</span><h2>Audit Log</h2></header>{auditActivities.length ? <div className="record-lab-audit-list">{auditActivities.map((item) => { const changes = Array.isArray(item.metadata?.changes) ? item.metadata.changes : []; return <div className="record-lab-audit-row" key={item.id}><time>{formatDate(item.createdAt, true)}</time><div><strong>{activityText(item)}</strong>{changes.length ? changes.map((change, index) => <small key={`${change.field}-${index}`}><b>{change.field}</b><span>{String(change.from || '—')}</span><i>→</i><span>{String(change.to || '—')}</span></small>) : <small>{item.actor ? `By ${item.actor}` : 'System event'}</small>}</div></div> })}</div> : <div className="record-lab-empty">No system audit events are available for this record yet.</div>}</section>
 
-  const tabContent = tab === 'activity' ? renderActivity()
+  const tabContent = tab === 'overview' ? renderOverview()
+    : tab === 'activity' ? renderActivity()
     : tab === 'request' ? renderRequest()
       : tab === 'tasks' ? renderTasks()
         : tab === 'approvals' ? renderApprovals()
@@ -888,14 +891,31 @@ function RecordWorkspace({ route }) {
                   : renderAudit()
 
   return <div className="record-lab-shell" ref={scrollRef}>
+    <button type="button" className="record-lab-page-back" onClick={() => navigateLab(`/${route.section}`)} title={`Back to ${route.section}`}><ArrowLeft size={17} /><span>Back to {route.section}</span></button>
+
     <section className="record-lab-masthead">
       <div className="record-lab-masthead-leading">
-        <button type="button" className="record-lab-back" onClick={() => navigateLab(`/${route.section}`)} title={`Back to ${route.section}`}><ArrowLeft size={19} /></button>
+        <span className={`record-lab-hero-icon is-${slug(route.type)}`}>
+          {route.type === 'Incident' ? <AlertTriangle size={27} /> : route.type === 'Change' ? <ShieldCheck size={27} /> : route.type === 'Problem' ? <CircleDot size={27} /> : <FileText size={27} />}
+        </span>
         {inspectorCollapsed ? <button type="button" className="record-lab-details-restore" onClick={() => setInspectorCollapsed(false)} title="Show record details"><PanelLeftOpen size={18} /><span>Details</span></button> : null}
       </div>
       <div className="record-lab-heading"><div><strong>{detail.id || detail.reference}</strong><LabPill tone="accent">{detail.type || route.type}</LabPill><LabPill tone={['Resolved','Closed','Completed'].includes(detail.status) ? 'good' : 'neutral'}>{detail.status}</LabPill><LabPill tone={detail.priority === 'Critical' || detail.priority === 'High' ? 'danger' : detail.priority === 'Medium' ? 'warning' : 'good'}>{detail.priority}</LabPill></div><h1>{detail.title}</h1><p>{detail.requester || 'Requester not recorded'} · {detail.team || 'Unassigned'} / {detail.assignee || 'Unassigned'} · Updated {relativeTime(detail.updatedAt)}</p></div>
       <div className="record-lab-masthead-signals">{contextualSignal ? <button type="button" className={`record-lab-context-signal is-${contextualSignal.tone}`} onClick={() => { setInspectorCollapsed(false); setContextView(contextualSignal.label === 'Repeat contact' ? 'user' : 'insights') }}><Sparkles size={16} /><span><small>{contextualSignal.label}</small><strong>{contextualSignal.detail}</strong></span></button> : null}<button type="button" className={`record-lab-sla-badge is-${primarySlaTone}`} onClick={() => setTab('sla')}><Clock3 size={18} /><span><small>Resolution SLA</small><strong>{primarySlaLabel}</strong></span></button></div>
+      <div className="record-lab-hero-actions">
+        <button type="button" className="is-primary" onClick={() => beginAction('internal')}><MessageSquareText size={17} />Internal note</button>
+        <button type="button" onClick={() => beginAction('customer')}><Send size={17} />Customer update</button>
+        <button type="button" onClick={() => beginAction('reassign')}><UserRoundCog size={17} />Reassign</button>
+        <button type="button" onClick={() => beginAction('resolve')}><CheckCircle2 size={17} />{route.type === 'Service Request' ? 'Complete' : 'Resolve'}</button>
+      </div>
     </section>
+
+    <div className="record-lab-summary-metrics">
+      <button type="button" className={`record-lab-summary-metric is-${primarySlaTone}`} onClick={() => setTab('sla')}><span><Clock3 size={18} /></span><div><small>Resolution SLA</small><strong>{primarySlaLabel}</strong></div></button>
+      <button type="button" className="record-lab-summary-metric" onClick={() => { setInspectorCollapsed(false); setContextView('home'); setTab('details') }}><span><UserRoundCog size={18} /></span><div><small>Assignment</small><strong>{detail.assignee || detail.team || 'Unassigned'}</strong></div></button>
+      <div className="record-lab-summary-metric"><span><FileText size={18} /></span><div><small>Record age</small><strong>{relativeTime(detail.createdAt)}</strong></div></div>
+      <button type="button" className="record-lab-summary-metric" onClick={() => setTab('activity')}><span><MessageSquareText size={18} /></span><div><small>Activity</small><strong>{meaningfulActivities.length} update{meaningfulActivities.length === 1 ? '' : 's'}</strong></div></button>
+    </div>
 
     {error ? <div className="record-lab-notice is-error"><AlertTriangle size={17} /><span>{error}</span><button type="button" onClick={() => setError('')}><X size={15} /></button></div> : null}
     {notice ? <div className="record-lab-notice is-success"><CheckCircle2 size={17} /><span>{notice}</span><button type="button" onClick={() => setNotice('')}><X size={15} /></button></div> : null}
