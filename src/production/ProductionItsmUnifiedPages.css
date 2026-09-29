@@ -1960,3 +1960,51 @@ html[data-hi5-surface='workspace'] .dashboard-builder-v3.is-viewing > .itsm-rmm-
     padding: 18px 13px calc(34px + env(safe-area-inset-bottom)) !important;
   }
 }
+
+
+/* ========================================================================== */
+/* DASHBOARD KPI MOBILE PARITY                                                */
+/* Exact phone geometry from RMM .rmm-metric-grid.                            */
+/* ========================================================================== */
+
+@media (max-width: 640px) {
+  html[data-hi5-surface='workspace'] .itsm-rmm-metric-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-bottom: 16px;
+  }
+
+  html[data-hi5-surface='workspace'] .itsm-rmm-metric-grid > button {
+    min-height: 0 !important;
+    grid-template-columns: 34px minmax(0, 1fr) !important;
+    gap: 10px !important;
+    padding: 11px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .itsm-rmm-metric-icon {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 10px;
+  }
+
+  html[data-hi5-surface='workspace'] .itsm-rmm-metric-grid > button > svg {
+    display: none !important;
+  }
+
+  html[data-hi5-surface='workspace'] .itsm-rmm-metric-grid > button > div {
+    gap: 1px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .itsm-rmm-metric-grid > button > div > span {
+    font-size: 8px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .itsm-rmm-metric-grid strong {
+    font-size: 21px !important;
+    line-height: 1.1 !important;
+  }
+
+  html[data-hi5-surface='workspace'] .itsm-rmm-metric-grid small {
+    font-size: 7px !important;
+  }
+}
