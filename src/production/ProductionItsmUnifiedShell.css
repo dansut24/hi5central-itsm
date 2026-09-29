@@ -736,3 +736,275 @@ html[data-hi5-surface='workspace'] .production-workspace-mobile-nav {
     display: none;
   }
 }
+
+
+/* ========================================================================== */
+/* RMM-PARITY MOBILE SHELL                                                    */
+/* ITSM keeps header search as an icon; workspace tabs occupy row two.        */
+/* ========================================================================== */
+
+@media (max-width: 900px) {
+  html[data-hi5-surface='workspace'] .main-frame {
+    grid-template-rows: 62px 58px minmax(0, 1fr) !important;
+  }
+
+  html[data-hi5-surface='workspace'] .itsm-topbar {
+    min-height: 62px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    padding: 9px 11px;
+    border-bottom: 0;
+    background: var(--surface);
+  }
+
+  html[data-hi5-surface='workspace'] .itsm-topbar-title {
+    width: auto;
+    gap: 9px;
+  }
+
+  html[data-hi5-surface='workspace'] .itsm-topbar-title > div {
+    display: grid !important;
+    gap: 1px;
+  }
+
+  html[data-hi5-surface='workspace'] .itsm-topbar-title span {
+    display: block !important;
+    color: rgb(var(--accent-rgb));
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .08em;
+  }
+
+  html[data-hi5-surface='workspace'] .itsm-topbar-title strong {
+    max-width: min(44vw, 260px);
+    font-size: 10px;
+  }
+
+  html[data-hi5-surface='workspace'] .itsm-menu-button,
+  html[data-hi5-surface='workspace'] .itsm-topbar-actions > button:not(.itsm-user),
+  html[data-hi5-surface='workspace'] .itsm-user {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+    border-radius: 8px;
+  }
+
+  html[data-hi5-surface='workspace'] .itsm-user > span {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* This is deliberately the slot occupied by RMM's full-width mobile
+     search field. ITSM uses the slot for its persistent workspace tabs. */
+  html[data-hi5-surface='workspace'] .tabbar {
+    position: relative !important;
+    width: 100% !important;
+    height: 58px !important;
+    min-height: 58px !important;
+    margin: 0 !important;
+    padding: 0 11px 10px !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--line) !important;
+    border-radius: 0 !important;
+    background: var(--surface) !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    overflow: hidden !important;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tabdock {
+    width: 100%;
+    height: 40px;
+    min-height: 40px;
+    display: flex !important;
+    align-items: center;
+    gap: 4px !important;
+    padding: 3px 4px !important;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--surface-soft);
+    overflow: hidden;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tabs-viewport {
+    min-width: 0 !important;
+    height: 32px;
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tabs {
+    width: 100%;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    gap: 4px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tab {
+    min-width: 104px;
+    max-width: 170px !important;
+    height: 32px;
+    flex: 0 0 auto;
+    border: 1px solid transparent !important;
+    border-radius: 7px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tab:hover {
+    background: var(--surface) !important;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tab.is-active {
+    border-color: var(--line) !important;
+    background: var(--surface) !important;
+    color: var(--ink) !important;
+    box-shadow: 0 1px 4px rgba(19,45,84,.07) !important;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tab.is-active::before {
+    display: none !important;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tab-main {
+    min-height: 30px;
+    padding-inline: 8px;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tab-title {
+    max-width: 116px !important;
+    font-size: 9px;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tab-add {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    display: inline-grid !important;
+    place-items: center;
+    flex: 0 0 30px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--muted);
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tab-add:hover {
+    border-color: var(--line);
+    background: var(--surface);
+    color: var(--ink);
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tabdock-actions,
+  html[data-hi5-surface='workspace'] .production-workspace-mobile-nav {
+    display: none !important;
+  }
+
+  /* Always use the same left-hand mobile drawer contract as RMM. */
+  html[data-hi5-surface='workspace'] .sidebar,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar,
+  html[data-hi5-mobile-nav-side='right'][data-hi5-surface='workspace'] .sidebar,
+  html[data-hi5-mobile-nav-side='right'][data-hi5-surface='workspace'] .sidebar-collapsed .sidebar {
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    z-index: 160 !important;
+    width: min(310px, 86vw) !important;
+    margin: 0 !important;
+    padding: 15px 12px 12px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: linear-gradient(180deg, #0d2d66, #0a2555) !important;
+    color: #fff !important;
+    transform: translateX(-102%) !important;
+    transition: transform 180ms ease !important;
+    box-shadow: 18px 0 42px rgba(0,0,0,.25) !important;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar.mobile-open,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar.mobile-open,
+  html[data-hi5-mobile-nav-side='right'][data-hi5-surface='workspace'] .sidebar.mobile-open,
+  html[data-hi5-mobile-nav-side='right'][data-hi5-surface='workspace'] .sidebar-collapsed .sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+
+  html[data-hi5-surface='workspace'] .mobile-nav-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 150 !important;
+    display: block !important;
+    border: 0 !important;
+    background: rgba(3,12,28,.46) !important;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar .brand {
+    min-height: 54px;
+    border: 0 !important;
+    border-radius: 9px !important;
+    background: #f8fbff !important;
+    box-shadow: none !important;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar .nav-group-label,
+  html[data-hi5-surface='workspace'] .sidebar .nav-group-active .nav-group-label {
+    color: rgba(255,255,255,.42) !important;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar .nav-item {
+    min-height: 37px !important;
+    padding: 0 9px !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    color: rgba(255,255,255,.74) !important;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar .nav-item svg {
+    color: inherit !important;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar .nav-item:hover {
+    background: rgba(255,255,255,.07) !important;
+    color: #fff !important;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar .nav-item.active {
+    background: #fff !important;
+    color: #0d2d66 !important;
+    box-shadow: 0 8px 20px rgba(0,0,0,.14) !important;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar .nav-item.active svg {
+    color: #0d2d66 !important;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar .mobile-drawer-close {
+    width: 30px;
+    height: 30px;
+    display: grid !important;
+    place-items: center;
+    border: 0 !important;
+    border-radius: 7px !important;
+    background: #eef3fa !important;
+    color: #0d2d66 !important;
+  }
+}
+
+@media (max-width: 420px) {
+  html[data-hi5-surface='workspace'] .production-workspace-tab {
+    min-width: 96px;
+    max-width: 142px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tab-title {
+    max-width: 92px !important;
+  }
+}
