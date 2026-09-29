@@ -1906,3 +1906,57 @@ html[data-hi5-surface='workspace'] .dashboard-builder-v3.is-editing {
     grid-column: 1;
   }
 }
+
+
+/* ========================================================================== */
+/* DASHBOARD CANVAS FLATTENING                                                */
+/* Match RMM's single page gutter: workspace/content-frame contribute none.   */
+/* ========================================================================== */
+
+html[data-hi5-surface='workspace'] .workspace:has(.dashboard-builder-v3.is-viewing) {
+  gap: 0 !important;
+  padding: 0 !important;
+  background: var(--page) !important;
+}
+
+html[data-hi5-surface='workspace'] .content-frame:has(.dashboard-builder-v3.is-viewing) {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+html[data-hi5-surface='workspace'] .dashboard-builder-v3.is-viewing {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-hi5-surface='workspace'] .dashboard-builder-v3.is-viewing > .itsm-rmm-dashboard {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 24px clamp(22px, 2.4vw, 40px) 44px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 640px) {
+  html[data-hi5-surface='workspace'] .dashboard-builder-v3.is-viewing > .itsm-rmm-dashboard {
+    padding: 18px 13px calc(34px + env(safe-area-inset-bottom)) !important;
+  }
+}
