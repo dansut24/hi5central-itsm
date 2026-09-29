@@ -1151,3 +1151,171 @@ html[data-hi5-surface='workspace'] .unified-new-record-submit .primary-action {
     justify-content: center;
   }
 }
+
+
+/* ========================================================================== */
+/* NEW RECORD TYPE CARDS                                                      */
+/* RMM-style four-card selector instead of a horizontal tab strip.             */
+/* ========================================================================== */
+
+html[data-hi5-surface='workspace'] .unified-record-type-picker {
+  width: 100%;
+  min-height: 0;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 10px;
+  overflow: visible !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+html[data-hi5-surface='workspace'] .unified-record-type-picker button {
+  position: relative;
+  width: 100%;
+  min-width: 0 !important;
+  min-height: 86px;
+  display: grid !important;
+  grid-template-columns: 46px minmax(0, 1fr);
+  align-items: center;
+  justify-content: stretch;
+  gap: 11px;
+  flex: none !important;
+  padding: 13px 14px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 11px !important;
+  background: var(--surface) !important;
+  color: var(--ink);
+  text-align: left;
+  box-shadow: var(--itsm-card-shadow) !important;
+  cursor: pointer;
+  transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+html[data-hi5-surface='workspace'] .unified-record-type-picker button:hover {
+  border-color: rgba(var(--accent-rgb), .28) !important;
+  background: var(--surface) !important;
+  transform: translateY(-1px);
+}
+
+html[data-hi5-surface='workspace'] .unified-record-type-picker button.active {
+  border-color: rgba(var(--accent-rgb), .62) !important;
+  background: var(--surface) !important;
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), .08), var(--itsm-card-shadow) !important;
+}
+
+html[data-hi5-surface='workspace'] .unified-record-type-card-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 46px;
+  border-radius: 11px;
+  background: rgba(var(--accent-rgb), .11);
+  color: rgb(var(--accent-rgb));
+}
+
+html[data-hi5-surface='workspace'] .unified-record-type-card-icon.incident {
+  background: rgba(218,73,91,.11);
+  color: #d04458;
+}
+
+html[data-hi5-surface='workspace'] .unified-record-type-card-icon.service-request {
+  background: rgba(var(--accent-rgb), .12);
+  color: rgb(var(--accent-rgb));
+}
+
+html[data-hi5-surface='workspace'] .unified-record-type-card-icon.problem {
+  background: rgba(120,88,223,.11);
+  color: #7858df;
+}
+
+html[data-hi5-surface='workspace'] .unified-record-type-card-icon.change {
+  background: rgba(61,115,232,.11);
+  color: #3d73e8;
+}
+
+html[data-hi5-surface='workspace'] .unified-record-type-card-copy {
+  min-width: 0;
+  display: grid !important;
+  gap: 2px;
+}
+
+html[data-hi5-surface='workspace'] .unified-record-type-card-copy strong {
+  color: var(--ink);
+  font-size: 13px !important;
+  line-height: 1.25;
+  font-weight: 850;
+}
+
+html[data-hi5-surface='workspace'] .unified-record-type-card-selected {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(var(--accent-rgb), .11);
+  color: rgb(var(--accent-rgb));
+}
+
+@media (max-width: 760px) {
+  html[data-hi5-surface='workspace'] .unified-record-type-picker {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    overflow: visible !important;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-record-type-picker button {
+    min-width: 0 !important;
+    min-height: 82px;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 10px;
+    padding: 12px !important;
+    scroll-snap-align: none;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-record-type-card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-record-type-card-copy strong {
+    font-size: 11px !important;
+    white-space: normal;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-record-type-card-selected {
+    top: 7px;
+    right: 7px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 380px) {
+  html[data-hi5-surface='workspace'] .unified-record-type-picker {
+    gap: 8px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-record-type-picker button {
+    min-height: 76px;
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 8px;
+    padding: 10px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-record-type-card-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-record-type-card-copy strong {
+    font-size: 10px !important;
+  }
+}
