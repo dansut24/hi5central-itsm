@@ -2152,7 +2152,14 @@ function TicketDetailContent({
 
 
 
-const unifiedRecordTypes = ['Incident', 'Service Request', 'Change', 'Problem']
+const unifiedRecordTypes = ['Incident', 'Service Request', 'Problem', 'Change']
+
+const unifiedRecordIcons = {
+  Incident: AlertCircle,
+  'Service Request': ClipboardCheck,
+  Problem: Search,
+  Change: Wrench,
+}
 
 const unifiedRecordMeta = {
   Incident: {
@@ -2992,13 +2999,16 @@ function UnifiedNewRecordForm({
         </header>
 
         <nav className="unified-record-type-picker" aria-label="Record type">
-          {unifiedRecordTypes.map((type) => (
-            <button className={recordType === type ? 'active' : ''} key={type} onClick={() => changeType(type)} type="button">
-              <span className={`record-type-mark ${type.toLowerCase().replace(/\s+/g, '-')}`}>{type === 'Service Request' ? 'SR' : type[0]}</span>
-              <span><strong>{type}</strong><small>{unifiedRecordMeta[type].description}</small></span>
-              {recordType === type && <CheckCircle2 size={15} aria-hidden="true" />}
-            </button>
-          ))}
+          {unifiedRecordTypes.map((type) => {
+            const TypeIcon = unifiedRecordIcons[type] || AlertCircle
+            return (
+              <button className={recordType === type ? 'active' : ''} key={type} onClick={() => changeType(type)} type="button">
+                <span className={`unified-record-type-card-icon ${type.toLowerCase().replace(/\s+/g, '-')}`}><TypeIcon size={20} aria-hidden="true" /></span>
+                <span className="unified-record-type-card-copy"><strong>{type}</strong></span>
+                {recordType === type && <span className="unified-record-type-card-selected"><CheckCircle2 size={15} aria-hidden="true" /></span>}
+              </button>
+            )
+          })}
         </nav>
 
         {!selectedUser ? (
