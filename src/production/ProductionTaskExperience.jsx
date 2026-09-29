@@ -214,25 +214,13 @@ function FilterSelect({ label, value, options, onChange }) {
   return <label className="production-record-filter-field"><span>{label}</span><select value={value} onChange={(event) => onChange(event.target.value)}><option>All</option>{(options || []).filter((option) => option && option !== 'All').map((option) => <option key={option}>{option}</option>)}</select></label>
 }
 
-function TaskFilters({ payload, filters, onChange, onClear }) {
-  const counts = payload.views || {}
-  const quickViews = [
-    ...WORK_VIEWS,
-    { id: 'all', label: 'All active' },
-    { id: 'completed', label: 'Completed' },
-  ]
+function TaskFilters({ payload, filters, onChange, onClear, query, onQueryChange }) {
   const options = payload.filters || {}
-
-  function quick(id) {
-    onChange({ ...DEFAULT_FILTERS, scope: id })
-  }
 
   return <div className="production-record-filter-content">
     <section>
-      <span className="production-record-filter-label">Views</span>
-      <div className="production-record-view-list production-task-view-list">
-        {quickViews.map((view) => <button type="button" key={view.id} className={filters.scope === view.id ? 'is-active' : ''} onClick={() => quick(view.id)}><span>{view.label}</span>{Number.isFinite(Number(counts[view.id])) ? <b>{Number(counts[view.id])}</b> : null}</button>)}
-      </div>
+      <span className="production-record-filter-label">Search</span>
+      <label className="production-record-drawer-search"><Search size={15} /><input value={query} onChange={(event) => onQueryChange(event.target.value)} placeholder="Search tasks or parent requests…" type="search" /></label>
     </section>
     <section>
       <span className="production-record-filter-label">Filters</span>
@@ -284,7 +272,27 @@ function TaskCompactList({ items, onOpen, onTake, busyTask }) {
 }
 
 function TaskCardList({ items, onOpen, onTake, busyTask }) {
-  return <div className="production-record-card-list">{items.map((record) => <article className={`production-record-card production-record-card-enhanced${dueMeta(record.dueAt, record.status).overdue ? ' is-task-overdue' : ''}`} key={record.id}><button className="production-record-card-open" type="button" onClick={() => onOpen(record)}><div><strong>{record.id}</strong><span className={`production-record-priority ${priorityClass(record.priority)}`}>{record.priority}</span></div><h3>{record.title}</h3><div className="production-record-card-state"><span className={`production-record-status ${statusClass(record.status)}`}>{record.status}</span><span>{record.service}</span></div><dl><div><dt>Requester</dt><dd>{record.requester}</dd></div><div><dt>Assignment</dt><dd>{record.team} · {record.assignee}</dd></div><div className="production-task-card-due"><dt>Due / target</dt><dd><TaskDue record={record} /></dd></div></dl><footer><span>{record.primaryRequest ? `Primary ${record.primaryRequest}` : `Updated ${formatDate(record.updatedAt)}`}</span><ChevronRight size={16} /></footer></button>{taskCanBeTaken(record) ? <div className="production-record-card-actions"><TaskOwnershipButton record={record} onTake={onTake} busyTask={busyTask} /></div> : null}</article>)}</div>
+  return <div className="production-record-card-list production-task-mobile-card-list">{items.map((record) => {
+    const due = dueMeta(record.dueAt, record.status)
+    return <article className={`production-record-card production-record-card-enhanced production-task-mobile-card${due.overdue ? ' is-task-overdue' : ''}`} key={record.id}>
+      <button className="production-record-card-open production-task-mobile-card-open" type="button" onClick={() => onOpen(record)}>
+        <span className="production-record-card-icon is-service-request"><ListChecks size={18} /></span>
+        <span className="production-record-card-copy">
+          <strong>{record.id}</strong>
+          <b>{record.title}</b>
+          <small>{record.primaryRequest ? `Primary ${record.primaryRequest}` : 'Workflow task'} · {record.team || 'Unassigned'}</small>
+        </span>
+        <span className={`production-record-status ${statusClass(record.status)}`}>{record.status}</span>
+        <span className="production-record-card-facts">
+          <span><small>Priority</small><strong>{record.priority || 'Not set'}</strong></span>
+          <span><small>Due</small><strong className={due.overdue ? 'is-overdue' : ''}>{due.label}</strong></span>
+          <span><small>Assignee</small><strong>{record.assignee || 'Unassigned'}</strong></span>
+        </span>
+        <ChevronRight className="production-record-card-chevron" size={17} />
+      </button>
+      {taskCanBeTaken(record) ? <div className="production-task-mobile-card-action"><TaskOwnershipButton record={record} onTake={onTake} busyTask={busyTask} /></div> : null}
+    </article>
+  })}</div>
 }
 
 function TaskQueue() {
@@ -322,13 +330,21 @@ function TaskQueue() {
   const columns = COLUMNS.filter((column) => column.locked || !hiddenColumns.includes(column.key))
   const total = Number(payload.total || 0)
   const pageCount = Math.max(1, Math.ceil(total / pageSize))
-  const start = total ? page * pageSize + 1 : 0
-  const end = Math.min((page + 1) * pageSize, total)
-  const ActiveViewIcon = VIEW_STYLES.find((item) => item.id === viewStyle)?.icon || TableProperties
+  const renderedViewStyle = window.matchMedia?.('(max-width: 760px)').matches ? 'cards' : 'table'
   const changeFilters = (next) => { setFilters(next); setPage(0) }
   const clearFilters = () => { setFilters({ ...DEFAULT_FILTERS }); setPage(0) }
   const selectScope = (scope) => changeFilters({ ...DEFAULT_FILTERS, scope })
   const currentView = [...WORK_VIEWS, { id: 'all', label: 'All active' }, { id: 'completed', label: 'Completed' }].find((view) => view.id === filters.scope)
+  const taskViews = [...WORK_VIEWS, { id: 'all', label: 'All active' }, { id: 'completed', label: 'Completed' }]
+  const activeFilterCount = [
+    query.trim(),
+    filters.status !== 'All' ? filters.status : '',
+    filters.priority !== 'All' ? filters.priority : '',
+    filters.team !== 'All' ? filters.team : '',
+    filters.assignee !== 'All' ? filters.assignee : '',
+    filters.service !== 'All' ? filters.service : '',
+    filters.due !== 'All' ? filters.due : '',
+  ].filter(Boolean).length
 
   async function takeTask(record) {
     if (!taskCanBeTaken(record) || ownershipBusy) return
@@ -346,32 +362,27 @@ function TaskQueue() {
   }
 
   return <section className="production-task-experience production-record-shell production-motion-enter production-record-shell-enhanced">
-    <aside className="production-record-filter-rail"><div className="production-record-filter-heading"><span>Work queue</span><strong>Tasks</strong></div><TaskFilters payload={payload} filters={filters} onChange={changeFilters} onClear={clearFilters} /></aside>
-
     <main className="production-record-main">
-      <TaskWorkViews payload={payload} active={filters.scope} onChange={selectScope} />
-      <div className="production-record-toolbar">
-        <button className="production-record-filter-trigger" type="button" onClick={() => setMobileFilters(true)}><Filter size={15} />Filters</button>
-        <label className="production-record-search"><Search size={17} /><input type="search" value={query} onChange={(event) => { setQuery(event.target.value); setPage(0) }} placeholder="Search tasks or parent requests..." /></label>
-        <button className="production-record-refresh" type="button" title="Refresh" onClick={() => setRevision((value) => value + 1)}><RefreshCw size={16} /></button>
-        <label className="production-record-view-select"><ActiveViewIcon size={15} /><select value={viewStyle} onChange={(event) => setViewStyle(event.target.value)}>{VIEW_STYLES.map((style) => <option key={style.id} value={style.id}>{style.label}</option>)}</select></label>
-        {viewStyle === 'table' ? <details className="production-record-columns-menu"><summary><Columns3 size={15} /><span>Columns</span><ChevronDown size={13} /></summary><div><header><strong>Columns</strong><small>Choose visible fields</small></header>{COLUMNS.map((column) => { const visible = column.locked || !hiddenColumns.includes(column.key); return <button type="button" key={column.key} className={visible ? 'is-visible' : ''} disabled={column.locked} onClick={() => setHiddenColumns((current) => current.includes(column.key) ? current.filter((key) => key !== column.key) : [...current, column.key])}><span>{column.label}</span><i>{visible ? <Check size={13} /> : null}</i></button> })}</div></details> : null}
+      <div className="production-record-viewbar production-task-viewbar">
+        <div className="production-record-view-pills" aria-label="Task quick views">
+          {taskViews.map((view) => <button className={filters.scope === view.id ? 'is-active' : ''} key={view.id} onClick={() => selectScope(view.id)} type="button">{view.label}</button>)}
+        </div>
+        <button className="production-record-viewbar-filter" type="button" onClick={() => setMobileFilters(true)}><Filter size={15} />Filters{activeFilterCount > 0 ? <b>{activeFilterCount}</b> : null}</button>
       </div>
 
-      <div className="production-record-result-line"><span><strong>{currentView?.label || 'Tasks'}</strong> · {total} {total === 1 ? 'task' : 'tasks'}{payload.viewer?.teams?.length ? <small> · {payload.viewer.teams.join(', ')}</small> : null}</span><span>{start}–{end} of {total}</span></div>
       {ownershipError ? <div className="production-task-ownership-error"><AlertTriangle size={15} /><span>{ownershipError}</span><button type="button" aria-label="Dismiss" onClick={() => setOwnershipError('')}><X size={14} /></button></div> : null}
 
       <div className="production-record-content">
         {loading ? <div className="production-record-state"><strong>Loading tasks…</strong><span>Checking your current fulfilment queues.</span></div> : null}
         {!loading && error ? <div className="production-record-state is-error"><strong>Could not load this queue</strong><span>{error}</span><button type="button" onClick={() => setRevision((value) => value + 1)}>Retry</button></div> : null}
         {!loading && !error && !records.length ? <div className="production-record-state"><strong>No tasks in {currentView?.label || 'this view'}</strong><span>Waiting workflow steps stay hidden until their dependencies are complete.</span></div> : null}
-        {!loading && !error && records.length ? <div className="production-motion-enter production-motion-enter-fast">{viewStyle === 'compact' ? <TaskCompactList items={records} onOpen={(record) => navigate(`/tasks/${encodeURIComponent(record.id)}`)} onTake={takeTask} busyTask={ownershipBusy} /> : viewStyle === 'cards' ? <TaskCardList items={records} onOpen={(record) => navigate(`/tasks/${encodeURIComponent(record.id)}`)} onTake={takeTask} busyTask={ownershipBusy} /> : <TaskTable items={records} columns={columns} onOpen={(record) => navigate(`/tasks/${encodeURIComponent(record.id)}`)} onTake={takeTask} busyTask={ownershipBusy} />}</div> : null}
+        {!loading && !error && records.length ? <div className="production-motion-enter production-motion-enter-fast">{renderedViewStyle === 'cards' ? <TaskCardList items={records} onOpen={(record) => navigate(`/tasks/${encodeURIComponent(record.id)}`)} onTake={takeTask} busyTask={ownershipBusy} /> : <TaskTable items={records} columns={columns} onOpen={(record) => navigate(`/tasks/${encodeURIComponent(record.id)}`)} onTake={takeTask} busyTask={ownershipBusy} />}</div> : null}
       </div>
 
       <footer className="production-record-pagination"><label>Rows <select value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value)); setPage(0) }}>{PAGE_SIZES.map((size) => <option key={size}>{size}</option>)}</select></label><span>Page {Math.min(page + 1, pageCount)} of {pageCount}</span><div><button disabled={page === 0} onClick={() => setPage((value) => Math.max(0, value - 1))} type="button"><ChevronLeft size={15} /></button><button disabled={page >= pageCount - 1} onClick={() => setPage((value) => Math.min(pageCount - 1, value + 1))} type="button"><ChevronRight size={15} /></button></div></footer>
     </main>
 
-    {mobileFilters ? <><button className="production-record-filter-backdrop" aria-label="Close filters" type="button" onClick={() => setMobileFilters(false)} /><aside className="production-record-mobile-filter production-motion-drawer"><header><div><span>Queue filters</span><strong>Tasks</strong></div><button type="button" onClick={() => setMobileFilters(false)}><X size={17} /></button></header><TaskFilters payload={payload} filters={filters} onChange={(next) => { changeFilters(next); setMobileFilters(false) }} onClear={clearFilters} /></aside></> : null}
+    {mobileFilters ? <><button className="production-record-filter-backdrop" aria-label="Close filters" type="button" onClick={() => setMobileFilters(false)} /><aside className="production-record-mobile-filter production-motion-drawer"><header><div><span>Queue filters</span><strong>Tasks</strong></div><button type="button" onClick={() => setMobileFilters(false)}><X size={17} /></button></header><TaskFilters payload={payload} filters={filters} onChange={changeFilters} onClear={clearFilters} query={query} onQueryChange={(value) => { setQuery(value); setPage(0) }} /></aside></> : null}
   </section>
 }
 
