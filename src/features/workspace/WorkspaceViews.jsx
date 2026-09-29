@@ -983,6 +983,19 @@ function DashboardWidgetContent({ dashboardMetrics, filters, mobile = false, ope
   return <div className="dashboard-widget-empty">Widget preview unavailable.</div>
 }
 
+function dashboardRecordWhen(value) {
+  if (!value) return 'Not recorded'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return String(value)
+  return date.toLocaleString(undefined, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
 export function DashboardView({ currentUser, openRecordTab, openTab, sidebarMode, tickets }) {
   const [dashboards, setDashboards] = useState(loadDashboards)
   const [activeDashboardId, setActiveDashboardId] = useState(() => loadDashboards().find((item) => item.isDefault)?.id || 'DB-MY-WORK')
@@ -1310,7 +1323,7 @@ export function DashboardView({ currentUser, openRecordTab, openTab, sidebarMode
             <section className="itsm-rmm-card">
               <div className="itsm-rmm-card-heading"><div><span className="itsm-rmm-eyebrow">Ownership</span><h2>My work</h2></div><button onClick={() => openTab('tickets')} type="button">All work <ChevronRight size={14} /></button></div>
               <div className="itsm-rmm-record-feed">
-                {myWorkRecords.slice(0, 5).map((ticket) => <button key={ticket.id} onClick={() => openRecordTab(ticket)} type="button"><span className="itsm-rmm-feed-icon"><Headphones size={15} /></span><span><strong>{ticket.title}</strong><small>{ticket.id} · {ticket.service || 'Unclassified service'}</small></span><span className={`itsm-rmm-status ${statusClass(ticket.status)}`}>{ticket.status}</span><time>{formatDate(ticket.updatedAt)}</time></button>)}
+                {myWorkRecords.slice(0, 5).map((ticket) => <button key={ticket.id} onClick={() => openRecordTab(ticket)} type="button"><span className="itsm-rmm-feed-icon"><Headphones size={15} /></span><span><strong>{ticket.title}</strong><small>{ticket.id} · {ticket.service || 'Unclassified service'}</small></span><span className={`itsm-rmm-status ${statusClass(ticket.status)}`}>{ticket.status}</span><time>{dashboardRecordWhen(ticket.updatedAt)}</time></button>)}
                 {!myWorkRecords.length && <div className="itsm-rmm-empty"><UserCheck size={22} /><strong>No assigned work</strong><span>Records assigned to {currentUserName} will appear here.</span></div>}
               </div>
             </section>
@@ -1318,7 +1331,7 @@ export function DashboardView({ currentUser, openRecordTab, openTab, sidebarMode
             <section className="itsm-rmm-card">
               <div className="itsm-rmm-card-heading"><div><span className="itsm-rmm-eyebrow">Activity</span><h2>Recent record activity</h2></div><button onClick={() => openTab('tickets')} type="button">All records <ChevronRight size={14} /></button></div>
               <div className="itsm-rmm-record-feed">
-                {recentRecords.slice(0, 5).map((ticket) => <button key={ticket.id} onClick={() => openRecordTab(ticket)} type="button"><span className="itsm-rmm-feed-icon activity"><ListChecks size={15} /></span><span><strong>{ticket.title}</strong><small>{ticket.id} · {ticket.requester || 'Requester not recorded'}</small></span><span className={`itsm-rmm-status ${statusClass(ticket.status)}`}>{ticket.status}</span><time>{formatDate(ticket.updatedAt)}</time></button>)}
+                {recentRecords.slice(0, 5).map((ticket) => <button key={ticket.id} onClick={() => openRecordTab(ticket)} type="button"><span className="itsm-rmm-feed-icon activity"><ListChecks size={15} /></span><span><strong>{ticket.title}</strong><small>{ticket.id} · {ticket.requester || 'Requester not recorded'}</small></span><span className={`itsm-rmm-status ${statusClass(ticket.status)}`}>{ticket.status}</span><time>{dashboardRecordWhen(ticket.updatedAt)}</time></button>)}
                 {!recentRecords.length && <div className="itsm-rmm-empty"><ListChecks size={22} /><strong>No recent record activity</strong><span>New and updated ITSM records will appear here.</span></div>}
               </div>
             </section>
