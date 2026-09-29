@@ -72,6 +72,7 @@ export function deploymentConfig() {
   const appUrl = cleanUrl(runtime.appUrl || env.VITE_APP_URL, defaultAppUrl)
   const portalUrl = cleanUrl(runtime.portalUrl || env.VITE_PORTAL_URL)
   const rmmUrl = cleanUrl(runtime.rmmUrl || env.VITE_RMM_URL)
+  const adminUrl = cleanUrl(runtime.adminUrl || env.VITE_ADMIN_URL, `https://admin.${rootDomain}`)
   const apiUrl = cleanUrl(runtime.apiUrl || env.VITE_API_URL)
   const marketingUrl = cleanUrl(
     runtime.marketingUrl || env.VITE_MARKETING_URL,
@@ -86,11 +87,13 @@ export function deploymentConfig() {
     appUrl,
     portalUrl,
     rmmUrl,
+    adminUrl,
     apiUrl,
     marketingUrl,
     appOrigin: originOf(appUrl),
     portalOrigin: originOf(portalUrl),
     rmmOrigin: originOf(rmmUrl),
+    adminOrigin: originOf(adminUrl),
     marketingOrigin: originOf(marketingUrl),
   })
 }
