@@ -1239,8 +1239,92 @@ export function DashboardView({ currentUser, openRecordTab, openTab, sidebarMode
     team: dashboards.filter((item) => item.scope === 'team'),
   }
 
+  const activeRecords = filteredTickets.filter((ticket) => !['Closed', 'Resolved', 'Completed'].includes(ticket.status))
+  const highPriorityRecords = activeRecords.filter((ticket) => ['Critical', 'High'].includes(ticket.priority))
+  const approvalRecords = activeRecords.filter((ticket) => ['Pending Approval', 'Awaiting Approval', 'CAB Review'].includes(ticket.status))
+  const slaRiskRecords = activeRecords.filter((ticket) => Number(ticket.slaPercent || 0) >= 60)
+  const unassignedRecords = activeRecords.filter((ticket) => !ticket.assignee || ticket.assignee === 'Unassigned')
+  const healthyRecords = activeRecords.filter((ticket) => Number(ticket.slaPercent || 0) < 60 && !['Critical', 'High'].includes(ticket.priority))
+  const serviceHealthPercent = activeRecords.length ? Math.max(0, Math.round((healthyRecords.length / activeRecords.length) * 100)) : 100
+  const myWorkRecords = activeRecords
+    .filter((ticket) => ticket.assignee === currentUserName)
+    .sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0))
+  const attentionRecords = [...activeRecords]
+    .filter((ticket) => ['Critical', 'High'].includes(ticket.priority) || Number(ticket.slaPercent || 0) >= 60 || !ticket.assignee || ticket.assignee === 'Unassigned')
+    .sort((a, b) => {
+      const riskA = (['Critical', 'High'].includes(a.priority) ? 2 : 0) + (Number(a.slaPercent || 0) >= 60 ? 1 : 0)
+      const riskB = (['Critical', 'High'].includes(b.priority) ? 2 : 0) + (Number(b.slaPercent || 0) >= 60 ? 1 : 0)
+      return riskB - riskA || new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0)
+    })
+  const recentRecords = [...filteredTickets]
+    .sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0))
+
   return (
-    <div className="dashboard-builder dashboard-builder-v3" data-sidebar-mode={sidebarMode || 'expanded'}>
+    <div className={`dashboard-builder dashboard-builder-v3 ${editMode ? 'is-editing' : 'is-viewing'}`} data-sidebar-mode={sidebarMode || 'expanded'}>
+      {!editMode && (
+        <section className="itsm-rmm-dashboard">
+          <header className="itsm-rmm-dashboard-heading">
+            <div>
+              <span className="itsm-rmm-eyebrow">ITSM overview</span>
+              <h1>Dashboard</h1>
+              <p>Workload, SLA pressure, approvals and service desk activity across your current scope.</p>
+            </div>
+            <div className="itsm-rmm-dashboard-heading-actions">
+              <span className="itsm-rmm-live-state"><i /> Live service desk</span>
+              <button className="itsm-rmm-primary" onClick={() => openTab('tickets')} type="button"><Inbox size={16} /> View records</button>
+              {activeDashboard.canEdit ? <button className="itsm-rmm-secondary" onClick={beginEdit} type="button"><Pencil size={15} /> Customize</button> : <button className="itsm-rmm-secondary" onClick={duplicateDashboard} type="button"><Copy size={15} /> Make a copy</button>}
+            </div>
+          </header>
+
+          <div className="itsm-rmm-metric-grid">
+            <button onClick={() => openTab('tickets')} type="button"><span className="itsm-rmm-metric-icon blue"><Inbox size={19} /></span><div><span>Active records</span><strong>{activeRecords.length}</strong><small>{activeRecords.length ? `${unassignedRecords.length} unassigned` : 'No active workload'}</small></div><ChevronRight size={16} /></button>
+            <button onClick={() => openTab('incidents')} type="button"><span className="itsm-rmm-metric-icon red"><AlertCircle size={19} /></span><div><span>High priority</span><strong>{highPriorityRecords.length}</strong><small>{highPriorityRecords.length ? 'Critical and high priority work' : 'No high-priority records'}</small></div><ChevronRight size={16} /></button>
+            <button onClick={() => openTab('requests')} type="button"><span className="itsm-rmm-metric-icon violet"><ClipboardCheck size={19} /></span><div><span>Awaiting approval</span><strong>{approvalRecords.length}</strong><small>{approvalRecords.length ? 'Requests or changes awaiting decision' : 'No approval backlog'}</small></div><ChevronRight size={16} /></button>
+            <button onClick={() => openTab('incidents')} type="button"><span className="itsm-rmm-metric-icon amber"><Clock3 size={19} /></span><div><span>SLA pressure</span><strong>{slaRiskRecords.length}</strong><small>{slaRiskRecords.length ? 'Records at 60%+ of SLA target' : 'No records currently at risk'}</small></div><ChevronRight size={16} /></button>
+          </div>
+
+          <div className="itsm-rmm-dashboard-grid">
+            <section className="itsm-rmm-card itsm-rmm-health-card">
+              <div className="itsm-rmm-card-heading"><div><span className="itsm-rmm-eyebrow">Service health</span><h2>Workload health</h2></div><button onClick={() => openTab('tickets')} type="button">All records <ChevronRight size={14} /></button></div>
+              <div className="itsm-rmm-health-summary">
+                <div className="itsm-rmm-health-ring" style={{ background: `conic-gradient(#239e63 0 ${serviceHealthPercent}%, var(--surface-soft) ${serviceHealthPercent}% 100%)` }}><strong>{serviceHealthPercent}%</strong><span>Healthy</span></div>
+                <div className="itsm-rmm-health-legend">
+                  <span><b className="healthy" />Healthy<strong>{healthyRecords.length}</strong></span>
+                  <span><b className="warning" />SLA risk<strong>{slaRiskRecords.length}</strong></span>
+                  <span><b className="critical" />High priority<strong>{highPriorityRecords.length}</strong></span>
+                  <span><b className="offline" />Unassigned<strong>{unassignedRecords.length}</strong></span>
+                </div>
+              </div>
+            </section>
+
+            <section className="itsm-rmm-card">
+              <div className="itsm-rmm-card-heading"><div><span className="itsm-rmm-eyebrow">Attention</span><h2>Records requiring attention</h2></div><button onClick={() => openTab('tickets')} type="button">Open queue <ChevronRight size={14} /></button></div>
+              <div className="itsm-rmm-attention-list">
+                {attentionRecords.slice(0, 5).map((ticket) => <button key={ticket.id} onClick={() => openRecordTab(ticket)} type="button"><span className={`itsm-rmm-attention-dot ${['Critical', 'High'].includes(ticket.priority) ? 'critical' : Number(ticket.slaPercent || 0) >= 60 ? 'warning' : 'neutral'}`} /><span><strong>{ticket.title}</strong><small>{ticket.id} · {ticket.team || 'Unassigned'} / {ticket.assignee || 'Unassigned'}</small></span><span className={`itsm-rmm-status ${statusClass(ticket.status)}`}>{ticket.status}</span></button>)}
+                {!attentionRecords.length && <div className="itsm-rmm-empty"><CheckCircle2 size={22} /><strong>No records need attention</strong><span>High priority, SLA risk and unassigned work will appear here.</span></div>}
+              </div>
+            </section>
+          </div>
+
+          <div className="itsm-rmm-dashboard-lower">
+            <section className="itsm-rmm-card">
+              <div className="itsm-rmm-card-heading"><div><span className="itsm-rmm-eyebrow">Ownership</span><h2>My work</h2></div><button onClick={() => openTab('tickets')} type="button">All work <ChevronRight size={14} /></button></div>
+              <div className="itsm-rmm-record-feed">
+                {myWorkRecords.slice(0, 5).map((ticket) => <button key={ticket.id} onClick={() => openRecordTab(ticket)} type="button"><span className="itsm-rmm-feed-icon"><Headphones size={15} /></span><span><strong>{ticket.title}</strong><small>{ticket.id} · {ticket.service || 'Unclassified service'}</small></span><span className={`itsm-rmm-status ${statusClass(ticket.status)}`}>{ticket.status}</span><time>{formatDate(ticket.updatedAt)}</time></button>)}
+                {!myWorkRecords.length && <div className="itsm-rmm-empty"><UserCheck size={22} /><strong>No assigned work</strong><span>Records assigned to {currentUserName} will appear here.</span></div>}
+              </div>
+            </section>
+
+            <section className="itsm-rmm-card">
+              <div className="itsm-rmm-card-heading"><div><span className="itsm-rmm-eyebrow">Activity</span><h2>Recent record activity</h2></div><button onClick={() => openTab('tickets')} type="button">All records <ChevronRight size={14} /></button></div>
+              <div className="itsm-rmm-record-feed">
+                {recentRecords.slice(0, 5).map((ticket) => <button key={ticket.id} onClick={() => openRecordTab(ticket)} type="button"><span className="itsm-rmm-feed-icon activity"><ListChecks size={15} /></span><span><strong>{ticket.title}</strong><small>{ticket.id} · {ticket.requester || 'Requester not recorded'}</small></span><span className={`itsm-rmm-status ${statusClass(ticket.status)}`}>{ticket.status}</span><time>{formatDate(ticket.updatedAt)}</time></button>)}
+                {!recentRecords.length && <div className="itsm-rmm-empty"><ListChecks size={22} /><strong>No recent record activity</strong><span>New and updated ITSM records will appear here.</span></div>}
+              </div>
+            </section>
+          </div>
+        </section>
+      )}
       <div className="dashboard-toolbar-row">
         <div className="dashboard-icon-toolbar" aria-label="Dashboard controls">
           {editMode ? (
