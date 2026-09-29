@@ -27,6 +27,7 @@ APP_URL_VALUE="$(json_escape "$APP_URL_RAW")"
 API_URL_VALUE="$(json_escape "$API_URL_RAW")"
 PORTAL_URL_VALUE="$(json_escape "${PORTAL_URL:-}")"
 RMM_URL_VALUE="$(json_escape "${RMM_URL:-}")"
+ADMIN_URL_VALUE="$(json_escape "${ADMIN_URL:-}")"
 MARKETING_URL_VALUE="$(json_escape "${MARKETING_URL:-}")"
 DOWNLOADS_URL_VALUE="$(json_escape "${DOWNLOADS_URL:-}")"
 TURN_URL_VALUE="$(json_escape "${TURN_URL:-}")"
@@ -41,6 +42,7 @@ window.__HI5_CONFIG__ = Object.freeze({
   apiUrl: "${API_URL_VALUE}",
   portalUrl: "${PORTAL_URL_VALUE}",
   rmmUrl: "${RMM_URL_VALUE}",
+  adminUrl: "${ADMIN_URL_VALUE}",
   marketingUrl: "${MARKETING_URL_VALUE}",
   downloadsUrl: "${DOWNLOADS_URL_VALUE}",
   turnUrl: "${TURN_URL_VALUE}"
