@@ -1,0 +1,108 @@
+.production-tenant-security-audit > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.production-tenant-security-audit-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.production-tenant-security-audit-actions button {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.production-tenant-security-audit-actions button:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+.production-tenant-security-audit-meta {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.production-tenant-security-audit-meta strong {
+  color: var(--ink);
+}
+
+.production-tenant-security-audit-list {
+  display: grid;
+}
+
+.production-tenant-security-audit-list article {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.production-tenant-security-audit-list article:last-child {
+  border-bottom: 0;
+}
+
+.production-tenant-security-audit-list article > div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.production-tenant-security-audit-list strong {
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.production-tenant-security-audit-list small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.production-tenant-security-audit-dot {
+  width: 8px;
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 999px;
+  background: #10b981;
+}
+
+.production-tenant-security-audit-dot.is-failure { background: #ef4444; }
+.production-tenant-security-audit-dot.is-blocked { background: #f59e0b; }
+
+.production-tenant-security-audit-state,
+.production-tenant-security-audit-error {
+  padding: 13px;
+  border: 1px dashed var(--line);
+  border-radius: 9px;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+}
+
+.production-tenant-security-audit-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--danger) 30%, var(--line));
+  background: color-mix(in srgb, var(--danger) 6%, var(--surface));
+  color: var(--danger);
+}

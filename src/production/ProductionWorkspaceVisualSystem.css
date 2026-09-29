@@ -1,0 +1,401 @@
+/*
+ * Hi5Central authenticated-workspace visual system.
+ * This file intentionally loads last so common typography, scrollbars and
+ * light/dark chrome stay consistent across legacy and production surfaces.
+ */
+
+/* One product font stack. Components may vary size/weight, not family. */
+.app-shell,
+.app-shell button,
+.app-shell input,
+.app-shell select,
+.app-shell textarea,
+.app-shell table {
+  font-family: var(--font) !important;
+}
+
+.app-shell {
+  font-size: 16px;
+}
+
+/* Theme-aware scrollbars. Keep contextual nav scrollbars hidden where the
+   dedicated up/down affordances are used. */
+html[data-hi5-surface='workspace'] * {
+  scrollbar-width: thin;
+  scrollbar-color:
+    color-mix(in srgb, var(--muted, #718096) 48%, transparent)
+    transparent;
+}
+
+html[data-hi5-surface='workspace'] *::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html[data-hi5-surface='workspace'] *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html[data-hi5-surface='workspace'] *::-webkit-scrollbar-thumb {
+  min-height: 42px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background:
+    color-mix(in srgb, var(--muted, #718096) 44%, transparent);
+  background-clip: content-box;
+}
+
+html[data-hi5-surface='workspace'] *::-webkit-scrollbar-thumb:hover {
+  background:
+    color-mix(in srgb, var(--brand, #17488d) 55%, var(--muted, #718096));
+  background-clip: content-box;
+}
+
+.nav-stack,
+.production-settings-nav,
+.production-unified-detail-nav-scroll {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none;
+}
+
+.nav-stack::-webkit-scrollbar,
+.production-settings-nav::-webkit-scrollbar,
+.production-unified-detail-nav-scroll::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Primary navigation follows the selected appearance. Dark mode retains the
+   existing navy treatment; light mode becomes a clean floating light rail. */
+.app-shell:not([data-theme='dark']) .sidebar {
+  border-right: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 8px 0 28px rgba(16, 33, 63, .055);
+}
+
+.app-shell:not([data-theme='dark']) .sidebar-toggle {
+  border-color: var(--line);
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+.app-shell:not([data-theme='dark']) .nav-group-separated {
+  border-top-color: var(--line);
+}
+
+.app-shell:not([data-theme='dark']) .nav-group-label {
+  color: var(--muted);
+}
+
+.app-shell:not([data-theme='dark']) .nav-group-active .nav-group-label {
+  color: var(--brand);
+}
+
+.app-shell:not([data-theme='dark']) .nav-item {
+  color: var(--muted);
+}
+
+.app-shell:not([data-theme='dark']) .nav-item svg {
+  color: color-mix(in srgb, var(--muted) 82%, var(--brand));
+}
+
+.app-shell:not([data-theme='dark']) .nav-item:hover {
+  border-color: color-mix(in srgb, var(--line) 70%, rgb(var(--accent-rgb)) 30%);
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+.app-shell:not([data-theme='dark']) .nav-item:hover svg {
+  color: var(--brand);
+}
+
+.app-shell:not([data-theme='dark']) .nav-item.active {
+  border-color: rgba(var(--accent-rgb), .28);
+  background: rgba(var(--accent-rgb), .12);
+  color: var(--ink);
+}
+
+.app-shell:not([data-theme='dark']) .nav-item.active svg {
+  color: var(--brand);
+}
+
+.app-shell:not([data-theme='dark']) .sidebar-status {
+  border-color: var(--line);
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+.app-shell:not([data-theme='dark']) .sidebar-status span {
+  color: var(--muted);
+}
+
+/* General workspace type scale. */
+.nav-group-label { font-size: 11px; }
+.nav-item { font-size: 13px; }
+.sidebar-status strong,
+.sidebar-status span { font-size: 12px; }
+.workspace-tab { font-size: 12px; }
+.breadcrumb-bar { font-size: 12px; }
+
+/* Settings type scale: keep the existing information density, but stop using
+   8-10px text that looks undersized on laptop displays. */
+.production-settings-sidebar-heading,
+.production-settings-nav button {
+  font-size: 12px !important;
+}
+
+.production-settings-panel > header h2,
+.production-security-card h3,
+.production-mfa-card h3 {
+  font-size: 15px !important;
+}
+
+.production-settings-panel > header p,
+.production-settings-field > span,
+.production-settings-field > small,
+.production-settings-toggle span,
+.production-settings-toggle small,
+.production-security-card p,
+.production-security-card small,
+.production-mfa-card p,
+.production-mfa-card small {
+  font-size: 11px !important;
+  line-height: 1.5;
+}
+
+.production-settings-field input,
+.production-settings-field select,
+.production-settings-field textarea,
+.production-settings-toggle strong,
+.production-settings-save-state,
+.production-settings-save-state button,
+.production-security-card button,
+.production-mfa-card button {
+  font-size: 12px !important;
+}
+
+/* Production record queues. */
+.production-record-filter-heading span,
+.production-record-filter-label,
+.production-record-mobile-filter header span {
+  font-size: 10.5px;
+}
+
+.production-record-filter-heading strong { font-size: 17px; }
+.production-record-view-list button { font-size: 12.5px; }
+.production-record-filter-field > span { font-size: 11px; }
+.production-record-filter-field select,
+.production-record-pagination select,
+.production-record-view-select select { font-size: 12px; }
+.production-record-clear { font-size: 11px; }
+.production-record-search input { font-size: 13px; }
+.production-record-result-line,
+.production-record-pagination { font-size: 11.5px; }
+.production-record-table { font-size: 12.5px; }
+.production-record-table th { font-size: 10.5px; }
+.production-record-table td small { font-size: 11px; }
+.production-record-priority,
+.production-record-status { font-size: 10.5px; }
+.production-record-compact-list > button > span:nth-child(2) { font-size: 12.5px; }
+.production-record-compact-list small { font-size: 11px; }
+.production-record-card h3 { font-size: 14px; }
+.production-record-card-state,
+.production-record-card dd { font-size: 12px; }
+.production-record-card dt,
+.production-record-card footer { font-size: 10.5px; }
+
+/*
+ * Unified record details: the right-hand surface itself is the record page.
+ * Remove the narrow centred column and let the content use the whole panel.
+ * The action bar now visually replaces the redundant Overview heading.
+ */
+.production-unified-detail-shell {
+  grid-template-columns: 270px minmax(0, 1fr);
+}
+
+.production-unified-main {
+  background: var(--surface);
+}
+
+.production-unified-actionbar {
+  min-height: 64px;
+  padding: 10px 14px 10px 18px;
+  background:
+    linear-gradient(90deg, rgba(var(--accent-rgb), .08), transparent 34%),
+    var(--surface);
+}
+
+.production-unified-action-context {
+  gap: 10px;
+}
+
+.production-unified-action-context strong {
+  color: var(--brand);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.production-unified-action-context span {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.production-unified-icon-button,
+.production-unified-save,
+.production-unified-activity-composer button,
+.production-unified-relationship-add button,
+.production-unified-attachment-add button,
+.production-unified-load-error button {
+  font-size: 12px;
+}
+
+.production-unified-scroll {
+  background: var(--surface);
+}
+
+.production-unified-content {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 16px 34px;
+  gap: 14px;
+}
+
+/* Overview starts directly beneath the record action header instead of being
+   another titled card inside the record page. */
+#overview.production-unified-panel {
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+#overview.production-unified-panel:hover {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+#overview.production-unified-panel > header {
+  display: none;
+}
+
+#overview.production-unified-panel > .production-unified-panel-body {
+  padding: 18px 0 4px;
+}
+
+.production-unified-panel > header {
+  min-height: 58px;
+  padding: 11px 16px;
+}
+
+.production-unified-panel > header h2 { font-size: 15px; }
+.production-unified-panel > header p { font-size: 11px; }
+.production-unified-panel-body { padding: 16px; }
+
+.production-unified-identity > strong { font-size: 14px; }
+.production-unified-identity > span { font-size: 15px; }
+.production-unified-pill { font-size: 10.5px; }
+.production-unified-rail-context dt { font-size: 10px; }
+.production-unified-rail-context dd { font-size: 12px; }
+.production-unified-detail-nav-scroll button { font-size: 12px; }
+
+.production-unified-field > span,
+.production-unified-field > small { font-size: 11px; }
+
+.production-unified-field input,
+.production-unified-field select,
+.production-unified-field textarea,
+.production-unified-activity-composer select,
+.production-unified-activity-composer textarea,
+.production-unified-relationship-add select,
+.production-unified-attachment-add input,
+.production-unified-task select,
+.production-unified-readonly {
+  font-size: 13px;
+}
+
+.production-unified-readonly,
+.production-unified-field input,
+.production-unified-field select,
+.production-unified-activity-composer select,
+.production-unified-relationship-add select,
+.production-unified-attachment-add input,
+.production-unified-task select {
+  min-height: 42px;
+}
+
+.production-unified-activity-meta strong { font-size: 12px; }
+.production-unified-activity-meta span,
+.production-unified-activity-meta em { font-size: 10.5px; }
+.production-unified-activity p { font-size: 12.5px; }
+.production-unified-sla > div:first-child,
+.production-unified-sla small { font-size: 11.5px; }
+.production-unified-empty { font-size: 12px; }
+
+/* Skeleton geometry mirrors the widened right-hand record surface. */
+.production-unified-skeleton-shell .production-unified-main {
+  background: var(--surface);
+}
+
+.production-unified-skeleton-shell .production-unified-actionbar {
+  min-height: 64px;
+}
+
+.production-unified-skeleton-shell .production-unified-content {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 18px 16px 34px;
+}
+
+.production-unified-skeleton-shell .production-unified-skeleton-panel:first-child {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+/* Tablet/mobile retain the established contextual-navigation behaviour while
+   using the same improved type scale. */
+@media (max-width: 1050px) {
+  .production-unified-detail-shell {
+    grid-template-columns: 238px minmax(0, 1fr);
+  }
+
+  .production-unified-content {
+    padding-inline: 13px;
+  }
+}
+
+@media (max-width: 760px) {
+  .app-shell { font-size: 16px; }
+
+  .production-unified-detail-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .production-unified-content {
+    padding: 0 11px calc(30px + env(safe-area-inset-bottom));
+  }
+
+  #overview.production-unified-panel > .production-unified-panel-body {
+    padding-top: 14px;
+  }
+
+  .production-unified-action-context strong { font-size: 13px; }
+  .production-unified-action-context span { font-size: 12px; }
+
+  .production-record-table { font-size: 13px; }
+  .production-record-table td small { font-size: 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .production-unified-panel,
+  .nav-item,
+  .production-record-card,
+  .production-record-view-list button {
+    transition: none !important;
+  }
+}

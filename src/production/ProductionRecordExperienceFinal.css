@@ -1,0 +1,213 @@
+/* Final record/list experience safeguards.
+   Loaded last so mobile action sizing and Peek surfaces cannot be overridden by
+   older production refinement layers. */
+
+/* Fallback workspace tokens for any surface portalled directly to body.
+   ProductionPortalThemeBridge replaces these with the active tenant values. */
+body[data-hi5-surface='workspace'] {
+  --page: #edf3fb;
+  --surface: #ffffff;
+  --surface-soft: #f8fbff;
+  --surface-strong: #d9e6f7;
+  --ink: #10213f;
+  --muted: #65728a;
+  --line: #d8e1ee;
+  --brand: #17488d;
+  --brand-strong: #071b3d;
+  --accent-ink: #05203a;
+  --accent-rgb: 244, 177, 61;
+}
+
+body[data-hi5-workspace-theme='dark'] {
+  --page: #0f1726;
+  --surface: #172235;
+  --surface-soft: #1d2a40;
+  --surface-strong: #263650;
+  --ink: #eef4ff;
+  --muted: #a9b7ca;
+  --line: #31435e;
+  --brand: #76a7f7;
+  --brand-strong: #061225;
+}
+
+/* Universal Peek should look like the tenant workspace, not a translucent grey card. */
+.hi5-universal-peek {
+  opacity: 1 !important;
+  background: var(--surface, #ffffff) !important;
+  color: var(--ink, #10213f) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 28px 82px rgba(7, 20, 39, .28), 0 0 0 1px rgba(var(--accent-rgb, 244,177,61), .08) !important;
+}
+
+.hi5-universal-peek > header,
+.hi5-universal-peek > footer,
+.hi5-universal-peek-body,
+.hi5-universal-peek-working-body,
+.hi5-working-peek,
+.hi5-working-peek-content,
+.hi5-working-peek-tabs {
+  background: var(--surface, #ffffff) !important;
+  color: var(--ink, #10213f) !important;
+}
+
+.hi5-universal-peek-fields > div,
+.hi5-universal-peek-items article,
+.hi5-working-peek-activity article,
+.hi5-working-peek-facts > div,
+.hi5-working-peek-task-view article,
+.hi5-working-peek-approval-view article,
+.hi5-working-peek-attachments article {
+  background: var(--surface-soft, #f8fbff) !important;
+}
+
+.hi5-working-peek-composer {
+  background: var(--surface, #ffffff) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.hi5-universal-peek.is-working-record {
+  width: min(1080px, calc(100vw - 40px));
+  height: min(88dvh, 860px);
+  max-height: none;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  border-color: color-mix(in srgb, var(--line, #d8e1ee) 62%, rgb(var(--accent-rgb, 244,177,61)) 38%);
+}
+
+.hi5-universal-peek-working-body {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.hi5-universal-peek.is-working-record > header {
+  background: linear-gradient(110deg, rgba(var(--accent-rgb, 244,177,61), .075), var(--surface, #ffffff) 40%) !important;
+}
+
+.hi5-universal-peek.is-working-record > footer {
+  border-top-color: var(--line, #d8e1ee);
+}
+
+/* Current stable Service Desk toolbar: keep Export before New and both inside the viewport. */
+.production-record-main,
+.production-record-toolbar,
+.production-record-toolbar > * {
+  box-sizing: border-box;
+}
+
+.production-record-toolbar > .hi5-record-export-mounted { order: 20; }
+.production-record-toolbar > .production-record-new { order: 30; }
+
+@media (max-width: 760px) {
+  .production-record-toolbar {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    gap: 6px;
+    padding-right: 10px !important;
+    overflow: visible;
+  }
+
+  .production-record-search {
+    min-width: 0;
+    flex: 1 1 120px;
+  }
+
+  .production-record-refresh {
+    flex: 0 0 38px;
+  }
+
+  .production-record-view-select {
+    flex: 0 1 116px;
+    min-width: 0;
+  }
+
+  .production-record-new {
+    min-width: 72px;
+    max-width: 82px;
+    flex: 0 0 auto;
+    padding: 0 9px !important;
+    margin: 0 !important;
+    overflow: visible;
+    white-space: nowrap;
+  }
+
+  /* Safeguard for the alternate premium list markup still present in older cached shells. */
+  .hi5-list-header {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    padding-right: 10px !important;
+  }
+
+  .hi5-list-header-actions {
+    min-width: 0;
+    flex: 0 0 auto;
+    gap: 6px;
+  }
+
+  .hi5-list-primary {
+    box-sizing: border-box;
+    min-width: 70px;
+    max-width: 82px;
+    flex: 0 0 auto;
+    padding-inline: 8px !important;
+    margin-right: 0 !important;
+    white-space: nowrap;
+    overflow: visible;
+  }
+
+  /* Give mobile selection controls breathing room before the reference. */
+  .hi5-list-mobile-cards article header {
+    column-gap: 10px !important;
+  }
+
+  .hi5-list-mobile-cards article header input[type='checkbox'] {
+    flex: 0 0 auto;
+    margin: 0 4px 0 0 !important;
+  }
+
+  .hi5-list-mobile-cards article header input[type='checkbox'] + button,
+  .hi5-list-mobile-cards article header input[type='checkbox'] + strong,
+  .production-record-card input[type='checkbox'] + button,
+  .production-record-card input[type='checkbox'] + strong,
+  .production-record-card input[type='checkbox'] + .production-record-reference {
+    margin-left: 4px !important;
+  }
+
+  .hi5-universal-peek.is-working-record {
+    width: 100%;
+    height: min(92dvh, 880px);
+    max-height: 92dvh;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 23px 23px 0 0;
+  }
+
+  .hi5-universal-peek.is-working-record > header {
+    padding-inline: 12px;
+  }
+
+  .hi5-universal-peek.is-working-record > footer {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 430px) {
+  .production-record-toolbar {
+    gap: 5px;
+    padding-inline: 8px !important;
+  }
+
+  .production-record-new,
+  .hi5-list-primary {
+    min-width: 66px;
+    max-width: 74px;
+    padding-inline: 7px !important;
+  }
+
+  .production-record-view-select {
+    max-width: 104px;
+  }
+}

@@ -1,0 +1,292 @@
+/* Hi5Central floating glass navigation.
+   The sidebar remains the existing navigation DOM/state, but is visually
+   detached from the viewport edge. Workspace tabs are styled separately. */
+
+/* Desktop floating rail ----------------------------------------------------- */
+html[data-hi5-surface='workspace'] .sidebar {
+  position: relative;
+  align-self: start;
+  min-height: 0;
+  height: calc(100dvh - 20px) !important;
+  margin: 10px 0 10px 10px;
+  padding: 13px 12px !important;
+  border: 1px solid color-mix(in srgb, var(--line) 74%, rgb(var(--accent-rgb)) 26%);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 14% 4%, rgba(var(--accent-rgb), 0.13), transparent 26%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.16), transparent 34%),
+    color-mix(in srgb, var(--surface) 86%, transparent);
+  color: var(--ink);
+  box-shadow:
+    10px 18px 46px rgba(5, 16, 36, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+  backdrop-filter: blur(28px) saturate(1.32);
+  -webkit-backdrop-filter: blur(28px) saturate(1.32);
+  overflow: hidden;
+}
+
+html[data-hi5-surface='workspace'] .app-shell[data-theme='dark'] .sidebar {
+  box-shadow:
+    12px 20px 48px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055);
+}
+
+html[data-hi5-surface='workspace'] .sidebar::before {
+  position: absolute;
+  inset: 18px auto 18px -1px;
+  width: 2px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(var(--accent-rgb), 0.82) 24%,
+    rgba(var(--accent-rgb), 0.22) 72%,
+    transparent
+  );
+  pointer-events: none;
+  content: '';
+}
+
+html[data-hi5-surface='workspace'] .sidebar-top {
+  gap: 7px;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .brand {
+  min-height: 48px;
+  padding: 7px 8px;
+  border: 1px solid color-mix(in srgb, var(--line) 84%, rgb(var(--accent-rgb)) 16%);
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--surface-soft) 90%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+html[data-hi5-surface='workspace'] .sidebar .brand span {
+  color: var(--ink);
+}
+
+html[data-hi5-surface='workspace'] .sidebar .sidebar-toggle,
+html[data-hi5-surface='workspace'] .sidebar .mobile-drawer-close {
+  border-color: color-mix(in srgb, var(--line) 80%, rgb(var(--accent-rgb)) 20%);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-soft) 88%, transparent);
+  color: var(--ink);
+}
+
+html[data-hi5-surface='workspace'] .sidebar .sidebar-toggle:hover,
+html[data-hi5-surface='workspace'] .sidebar .mobile-drawer-close:hover {
+  border-color: rgba(var(--accent-rgb), 0.36);
+  background: rgba(var(--accent-rgb), 0.09);
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-stack {
+  min-height: 0;
+  gap: 12px;
+  padding: 2px 2px 4px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-group {
+  gap: 4px;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-group-separated {
+  border-color: color-mix(in srgb, var(--line) 86%, transparent);
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-group-label {
+  color: var(--muted);
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-group-active .nav-group-label {
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 76%, var(--ink));
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-item {
+  min-height: 40px;
+  padding: 8px 10px;
+  border-radius: 13px;
+  color: var(--muted);
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-item svg {
+  color: color-mix(in srgb, var(--muted) 80%, rgb(var(--accent-rgb)) 20%);
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-item:hover {
+  border-color: rgba(var(--accent-rgb), 0.14);
+  background: rgba(var(--accent-rgb), 0.065);
+  color: var(--ink);
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-item:hover svg {
+  color: var(--ink);
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-item.active {
+  border-color: rgba(var(--accent-rgb), 0.26);
+  background:
+    linear-gradient(100deg, rgba(var(--accent-rgb), 0.17), rgba(var(--accent-rgb), 0.055));
+  color: var(--ink);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 6px 16px rgba(var(--accent-rgb), 0.08);
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-item.active svg {
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 80%, var(--ink));
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-item.active::before {
+  inset: 9px auto 9px -1px;
+  width: 3px;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .sidebar-status {
+  padding: 12px;
+  border-color: color-mix(in srgb, var(--line) 78%, rgb(var(--accent-rgb)) 22%);
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--surface-soft) 84%, transparent);
+  color: var(--ink);
+}
+
+html[data-hi5-surface='workspace'] .sidebar .sidebar-status span {
+  color: var(--muted);
+}
+
+html[data-hi5-surface='workspace'] .sidebar .sidebar-status svg {
+  color: rgb(var(--accent-rgb));
+}
+
+html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar {
+  margin-left: 9px;
+  padding-inline: 8px !important;
+  border-radius: 22px;
+}
+
+html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar .brand {
+  border-radius: 14px;
+}
+
+html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar .nav-item {
+  border-radius: 12px;
+}
+
+/* Tablet, narrow desktop and mobile: retain the proven off-canvas navigation
+   behaviour, but render it as a detached full-height floating sheet. */
+@media (max-width: 1180px) {
+  html[data-hi5-surface='workspace'] .sidebar,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar {
+    position: fixed !important;
+    z-index: 75;
+    inset: 8px auto 8px 8px !important;
+    width: min(84vw, 320px) !important;
+    height: calc(100dvh - 16px) !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    display: grid !important;
+    grid-template-rows: auto minmax(0, 1fr) auto !important;
+    gap: 14px !important;
+    padding: 13px !important;
+    border-radius: 26px !important;
+    overflow: hidden !important;
+    transform: translateX(calc(-100% - 24px)) !important;
+    opacity: 0.98;
+    pointer-events: none;
+    transition: transform 190ms cubic-bezier(0.22, 1, 0.36, 1), opacity 160ms ease !important;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar.mobile-open,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar.mobile-open {
+    transform: translateX(0) !important;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar-top,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar-top {
+    grid-template-columns: minmax(0, 1fr) 36px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .brand,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .nav-item,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar-toggle {
+    justify-content: flex-start !important;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar .brand span,
+  html[data-hi5-surface='workspace'] .sidebar .nav-item span,
+  html[data-hi5-surface='workspace'] .sidebar .nav-group-label,
+  html[data-hi5-surface='workspace'] .sidebar .sidebar-status div,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .brand span,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .nav-item span,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .nav-group-label,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar-status div {
+    display: flex;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar .brand span,
+  html[data-hi5-surface='workspace'] .sidebar .nav-item span,
+  html[data-hi5-surface='workspace'] .sidebar .sidebar-status div,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .brand span,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .nav-item span,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar-status div {
+    display: block;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar .nav-stack,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar .nav-stack {
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  html[data-hi5-surface='workspace'] .mobile-nav-backdrop {
+    position: fixed !important;
+    z-index: 70 !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    border: 0 !important;
+    background: rgba(7, 18, 35, 0.22) !important;
+    backdrop-filter: blur(12px) saturate(1.08);
+    -webkit-backdrop-filter: blur(12px) saturate(1.08);
+  }
+
+  html[data-hi5-surface='workspace'] .desktop-sidebar-toggle {
+    display: none !important;
+  }
+
+  html[data-hi5-surface='workspace'] .mobile-drawer-close {
+    display: inline-grid !important;
+    place-items: center;
+  }
+}
+
+@media (max-width: 680px) {
+  html[data-hi5-surface='workspace'] .sidebar,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar {
+    inset: 7px auto 7px 7px !important;
+    width: min(86vw, 320px) !important;
+    height: calc(100dvh - 14px) !important;
+    border-radius: 24px !important;
+    padding: 12px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar .brand {
+    min-height: 46px;
+  }
+
+  html[data-hi5-surface='workspace'] .sidebar .nav-item {
+    min-height: 39px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-hi5-surface='workspace'] .sidebar,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar {
+    transition: none !important;
+  }
+}

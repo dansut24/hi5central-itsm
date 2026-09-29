@@ -1,0 +1,12 @@
+@media (max-width: 760px) {
+  .production-record-table-wrap {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .production-record-table {
+    min-width: 760px;
+  }
+}

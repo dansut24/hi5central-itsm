@@ -1,0 +1,164 @@
+:root {
+  --hi5-org-rail-width: 244px;
+}
+
+/*
+ * Organisation adopts the Hi5Central contextual-navigation contract.
+ * The primary product sidebar stays independent; People/Teams/Departments
+ * navigation is an inset floating rail on desktop/tablet and compact tabs on
+ * mobile. Existing RBAC/editing behaviour remains owned by PeopleView.
+ */
+@media (min-width: 721px) {
+  .organisation-content {
+    grid-template-columns: var(--hi5-org-rail-width) minmax(0, 1fr);
+    column-gap: var(--hi5-context-gap, 14px);
+    row-gap: 14px;
+    padding: var(--hi5-context-edge, 14px);
+  }
+
+  .organisation-header,
+  .org-access-strip,
+  .org-stat-grid {
+    grid-column: 1 / -1;
+  }
+
+  .org-tabs {
+    grid-column: 1;
+    grid-row: 4 / span 2;
+    align-self: start;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    display: grid;
+    width: 100%;
+    max-width: none;
+    gap: 6px;
+    padding: 10px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--hi5-context-radius, var(--hi5-radius-lg, 20px));
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
+    box-shadow: 0 16px 42px rgba(16, 33, 63, .09);
+    box-sizing: border-box;
+  }
+
+  .app-shell[data-theme='dark'] .org-tabs {
+    box-shadow: 0 16px 42px rgba(0, 0, 0, .22);
+  }
+
+  .org-tabs::before {
+    content: 'Organisation';
+    display: block;
+    padding: 8px 10px 4px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .org-tabs button {
+    justify-content: flex-start;
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 11px;
+    border: 1px solid transparent;
+    border-radius: var(--hi5-radius-sm, 12px);
+    text-align: left;
+  }
+
+  .org-tabs button.active {
+    border-color: color-mix(in srgb, rgb(var(--accent-rgb)) 28%, var(--line));
+    background: color-mix(in srgb, rgb(var(--accent-rgb)) 12%, var(--surface));
+    color: var(--ink);
+  }
+
+  .org-tabs button svg {
+    flex: 0 0 auto;
+  }
+
+  .org-tabs button span {
+    flex: 1 1 auto;
+  }
+
+  .org-tabs button small {
+    margin-left: auto;
+  }
+
+  .org-toolbar,
+  .org-table-shell,
+  .org-entity-grid {
+    grid-column: 2;
+    min-width: 0;
+  }
+
+  .org-toolbar {
+    border-radius: var(--hi5-radius-lg, 20px);
+    box-shadow: 0 12px 30px rgba(16, 33, 63, .06);
+  }
+
+  .org-table-shell {
+    border-radius: var(--hi5-radius-lg, 20px);
+  }
+
+  .org-entity-grid {
+    padding: 0;
+  }
+
+  .org-entity-card {
+    border-radius: var(--hi5-radius-lg, 20px);
+  }
+}
+
+@media (max-width: 980px) and (min-width: 721px) {
+  :root {
+    --hi5-org-rail-width: 218px;
+  }
+
+  .org-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .org-entity-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .organisation-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px;
+    padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .org-tabs {
+    position: static;
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    gap: 6px;
+    padding: 5px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    border-radius: var(--hi5-radius-md, 16px);
+    box-sizing: border-box;
+  }
+
+  .org-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .org-tabs button {
+    flex: 0 0 auto;
+    border-radius: var(--hi5-radius-sm, 12px);
+  }
+
+  .org-toolbar,
+  .org-table-shell,
+  .org-entity-grid {
+    min-width: 0;
+  }
+}

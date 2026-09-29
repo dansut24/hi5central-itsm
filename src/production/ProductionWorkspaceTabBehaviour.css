@@ -1,0 +1,107 @@
+/* Workspace tab behaviour contract.
+   Touch devices keep a locally swipeable strip with no visible scrollbar.
+   Desktop pointer devices never scroll: open tabs compress to the available
+   width while the launcher and fixed actions remain protected. */
+
+.production-workspace-tabs {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  scroll-padding-inline: 12px;
+}
+
+.production-workspace-tabs::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Touch/mobile/tablet: tabs pan inside their own viewport only. */
+@media (hover: none), (pointer: coarse) {
+  .production-workspace-tabs-viewport {
+    overflow: hidden !important;
+  }
+
+  .production-workspace-tabs {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .production-workspace-tab {
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+    max-width: 150px !important;
+  }
+
+  .production-workspace-tab-main {
+    min-width: 0;
+  }
+
+  .production-workspace-tab-title {
+    max-width: 110px !important;
+  }
+}
+
+/* Desktop/laptop: behave like a professional application tab rail. No
+   horizontal scrolling is possible; tabs share and compress into the space. */
+@media (hover: hover) and (pointer: fine) {
+  .production-workspace-tabs-viewport {
+    overflow: hidden !important;
+  }
+
+  .production-workspace-tabs {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+    overscroll-behavior: none !important;
+  }
+
+  .production-workspace-tab {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 190px !important;
+  }
+
+  .production-workspace-tab-main {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: 0;
+  }
+
+  .production-workspace-tab-title {
+    width: 100%;
+    max-width: none !important;
+    min-width: 0;
+  }
+
+  .production-workspace-tab-close {
+    width: 22px !important;
+    min-width: 22px !important;
+    flex: 0 0 22px !important;
+    margin-right: 2px !important;
+  }
+
+  .production-workspace-tab-add {
+    flex: 0 0 31px !important;
+  }
+}
+
+/* Narrow touch phones retain the same behaviour but slightly tighter pills. */
+@media (max-width: 680px) and (hover: none),
+       (max-width: 680px) and (pointer: coarse) {
+  .production-workspace-tabs {
+    gap: 3px !important;
+  }
+
+  .production-workspace-tab {
+    max-width: 132px !important;
+  }
+
+  .production-workspace-tab-title {
+    max-width: 92px !important;
+  }
+}

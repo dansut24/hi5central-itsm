@@ -1,0 +1,47 @@
+/* Mobile completion for Workspace Shell v3.
+   Tabs own the flexible width; essential actions stay fixed and never wrap. */
+
+@media (max-width: 680px) {
+  html[data-hi5-surface='workspace'] .production-workspace-tabdock {
+    grid-template-columns: 30px minmax(0, 1fr) auto;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tabs-viewport {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tabs {
+    min-width: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tabdock-actions {
+    min-width: max-content;
+    flex-wrap: nowrap;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-tab-add,
+  html[data-hi5-surface='workspace'] .production-workspace-tab,
+  html[data-hi5-surface='workspace'] .production-workspace-icon-action,
+  html[data-hi5-surface='workspace'] .production-workspace-new {
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 390px) {
+  html[data-hi5-surface='workspace'] .production-workspace-tabdock {
+    padding-inline: 3px;
+  }
+
+  html[data-hi5-surface='workspace'] .production-workspace-mobile-nav,
+  html[data-hi5-surface='workspace'] .production-workspace-icon-action,
+  html[data-hi5-surface='workspace'] .production-workspace-new {
+    width: 29px;
+    min-width: 29px;
+    height: 29px;
+    flex-basis: 29px;
+  }
+}

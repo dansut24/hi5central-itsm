@@ -1,0 +1,71 @@
+.production-portal-bootstrap {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--page, #f6f8fb);
+  color: var(--ink, #172033);
+}
+
+.production-portal-bootstrap section {
+  width: min(520px, 100%);
+  padding: 32px;
+  border: 1px solid rgba(83, 99, 126, .14);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 18px 55px rgba(19, 35, 63, .09);
+  text-align: center;
+}
+
+.production-portal-bootstrap img {
+  width: min(210px, 70%);
+  height: auto;
+  margin-bottom: 22px;
+}
+
+.production-portal-bootstrap section > span {
+  display: block;
+  margin-bottom: 8px;
+  color: #68758b;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.production-portal-bootstrap h1 {
+  margin: 0;
+  font-size: clamp(24px, 5vw, 34px);
+  line-height: 1.08;
+}
+
+.production-portal-bootstrap p {
+  margin: 14px auto 0;
+  max-width: 420px;
+  color: #667085;
+  line-height: 1.6;
+}
+
+.production-portal-bootstrap button {
+  margin-top: 22px;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 12px;
+  background: #172033;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .production-portal-bootstrap {
+    padding: 14px;
+  }
+
+  .production-portal-bootstrap section {
+    padding: 26px 20px;
+    border-radius: 20px;
+  }
+}

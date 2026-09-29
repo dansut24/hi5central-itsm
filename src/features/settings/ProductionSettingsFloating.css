@@ -1,0 +1,184 @@
+.production-settings-shell {
+  --settings-radius-sm: var(--hi5-radius-sm, 12px);
+  --settings-radius-md: var(--hi5-radius-md, 16px);
+  --settings-radius-lg: var(--hi5-radius-lg, 20px);
+}
+
+/* Settings content always consumes the full available content surface. */
+.production-settings-content {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.production-settings-content > *,
+.production-settings-panel,
+.production-settings-grid,
+.production-settings-toggle-list,
+.production-role-cards,
+.production-integrations-grid,
+.production-product-summary {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/*
+ * Hi5Central contextual-navigation standard:
+ * secondary navigation is an inset, floating curved rail on desktop/tablet,
+ * regardless of whether the primary product sidebar is expanded, collapsed,
+ * or hidden. It must never visually merge into the primary navigation.
+ */
+@media (min-width: 721px) {
+  .production-settings-shell {
+    grid-template-columns: 258px minmax(0, 1fr);
+    gap: 14px;
+    padding: 14px;
+    background: var(--page);
+  }
+
+  .production-settings-sidebar {
+    display: grid;
+    min-height: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--settings-radius-lg);
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
+    box-shadow: 0 18px 48px rgba(16, 33, 63, .12);
+  }
+
+  .app-shell[data-theme='dark'] .production-settings-sidebar {
+    box-shadow: 0 18px 48px rgba(0, 0, 0, .28);
+  }
+
+  .production-settings-sidebar-heading {
+    margin: 6px 8px 0;
+    padding-inline: 10px 8px;
+    border: 0;
+    border-radius: var(--settings-radius-md);
+    background: var(--surface-soft);
+  }
+
+  .production-settings-nav {
+    padding: 4px 10px 14px;
+  }
+
+  .production-settings-nav button,
+  .production-settings-sidebar-heading button {
+    border-radius: var(--settings-radius-sm);
+  }
+
+  .production-settings-main {
+    border: 1px solid var(--line);
+    border-radius: var(--settings-radius-lg);
+    background: var(--page);
+    box-shadow: 0 14px 36px rgba(16, 33, 63, .07);
+    overflow: hidden;
+  }
+
+  .app-shell[data-theme='dark'] .production-settings-main {
+    box-shadow: 0 14px 36px rgba(0, 0, 0, .18);
+  }
+
+  .production-settings-topbar {
+    border-radius: var(--settings-radius-lg) var(--settings-radius-lg) 0 0;
+  }
+
+  .production-settings-inline-nav {
+    display: none !important;
+  }
+
+  .production-settings-shell.settings-nav-hidden {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .production-settings-shell.settings-nav-hidden .production-settings-sidebar {
+    display: none;
+  }
+
+  .production-settings-shell.settings-nav-hidden .production-settings-nav-reveal {
+    display: inline-flex;
+  }
+}
+
+/* Mobile keeps contextual navigation horizontal and gives the main region the scroll. */
+@media (max-width: 720px) {
+  .production-settings-content {
+    padding: 12px 12px calc(28px + env(safe-area-inset-bottom));
+  }
+
+  .production-settings-shell {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    display: block;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .production-settings-sidebar {
+    display: none !important;
+  }
+
+  .production-settings-main {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    overflow: hidden;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .production-settings-topbar {
+    min-width: 0;
+  }
+
+  .production-settings-inline-nav {
+    display: flex !important;
+    flex: 0 0 auto;
+  }
+
+  .production-settings-scroll-region {
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+  }
+}
+
+/* Settings adopts the platform curve language in every sidebar state. */
+.production-settings-panel {
+  border-radius: var(--settings-radius-md);
+}
+
+.production-settings-field input,
+.production-settings-field select,
+.production-settings-field textarea,
+.production-settings-toggle,
+.production-brand-preview,
+.production-365-card,
+.production-role-cards div,
+.production-integration-card,
+.production-product-summary > div,
+.production-prefix-field,
+.production-number-preview {
+  border-radius: var(--settings-radius-sm);
+}
+
+.production-settings-save-state > button,
+.production-settings-nav-reveal,
+.production-settings-sidebar-heading button,
+.production-settings-inline-nav button,
+.production-365-card button,
+.production-integration-card button {
+  border-radius: var(--settings-radius-sm);
+}

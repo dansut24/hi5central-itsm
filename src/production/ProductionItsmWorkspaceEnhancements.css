@@ -1,0 +1,440 @@
+/* Stable Service Desk enhancements.
+   These features live inside ProductionItsmWorkspace rather than mounting a
+   second list renderer, preserving the single-tree Safari-safe architecture. */
+
+.production-record-shell-enhanced .production-record-filter-content {
+  gap: 15px;
+}
+
+.production-record-saved-view-list {
+  display: grid;
+  gap: 3px;
+}
+
+.production-record-saved-view-list > div {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 30px;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 10px;
+}
+
+.production-record-saved-view-list > div:hover {
+  border-color: var(--line);
+  background: var(--surface-soft);
+}
+
+.production-record-saved-view-list button {
+  min-width: 0;
+  min-height: 34px;
+  overflow: hidden;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 760;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.production-record-saved-view-list button:last-child {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--muted);
+}
+
+.production-record-view-actions {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.production-record-view-actions > button {
+  width: 100%;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--line) 78%, rgb(var(--accent-rgb)) 22%);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--surface) 94%, rgb(var(--accent-rgb)) 6%);
+  color: var(--ink);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.production-record-view-actions > button:hover {
+  border-color: rgba(var(--accent-rgb), .28);
+  background: rgba(var(--accent-rgb), .08);
+}
+
+.production-record-columns-menu {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.production-record-columns-menu > summary {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 9px;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.production-record-columns-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.production-record-columns-menu[open] > summary {
+  border-color: rgba(var(--accent-rgb), .30);
+  background: rgba(var(--accent-rgb), .07);
+  color: var(--ink);
+}
+
+.production-record-columns-menu > div {
+  position: absolute;
+  z-index: 220;
+  top: calc(100% + 7px);
+  right: 0;
+  width: 240px;
+  max-height: min(420px, 70vh);
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid color-mix(in srgb, var(--line) 82%, rgb(var(--accent-rgb)) 18%);
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  box-shadow: 0 18px 48px rgba(13, 30, 52, .18);
+  backdrop-filter: blur(18px) saturate(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(1.08);
+}
+
+.production-record-columns-menu > div > header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 7px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.production-record-columns-menu > div > header strong {
+  font-size: 11px;
+}
+
+.production-record-columns-menu > div > header small {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.production-record-columns-menu > div > button {
+  width: 100%;
+  min-height: 36px;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) 26px;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+  padding: 0 7px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 750;
+  text-align: left;
+  cursor: grab;
+}
+
+.production-record-columns-menu > div > button:hover,
+.production-record-columns-menu > div > button.is-visible {
+  color: var(--ink);
+}
+
+.production-record-columns-menu > div > button:hover {
+  border-color: var(--line);
+  background: var(--surface-soft);
+}
+
+.production-record-columns-menu > div > button > i {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+  color: rgb(var(--accent-rgb));
+  font-style: normal;
+  cursor: pointer;
+}
+
+.production-record-table-enhanced {
+  table-layout: fixed;
+}
+
+.production-record-table-enhanced thead {
+  position: sticky;
+  z-index: 5;
+  top: 0;
+}
+
+.production-record-table-enhanced th {
+  position: relative;
+}
+
+.production-record-table-enhanced th > span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.production-record-column-resizer {
+  position: absolute;
+  z-index: 3;
+  top: 7px;
+  right: -4px;
+  bottom: 7px;
+  width: 8px;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.production-record-column-resizer::after {
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  bottom: 2px;
+  width: 1px;
+  background: transparent;
+  content: '';
+}
+
+.production-record-table-enhanced th:hover .production-record-column-resizer::after {
+  background: rgba(var(--accent-rgb), .34);
+}
+
+.production-record-reference {
+  color: var(--brand);
+  font-weight: 900;
+}
+
+.production-record-peek-link {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: inherit;
+  font-weight: 720;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.production-record-peek-link:hover {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.production-record-peek-link.is-assignment {
+  display: block;
+}
+
+.production-record-peek-link.is-assignment strong,
+.production-record-peek-link.is-assignment small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.production-record-table td.is-peek,
+.production-record-table th.is-peek {
+  width: 46px;
+  padding-inline: 6px;
+  text-align: center;
+}
+
+.production-record-table td.is-peek > button {
+  width: 30px;
+  height: 30px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.production-record-table tbody tr:hover td.is-peek > button {
+  border-color: rgba(var(--accent-rgb), .17);
+  background: rgba(var(--accent-rgb), .07);
+  color: var(--brand);
+}
+
+.production-record-table tbody tr.is-returned,
+.production-record-compact-list > button.is-returned,
+.production-record-card.is-returned {
+  animation: production-record-return-highlight 1.4s ease both;
+}
+
+@keyframes production-record-return-highlight {
+  0%, 35% { background: rgba(var(--accent-rgb), .14); box-shadow: inset 3px 0 0 rgb(var(--accent-rgb)); }
+  100% { background: transparent; box-shadow: inset 0 0 0 transparent; }
+}
+
+.production-record-card-enhanced {
+  position: relative;
+  display: block;
+  padding: 0;
+}
+
+.production-record-card-enhanced > .production-record-card-open {
+  width: 100%;
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.production-record-card-enhanced > .production-record-card-open > div:first-child,
+.production-record-card-enhanced > .production-record-card-open > footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.production-record-card-enhanced > .production-record-card-open h3 {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.production-record-card-enhanced > .production-record-card-open dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.production-record-card-enhanced > .production-record-card-open dl div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.production-record-card-actions {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 9px;
+  border-top: 1px solid var(--line);
+}
+
+.production-record-card-actions > button {
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 9px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.production-record-card-actions > button:last-child {
+  margin-left: auto;
+  border-color: rgba(var(--accent-rgb), .18);
+  background: rgba(var(--accent-rgb), .06);
+  color: var(--brand);
+}
+
+.production-record-card-actions > button:hover {
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+@media (max-width: 1100px) {
+  .production-record-columns-menu > summary span {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .production-record-columns-menu {
+    display: none;
+  }
+
+  .production-record-card-enhanced > .production-record-card-open {
+    padding: 12px;
+  }
+
+  .production-record-card-actions {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .production-record-card-actions::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  .production-record-card-actions > button {
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 430px) {
+  .production-record-card-enhanced > .production-record-card-open dl {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .production-record-table tbody tr.is-returned,
+  .production-record-compact-list > button.is-returned,
+  .production-record-card.is-returned {
+    animation: none !important;
+    background: rgba(var(--accent-rgb), .08);
+  }
+}

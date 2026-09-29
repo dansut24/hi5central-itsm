@@ -1,0 +1,435 @@
+.production-profile-security-stack {
+  display: grid;
+  gap: 16px;
+}
+
+.production-profile-security-panel > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.production-profile-security-panel > header > svg {
+  flex: 0 0 auto;
+  color: var(--muted);
+}
+
+.production-profile-security-refresh {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.production-profile-security-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.production-profile-security-summary > div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-soft);
+}
+
+.production-profile-security-summary span {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.production-profile-security-summary strong {
+  overflow-wrap: anywhere;
+  font-size: 11px;
+}
+
+.production-profile-security-warning,
+.production-profile-security-success,
+.production-profile-security-error,
+.production-profile-security-state {
+  margin-top: 13px;
+  padding: 12px 13px;
+  border-radius: 9px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.production-profile-security-warning,
+.production-profile-security-success,
+.production-profile-security-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.production-profile-security-warning {
+  border: 1px solid color-mix(in srgb, var(--brand) 35%, var(--line));
+  background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+}
+
+.production-profile-security-warning > div {
+  display: grid;
+  gap: 2px;
+}
+
+.production-profile-security-warning span,
+.production-profile-security-state {
+  color: var(--muted);
+}
+
+.production-profile-security-success {
+  border: 1px solid color-mix(in srgb, #16a34a 30%, var(--line));
+  background: color-mix(in srgb, #16a34a 8%, var(--surface));
+  color: #15803d;
+}
+
+.production-profile-security-error {
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, var(--line));
+  background: color-mix(in srgb, var(--danger) 8%, var(--surface));
+  color: var(--danger);
+}
+
+.production-profile-security-primary,
+.production-profile-session-actions button,
+.production-profile-session-state button,
+.production-profile-security-danger button,
+.production-profile-mfa-management button {
+  min-height: 38px;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.production-profile-security-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 0;
+  background: var(--brand-strong);
+  color: #fff;
+}
+
+.production-profile-security-primary:disabled,
+.production-profile-security-refresh:disabled,
+.production-profile-session-actions button:disabled,
+.production-profile-security-danger button:disabled,
+.production-profile-mfa-management button:disabled {
+  opacity: .52;
+  cursor: not-allowed;
+}
+
+.production-profile-mfa-setup,
+.production-profile-mfa-management {
+  display: grid;
+  gap: 13px;
+}
+
+.production-profile-mfa-setup p,
+.production-profile-mfa-management p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.production-profile-mfa-secret {
+  display: grid;
+  gap: 7px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-soft);
+}
+
+.production-profile-mfa-secret > span,
+.production-profile-mfa-setup label > span,
+.production-profile-mfa-management label > span,
+.production-profile-password-form label > span {
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.production-profile-mfa-secret code {
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  letter-spacing: .08em;
+}
+
+.production-profile-mfa-secret small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.production-profile-mfa-secret a {
+  color: var(--brand-strong);
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.production-profile-mfa-setup label,
+.production-profile-mfa-management label,
+.production-profile-password-form label {
+  display: grid;
+  gap: 6px;
+}
+
+.production-profile-mfa-setup input,
+.production-profile-mfa-management input,
+.production-profile-password-form input,
+.production-profile-security-danger input {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 9px 10px;
+  font: inherit;
+  font-size: 12px;
+}
+
+.production-profile-mfa-setup input,
+.production-profile-mfa-management input {
+  width: min(280px, 100%);
+  letter-spacing: .05em;
+}
+
+.production-profile-mfa-management button {
+  justify-self: start;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.production-profile-recovery-codes {
+  margin-top: 15px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--brand) 28%, var(--line));
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface));
+}
+
+.production-profile-recovery-codes p {
+  margin: 4px 0 10px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.production-profile-recovery-codes > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.production-profile-recovery-codes code {
+  padding: 8px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: .04em;
+}
+
+.production-profile-security-danger {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 260px) auto;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+
+.production-profile-security-danger > div {
+  display: grid;
+  gap: 3px;
+}
+
+.production-profile-security-danger span {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.production-profile-security-danger button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--line));
+  background: color-mix(in srgb, var(--danger) 6%, var(--surface));
+  color: var(--danger);
+}
+
+.production-profile-password-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 11px;
+  align-items: end;
+}
+
+.production-profile-password-form .production-profile-security-primary {
+  min-height: 40px;
+}
+
+.production-profile-session-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 11px;
+}
+
+.production-profile-session-actions button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.production-profile-sessions {
+  display: grid;
+  gap: 9px;
+}
+
+.production-profile-session {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-soft);
+}
+
+.production-profile-session.is-current {
+  border-color: color-mix(in srgb, var(--brand) 45%, var(--line));
+  box-shadow: inset 3px 0 0 var(--brand);
+}
+
+.production-profile-session.is-revoked { opacity: .62; }
+
+.production-profile-session-icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: rgba(var(--accent-rgb), .1);
+  color: var(--brand);
+}
+
+.production-profile-session > div:nth-child(2) {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.production-profile-session strong {
+  overflow-wrap: anywhere;
+  font-size: 11px;
+}
+
+.production-profile-session small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.production-profile-session-state {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.production-profile-session-state > span {
+  padding: 5px 7px;
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.production-profile-session-state button {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, var(--line));
+  background: color-mix(in srgb, var(--danger) 5%, var(--surface));
+  color: var(--danger);
+}
+
+@media (max-width: 900px) {
+  .production-profile-security-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .production-profile-password-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .production-profile-security-danger {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .production-profile-security-danger > div {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 680px) {
+  .production-profile-security-stack { gap: 12px; }
+
+  .production-profile-security-summary,
+  .production-profile-password-form,
+  .production-profile-security-danger {
+    grid-template-columns: 1fr;
+  }
+
+  .production-profile-recovery-codes > div {
+    grid-template-columns: 1fr;
+  }
+
+  .production-profile-session-actions {
+    justify-content: stretch;
+  }
+
+  .production-profile-session-actions button,
+  .production-profile-security-danger button,
+  .production-profile-password-form .production-profile-security-primary {
+    width: 100%;
+  }
+
+  .production-profile-session {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .production-profile-session-state {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+    padding-left: 47px;
+  }
+}

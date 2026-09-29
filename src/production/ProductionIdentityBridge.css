@@ -1,0 +1,104 @@
+.production-account-chip {
+  min-width: 0;
+  max-width: 220px;
+  height: 36px;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 15px;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 8px 3px 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  order: 90;
+}
+
+.production-account-chip:hover {
+  border-color: rgba(var(--accent-rgb), .35);
+  background: var(--surface-soft);
+}
+
+.production-account-avatar {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--brand-strong);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: .03em;
+}
+
+.production-account-copy {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+  text-align: left;
+}
+
+.production-account-copy strong,
+.production-account-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.production-account-copy strong {
+  font-size: 10px;
+  line-height: 1.1;
+}
+
+.production-account-copy small {
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.1;
+}
+
+.chrome-actions .chrome-logout {
+  order: 100;
+}
+
+.production-account-chip.is-compact {
+  width: 34px;
+  min-width: 34px;
+  max-width: 34px;
+  height: 34px;
+  display: grid;
+  grid-template-columns: 1fr;
+  padding: 2px;
+  border-radius: 9px;
+}
+
+.production-account-chip.is-compact .production-account-avatar {
+  width: 28px;
+  height: 28px;
+  margin: auto;
+}
+
+html[data-hi5-settings-access="false"] .nav-stack .nav-item[title="Settings"],
+html[data-hi5-settings-access="false"] .breadcrumb-desktop-actions button[title="Settings"],
+html[data-hi5-settings-access="false"] .breadcrumb-mobile-actions button[title="Settings"],
+html[data-hi5-settings-access="false"] .workspace-tab[data-tab-module="settings"] {
+  display: none !important;
+}
+
+@media (max-width: 920px) {
+  .chrome-actions .production-account-chip:not(.is-compact) {
+    max-width: 156px;
+  }
+
+  .chrome-actions .production-account-copy small {
+    display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .chrome-actions .production-account-chip:not(.is-compact) {
+    display: none;
+  }
+}

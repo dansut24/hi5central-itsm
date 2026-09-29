@@ -1,0 +1,424 @@
+.content-frame.production-profile-mounted {
+  position: relative;
+}
+
+.content-frame.production-profile-mounted > :not(.production-profile-shell) {
+  display: none !important;
+}
+
+.production-profile-shell {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--page);
+  color: var(--ink);
+}
+
+.production-profile-scroll {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.production-profile-content {
+  width: min(1060px, calc(100% - 36px));
+  margin: 0 auto;
+  padding: 22px 0 42px;
+  display: grid;
+  gap: 16px;
+}
+
+.production-profile-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 0 2px 2px;
+}
+
+.production-profile-heading > div {
+  min-width: 0;
+}
+
+.production-profile-heading span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.production-profile-heading h1 {
+  margin: 4px 0 0;
+  font-size: 24px;
+  letter-spacing: -.025em;
+}
+
+.production-profile-heading p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.production-profile-state,
+.production-profile-error {
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.production-profile-error {
+  border-color: color-mix(in srgb, var(--danger) 30%, var(--line));
+  color: var(--danger);
+}
+
+.production-profile-identity {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--soft-shadow);
+}
+
+.production-profile-avatar {
+  width: 64px;
+  height: 64px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: var(--brand-strong);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 950;
+  letter-spacing: .02em;
+  box-shadow: 0 10px 24px rgba(var(--accent-rgb), .24);
+}
+
+.production-profile-identity-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.production-profile-identity-copy > span {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.production-profile-identity-copy h2 {
+  margin: 0;
+  overflow: hidden;
+  font-size: 21px;
+  letter-spacing: -.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.production-profile-identity-copy p {
+  margin: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.production-profile-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.production-profile-chips > span {
+  min-height: 27px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.production-profile-panel {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: var(--soft-shadow);
+}
+
+.production-profile-panel > header {
+  padding: 17px 18px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.production-profile-panel h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.production-profile-panel p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.production-profile-panel-body {
+  padding: 18px;
+}
+
+.production-profile-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.production-profile-detail {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-soft);
+}
+
+.production-profile-detail-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: rgba(var(--accent-rgb), .12);
+  color: var(--brand);
+}
+
+.production-profile-detail > span:last-child {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.production-profile-detail small {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.production-profile-detail strong {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.production-profile-role-block {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+
+.production-profile-role-block > span {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+
+.production-profile-role-block > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.production-profile-role-block > div > span {
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: rgba(var(--accent-rgb), .1);
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.production-profile-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.production-profile-form-grid label {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.production-profile-form-grid label > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.production-profile-form-grid select {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 12px;
+}
+
+.production-profile-form-grid select:focus {
+  outline: 3px solid rgba(var(--accent-rgb), .18);
+  border-color: var(--brand);
+}
+
+.production-profile-form-grid select:disabled {
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+
+.production-profile-save-row {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+
+.production-profile-save-row > span {
+  margin-right: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #24865b;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.production-profile-save-row button {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--brand-strong);
+  color: #fff;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.production-profile-save-row button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+@media (max-width: 860px) {
+  .production-profile-content {
+    width: min(100% - 24px, 760px);
+    padding-top: 16px;
+  }
+
+  .production-profile-detail-grid,
+  .production-profile-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .production-profile-content {
+    width: calc(100% - 16px);
+    padding: 10px 0 28px;
+    gap: 12px;
+  }
+
+  .production-profile-heading {
+    padding: 2px 4px 0;
+  }
+
+  .production-profile-heading h1 {
+    font-size: 20px;
+  }
+
+  .production-profile-identity {
+    align-items: flex-start;
+    gap: 13px;
+    padding: 15px;
+    border-radius: 10px;
+  }
+
+  .production-profile-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    font-size: 16px;
+  }
+
+  .production-profile-identity-copy h2 {
+    font-size: 17px;
+  }
+
+  .production-profile-chips {
+    gap: 5px;
+  }
+
+  .production-profile-panel > header {
+    padding: 14px;
+  }
+
+  .production-profile-panel-body {
+    padding: 13px;
+  }
+
+  .production-profile-save-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .production-profile-save-row button {
+    width: 100%;
+  }
+}

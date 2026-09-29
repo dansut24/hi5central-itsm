@@ -1,0 +1,45 @@
+/*
+ * Production workspace roots are intentionally viewport-locked. Onboarding
+ * therefore has to own its own scroll container, especially on mobile where
+ * the document itself cannot scroll.
+ */
+.onboarding-shell {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.onboarding-main,
+.onboarding-sidebar {
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 760px) {
+  .onboarding-shell {
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+  }
+
+  .onboarding-sidebar {
+    overflow: visible;
+  }
+
+  .onboarding-main {
+    overflow: visible;
+    padding-bottom: max(28px, calc(18px + env(safe-area-inset-bottom)));
+  }
+
+  .onboarding-card {
+    margin-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .onboarding-actions {
+    padding-bottom: max(2px, env(safe-area-inset-bottom));
+  }
+}

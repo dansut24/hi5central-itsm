@@ -1,0 +1,32 @@
+.production-settings-shell.service-catalogue-route .production-settings-content > :not(.service-catalogue-admin) {
+  display: none !important;
+}
+
+.production-settings-shell.service-catalogue-route .production-settings-save-state {
+  display: none !important;
+}
+
+.production-settings-shell.service-catalogue-route .production-settings-nav button.is-active:not(.service-catalogue-nav-button),
+.production-settings-shell.service-catalogue-route .production-settings-inline-nav button.is-active:not(.service-catalogue-nav-button) {
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.production-settings-shell .service-catalogue-nav-button.is-active {
+  border-color: color-mix(in srgb, rgb(var(--accent-rgb)) 28%, var(--line));
+  background: color-mix(in srgb, rgb(var(--accent-rgb)) 12%, var(--surface));
+  color: var(--ink);
+  font-weight: 750;
+}
+
+.production-settings-shell.service-catalogue-route .production-settings-content {
+  padding: 14px;
+}
+
+@media (max-width: 720px) {
+  .production-settings-shell.service-catalogue-route .production-settings-content {
+    padding: 12px;
+  }
+}

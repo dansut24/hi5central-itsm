@@ -1,0 +1,232 @@
+/* Shared production record masthead refinement.
+   Applies to Incidents, Service Requests, Problems and Changes because all four
+   use the Activity Canvas record shell. Activity/timeline styling is deliberately
+   left untouched. */
+
+@media (max-width: 850px) {
+  .activity-canvas-top {
+    min-height: 0 !important;
+    gap: 8px !important;
+    padding-block: 9px !important;
+  }
+
+  .activity-canvas-commands {
+    gap: 5px !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .activity-canvas-shell {
+    grid-template-rows: auto auto auto minmax(0, 1fr) !important;
+  }
+
+  /* Compact two-row masthead: identity/title, then actions. */
+  .activity-canvas-top {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: stretch !important;
+    margin: 2px 2px 0 !important;
+    padding: 8px 9px !important;
+    gap: 7px !important;
+    border-radius: var(--ac-radius-md) var(--ac-radius-md) 0 0 !important;
+  }
+
+  .activity-canvas-title {
+    gap: 3px !important;
+  }
+
+  .activity-canvas-title > div {
+    min-height: 22px;
+    flex-wrap: nowrap !important;
+    gap: 5px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .activity-canvas-title > div::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  .activity-canvas-title > div > strong {
+    flex: 0 0 auto;
+    font-size: 13px !important;
+  }
+
+  .activity-canvas-pill {
+    min-height: 22px !important;
+    flex: 0 0 auto;
+    padding: 0 7px !important;
+    font-size: 9px !important;
+  }
+
+  .activity-canvas-title > input {
+    min-height: 25px;
+    width: 100% !important;
+    padding: 0 !important;
+    font-size: 17px !important;
+    line-height: 1.22 !important;
+  }
+
+  .activity-canvas-title > input:focus {
+    padding-left: 7px !important;
+  }
+
+  /* Commands stay on a single compact rail. It can pan locally if a record
+     type exposes more contextual actions than fit on the narrowest phone. */
+  .activity-canvas-commands {
+    width: 100% !important;
+    min-width: 0;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    gap: 5px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 !important;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .activity-canvas-commands::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Record inspector becomes a compact icon, preserving the existing drawer. */
+  .activity-canvas-mobile-details {
+    display: inline-grid !important;
+    place-items: center !important;
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    flex: 0 0 34px !important;
+    padding: 0 !important;
+    border-radius: 11px !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+  }
+
+  .activity-canvas-mobile-details svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  /* Status remains immediately editable but no longer owns an entire row. */
+  .activity-canvas-commands > label {
+    display: block !important;
+    grid-column: auto !important;
+    flex: 0 1 142px !important;
+    width: auto !important;
+    min-width: 108px !important;
+    max-width: 142px !important;
+  }
+
+  .activity-canvas-commands > label > span {
+    display: none !important;
+  }
+
+  .activity-canvas-commands > label select {
+    width: 100% !important;
+    min-height: 34px !important;
+    height: 34px !important;
+    padding: 0 26px 0 9px !important;
+    font-size: 12px !important;
+  }
+
+  .activity-canvas-commands > button,
+  .activity-canvas-commands .activity-canvas-primary,
+  .activity-canvas-commands .activity-canvas-secondary {
+    width: auto !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    height: 34px !important;
+    flex: 0 0 auto !important;
+    padding-inline: 9px !important;
+  }
+
+  .activity-canvas-commands > .activity-canvas-icon {
+    width: 34px !important;
+    min-width: 34px !important;
+    padding: 0 !important;
+  }
+
+  .activity-canvas-reassign {
+    flex: 0 0 auto;
+  }
+
+  .activity-canvas-reassign > summary {
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+  }
+
+  .activity-canvas-reassign > summary svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  /* Facts remain always available but consume less vertical space. */
+  .activity-canvas-ribbon {
+    min-height: 36px !important;
+    margin-inline: 2px !important;
+  }
+
+  .activity-canvas-ribbon > span {
+    min-height: 35px;
+    padding-inline: 9px !important;
+    gap: 5px !important;
+    font-size: 10px !important;
+  }
+
+  .activity-canvas-ribbon b {
+    font-size: 8px !important;
+  }
+
+  .activity-canvas-banner {
+    margin-inline: 2px !important;
+  }
+
+  /* Loading state matches the new compact masthead rather than flashing the
+     previous tall mobile header. */
+  .activity-canvas-shell.is-loading .activity-canvas-top {
+    min-height: 72px !important;
+  }
+
+  .activity-canvas-skeleton.is-heading {
+    width: min(56vw, 250px) !important;
+    height: 34px !important;
+  }
+
+  .activity-canvas-skeleton.is-actions {
+    width: min(38vw, 170px) !important;
+    height: 34px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .activity-canvas-top {
+    padding-inline: 8px !important;
+  }
+
+  .activity-canvas-title > input {
+    font-size: 16px !important;
+  }
+
+  .activity-canvas-commands > label {
+    min-width: 102px !important;
+    max-width: 126px !important;
+  }
+}

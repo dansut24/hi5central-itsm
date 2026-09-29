@@ -1,0 +1,214 @@
+.production-record-table td:first-child,
+.production-record-card,
+.production-record-compact-list > button {
+  position: relative;
+}
+
+.hi5-record-selector {
+  width: 24px;
+  height: 24px;
+  display: inline-grid;
+  place-items: center;
+  border: 2px solid color-mix(in srgb, var(--line) 78%, var(--ink) 22%);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--accent-ink);
+  cursor: pointer;
+  transition: border-color .16s ease, background .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+
+.hi5-record-selector:hover {
+  border-color: rgba(var(--accent-rgb), .55);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), .08);
+}
+
+.hi5-record-selector.is-selected {
+  border-color: rgb(var(--accent-rgb));
+  background: rgb(var(--accent-rgb));
+  box-shadow: 0 5px 14px rgba(var(--accent-rgb), .2);
+}
+
+.production-record-table td:first-child {
+  padding-left: 42px !important;
+}
+
+.production-record-table td:first-child > .hi5-record-selector {
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.production-record-card > .hi5-record-selector {
+  position: absolute;
+  z-index: 5;
+  top: 16px;
+  left: 16px;
+}
+
+.production-record-card:has(> .hi5-record-selector) .production-record-card-open > div:first-child {
+  padding-left: 34px;
+}
+
+.production-record-compact-list > button > .hi5-record-selector {
+  position: absolute;
+  z-index: 3;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.production-record-compact-list > button:has(> .hi5-record-selector) {
+  padding-left: 42px !important;
+}
+
+.hi5-record-selection-summary {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.hi5-record-selection-summary > button {
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 9px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.hi5-record-selection-summary > button.is-clear {
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted);
+}
+
+.hi5-record-selection-summary > strong {
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 72%, var(--ink));
+  font-size: 9px;
+}
+
+.hi5-record-selection-box {
+  width: 15px;
+  height: 15px;
+  display: inline-grid;
+  place-items: center;
+  border: 1.5px solid var(--line);
+  border-radius: 5px;
+  background: var(--surface-soft);
+}
+
+.hi5-record-selection-box.is-selected {
+  border-color: rgb(var(--accent-rgb));
+  background: rgb(var(--accent-rgb));
+  color: var(--accent-ink);
+}
+
+.hi5-mobile-record-search-trigger,
+.hi5-mobile-record-search-close {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .production-record-toolbar {
+    position: relative;
+  }
+
+  .production-record-search {
+    position: absolute !important;
+    z-index: 90;
+    inset: 7px 7px auto 7px;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    flex: none !important;
+    opacity: 0;
+    transform: translateY(-5px) scale(.985);
+    pointer-events: none;
+    transition: opacity .16s ease, transform .16s ease;
+    box-shadow: 0 14px 32px rgba(11, 27, 49, .14);
+  }
+
+  .production-record-toolbar.hi5-mobile-search-open .production-record-search {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .production-record-search input {
+    padding-right: 42px !important;
+  }
+
+  .hi5-mobile-record-search-trigger {
+    order: 18;
+    width: 38px;
+    height: 38px;
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 38px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface-soft);
+    color: var(--ink);
+  }
+
+  .hi5-mobile-record-search-trigger.is-active {
+    border-color: rgba(var(--accent-rgb), .34);
+    background: rgba(var(--accent-rgb), .08);
+  }
+
+  .hi5-mobile-record-search-close {
+    position: absolute;
+    z-index: 3;
+    right: 8px;
+    top: 50%;
+    width: 30px;
+    height: 30px;
+    display: inline-grid;
+    place-items: center;
+    transform: translateY(-50%);
+    border: 0;
+    border-radius: 9px;
+    background: var(--surface-soft);
+    color: var(--muted);
+  }
+
+  .production-record-result-line {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .hi5-record-selection-summary {
+    width: 100%;
+    order: 3;
+    margin-left: 0;
+    justify-content: flex-start;
+  }
+
+  .production-record-card > .hi5-record-selector {
+    top: 16px;
+    left: 18px;
+  }
+
+  .production-record-card:has(> .hi5-record-selector) .production-record-card-open > div:first-child {
+    padding-left: 38px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hi5-record-selector,
+  .production-record-search {
+    transition: none;
+  }
+}

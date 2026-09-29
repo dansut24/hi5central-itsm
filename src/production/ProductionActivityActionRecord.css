@@ -1,0 +1,284 @@
+.activity-action-dock {
+  display: grid;
+  gap: 6px;
+  padding: 8px 10px 10px;
+  border-top: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 96%, rgb(var(--accent-rgb)) 4%);
+}
+
+.activity-action-strip {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 0 1px 2px;
+  scrollbar-width: none;
+}
+.activity-action-strip::-webkit-scrollbar { display: none; }
+.activity-action-strip > i {
+  width: 1px;
+  height: 22px;
+  flex: 0 0 1px;
+  margin: 0 2px;
+  background: var(--line);
+}
+.activity-action-strip button {
+  min-height: 32px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 850;
+  cursor: pointer;
+  transition: color 140ms ease, background 140ms ease, border-color 140ms ease, transform 140ms ease, box-shadow 140ms ease;
+}
+.activity-action-strip button:hover {
+  color: var(--brand);
+  border-color: rgba(var(--accent-rgb), .28);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(16,33,63,.07);
+}
+.activity-action-strip button.is-active {
+  border-color: rgb(var(--accent-rgb));
+  background: rgb(var(--accent-rgb));
+  color: #fff;
+  box-shadow: 0 5px 16px rgba(var(--accent-rgb), .19);
+}
+.activity-action-strip button:disabled {
+  opacity: .5;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
+.activity-action-dock .activity-canvas-composer-collapsed {
+  min-height: 44px;
+  margin: 0;
+  border-radius: 12px;
+}
+
+.activity-action-composer {
+  max-height: min(62vh, 520px);
+  display: grid;
+  grid-template-rows: auto auto auto minmax(104px, 1fr) auto;
+}
+.activity-action-composer-head {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 9px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-soft);
+}
+.activity-action-composer-head > button {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.activity-action-fields {
+  display: grid;
+  gap: 8px;
+  padding: 9px;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 97%, rgb(var(--accent-rgb)) 3%);
+}
+.activity-action-fields.is-two {
+  grid-template-columns: repeat(2, minmax(0,1fr));
+}
+.activity-action-fields.is-task {
+  grid-template-columns: minmax(180px,1.5fr) repeat(3,minmax(140px,1fr));
+}
+.activity-action-fields .activity-canvas-field > span {
+  font-size: 9px;
+}
+.activity-action-fields .activity-canvas-field input,
+.activity-action-fields .activity-canvas-field select {
+  min-height: 36px;
+  font-size: 12px;
+}
+
+.activity-action-composer .activity-canvas-toolbar {
+  background: var(--surface);
+}
+.activity-action-composer .activity-canvas-editor {
+  min-height: 112px;
+  max-height: 250px;
+}
+.activity-action-composer > footer {
+  min-height: 48px;
+}
+.activity-action-composer > footer .activity-canvas-primary {
+  min-width: 126px;
+}
+.activity-canvas-activity.has-composer .activity-canvas-list {
+  padding-bottom: min(62vh, 520px);
+}
+
+.activity-canvas-message.is-action .activity-canvas-message-card {
+  border-color: rgba(var(--accent-rgb), .25);
+  background: color-mix(in srgb, var(--surface) 96%, rgb(var(--accent-rgb)) 4%);
+}
+.activity-canvas-message.is-action .activity-canvas-message-card::before {
+  background: color-mix(in srgb, rgb(var(--accent-rgb)) 68%, #7f8da5 32%);
+}
+.activity-canvas-message.is-action.is-customer-action .activity-canvas-message-card {
+  border-color: rgba(var(--accent-rgb), .34);
+  background: color-mix(in srgb, var(--surface) 92%, rgb(var(--accent-rgb)) 8%);
+}
+.activity-action-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px solid var(--line);
+}
+.activity-action-meta span {
+  min-height: 26px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 700;
+}
+.activity-action-meta b {
+  color: var(--ink);
+  text-transform: capitalize;
+}
+
+.activity-task-list .activity-canvas-empty {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.activity-canvas-skeleton.is-action-dock {
+  height: 86px;
+  margin: 8px 10px 10px;
+}
+
+@media (max-width: 1180px) {
+  .activity-action-fields.is-task {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .activity-action-dock {
+    padding: 7px 8px 8px;
+  }
+  .activity-action-strip {
+    gap: 5px;
+  }
+  .activity-action-strip button {
+    min-height: 34px;
+    padding-inline: 9px;
+    font-size: 10px;
+  }
+  .activity-action-composer {
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    max-height: min(78vh, 620px);
+  }
+  .activity-action-composer-head {
+    grid-template-columns: minmax(0,1fr) auto;
+  }
+  .activity-action-fields.is-two,
+  .activity-action-fields.is-task {
+    grid-template-columns: 1fr;
+    max-height: 180px;
+    overflow-y: auto;
+  }
+  .activity-action-fields .activity-canvas-field input,
+  .activity-action-fields .activity-canvas-field select {
+    font-size: 16px;
+  }
+  .activity-action-composer .activity-canvas-editor {
+    min-height: 112px;
+    font-size: 16px;
+  }
+  .activity-canvas-activity.has-composer .activity-canvas-list {
+    padding-bottom: min(78vh, 620px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-action-strip button {
+    transition: none !important;
+  }
+}
+
+/* Record canvas density: preserve only a 2px frame around the record surface. */
+.activity-canvas-top {
+  margin: 2px 2px 0;
+}
+
+.activity-canvas-ribbon,
+.activity-canvas-banner {
+  margin-inline: 2px;
+}
+
+.activity-canvas-body {
+  padding: 8px 2px 2px;
+}
+
+.activity-canvas-skeleton.is-ribbon {
+  margin-inline: 2px;
+}
+
+@media (max-width: 1100px) {
+  .activity-canvas-top {
+    margin: 2px 2px 0;
+  }
+
+  .activity-canvas-ribbon,
+  .activity-canvas-banner {
+    margin-inline: 2px;
+  }
+
+  .activity-canvas-body {
+    padding: 8px 2px 2px;
+  }
+}
+
+@media (max-width: 700px) {
+  .activity-canvas-top {
+    margin: 2px 2px 0;
+  }
+
+  .activity-canvas-ribbon,
+  .activity-canvas-banner {
+    margin-inline: 2px;
+  }
+
+  .activity-canvas-body {
+    padding: 2px;
+  }
+}

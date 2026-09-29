@@ -1,0 +1,166 @@
+.hi5-record-export-menu {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.hi5-record-export-menu > summary {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  color: var(--ink);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 850;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.hi5-record-export-menu > summary::-webkit-details-marker { display: none; }
+.hi5-record-export-menu[open] > summary {
+  border-color: rgba(var(--accent-rgb), .32);
+  background: rgba(var(--accent-rgb), .07);
+}
+
+.hi5-record-export-popover {
+  position: absolute;
+  z-index: 17000;
+  top: calc(100% + 7px);
+  right: 0;
+  width: 282px;
+  overflow: hidden;
+  padding: 7px;
+  border: 1px solid color-mix(in srgb, var(--line) 78%, rgb(var(--accent-rgb)) 22%);
+  border-radius: 15px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 18px 50px rgba(12, 27, 48, .18);
+}
+
+.hi5-record-export-popover > header {
+  display: grid;
+  gap: 2px;
+  padding: 7px 8px 9px;
+  border-bottom: 1px solid var(--line);
+}
+
+.hi5-record-export-popover > header strong { font-size: 11px; }
+.hi5-record-export-popover > header span { color: var(--muted); font-size: 8px; font-weight: 700; }
+
+.hi5-record-export-scopes {
+  display: grid;
+  gap: 4px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.hi5-record-export-scopes > button,
+.hi5-record-export-formats > button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.hi5-record-export-scopes > button {
+  min-height: 44px;
+  justify-content: flex-start;
+}
+
+.hi5-record-export-scopes > button > i {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface-soft);
+  color: var(--accent-ink);
+  font-style: normal;
+}
+
+.hi5-record-export-scopes > button.is-active {
+  border-color: rgba(var(--accent-rgb), .2);
+  background: rgba(var(--accent-rgb), .07);
+}
+
+.hi5-record-export-scopes > button.is-active > i {
+  border-color: rgb(var(--accent-rgb));
+  background: rgb(var(--accent-rgb));
+}
+
+.hi5-record-export-scopes > button:disabled {
+  opacity: .42;
+  cursor: default;
+}
+
+.hi5-record-export-scopes > button > span,
+.hi5-record-export-formats > button > span {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.hi5-record-export-scopes strong,
+.hi5-record-export-formats strong { font-size: 10px; }
+.hi5-record-export-scopes small,
+.hi5-record-export-formats small { color: var(--muted); font-size: 8px; line-height: 1.35; }
+
+.hi5-record-export-formats {
+  display: grid;
+  gap: 4px;
+  padding-top: 5px;
+}
+
+.hi5-record-export-formats > button {
+  min-height: 48px;
+}
+
+.hi5-record-export-scopes > button:hover:not(:disabled),
+.hi5-record-export-formats > button:hover {
+  border-color: var(--line);
+  background: var(--surface-soft);
+}
+
+.hi5-record-export-formats > button:disabled { opacity: .65; cursor: progress; }
+.hi5-record-export-formats > button > svg { color: color-mix(in srgb, rgb(var(--accent-rgb)) 72%, var(--ink)); }
+
+.hi5-record-export-menu .is-spinning { animation: hi5-record-export-spin .8s linear infinite; }
+@keyframes hi5-record-export-spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 760px) {
+  .hi5-record-export-menu > summary {
+    width: 38px;
+    min-width: 38px;
+    padding: 0;
+    justify-content: center;
+  }
+  .hi5-record-export-menu > summary span,
+  .hi5-record-export-menu > summary svg:last-child { display: none; }
+  .hi5-record-export-popover {
+    position: fixed;
+    z-index: 18000;
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    top: auto;
+    width: min(344px, calc(100vw - 20px));
+    max-height: min(74dvh, 620px);
+    overflow-y: auto;
+    border-radius: 18px;
+  }
+}

@@ -1,0 +1,270 @@
+:root {
+  --hi5-radius-xs: 10px;
+  --hi5-radius-sm: 12px;
+  --hi5-radius-md: 16px;
+  --hi5-radius-lg: 20px;
+  --hi5-radius-xl: 24px;
+  --hi5-radius-pill: 999px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Hi5Central shared curve language                                            */
+/* Controls = 12px, cards/tables/widgets = 16px, floating surfaces = 20-24px. */
+/* -------------------------------------------------------------------------- */
+
+.app-shell .brand,
+.app-shell .sidebar-toggle,
+.app-shell .icon-button,
+.app-shell .tab-add,
+.app-shell .nav-item,
+.app-shell .sidebar-status,
+.app-shell .workspace-tab,
+.app-shell .user-pill,
+.app-shell .new-ticket-button,
+.app-shell .primary-action,
+.app-shell .text-button,
+.app-shell .switch-button,
+.app-shell .segmented-control,
+.app-shell .segmented-control button,
+.portal-shell .icon-button,
+.portal-shell .user-pill,
+.login-shell .credential-card,
+.login-shell .login-mode-switch,
+.login-shell .login-mode-switch button {
+  border-radius: var(--hi5-radius-sm) !important;
+}
+
+/* Form controls across every Hi5Central surface. */
+.app-shell input:not([type='checkbox']):not([type='radio']),
+.app-shell select,
+.app-shell textarea,
+.portal-shell input:not([type='checkbox']):not([type='radio']),
+.portal-shell select,
+.portal-shell textarea,
+.login-shell input:not([type='checkbox']):not([type='radio']),
+.login-shell select,
+.login-shell textarea,
+.production-auth-shell input:not([type='checkbox']):not([type='radio']),
+.production-auth-shell select,
+.production-auth-shell textarea,
+[class*='onboarding'] input:not([type='checkbox']):not([type='radio']),
+[class*='onboarding'] select,
+[class*='onboarding'] textarea,
+.marketing-site input:not([type='checkbox']):not([type='radio']),
+.marketing-site select,
+.marketing-site textarea {
+  border-radius: var(--hi5-radius-sm) !important;
+}
+
+/* Interactive controls should share the same soft modern corners. */
+.app-shell button:not([class*='switch']),
+.portal-shell button:not([class*='switch']),
+.login-shell button:not([class*='switch']),
+.production-auth-shell button:not([class*='switch']),
+[class*='onboarding'] button:not([class*='switch']),
+.marketing-site button:not([class*='switch']) {
+  border-radius: var(--hi5-radius-sm);
+}
+
+/* Cards, panels, widgets and table surfaces. */
+.app-shell :is(
+  .ticket-card,
+  .catalog-card,
+  .record-primary,
+  .record-secondary,
+  .workload-panel,
+  .operational-band
+),
+.portal-shell :is(.portal-hero, .portal-card, .catalog-card),
+.login-shell :is(.login-panel, .credential-panel),
+.production-auth-shell .production-auth-card,
+[class*='onboarding'] :is([class$='-card'], [class*='-card '], [class$='-panel'], [class*='-panel ']),
+.app-shell :is(
+  [class$='-card'], [class*='-card '],
+  [class$='-panel'], [class*='-panel '],
+  [class$='-widget'], [class*='-widget '],
+  [class$='-table'], [class*='-table ']
+),
+.portal-shell :is(
+  [class$='-card'], [class*='-card '],
+  [class$='-panel'], [class*='-panel '],
+  [class$='-widget'], [class*='-widget '],
+  [class$='-table'], [class*='-table ']
+) {
+  border-radius: var(--hi5-radius-md) !important;
+}
+
+/* Table elements themselves inherit the curved language where they are visible. */
+.app-shell table,
+.portal-shell table,
+.production-settings-shell table {
+  border-radius: var(--hi5-radius-md);
+  overflow: hidden;
+}
+
+/* Tabs remain compact but visibly curved. */
+.app-shell [role='tab'],
+.portal-shell [role='tab'],
+.production-settings-shell [role='tab'],
+.app-shell [class$='-tab'],
+.app-shell [class*='-tab '] {
+  border-radius: var(--hi5-radius-sm) !important;
+}
+
+/* Search bars and search popovers. */
+.app-shell input[type='search'],
+.portal-shell input[type='search'],
+.marketing-site input[type='search'],
+.app-shell [class$='-search'],
+.app-shell [class*='-search '],
+.portal-shell [class$='-search'],
+.portal-shell [class*='-search '] {
+  border-radius: var(--hi5-radius-sm) !important;
+}
+
+/* Dropdowns, menus and popovers are floating surfaces. */
+.app-shell :is(
+  [class$='-dropdown'], [class*='-dropdown '],
+  [class$='-menu'], [class*='-menu '],
+  [class$='-popover'], [class*='-popover ']
+),
+.portal-shell :is(
+  [class$='-dropdown'], [class*='-dropdown '],
+  [class$='-menu'], [class*='-menu '],
+  [class$='-popover'], [class*='-popover ']
+),
+[role='menu'],
+[role='listbox'] {
+  border-radius: var(--hi5-radius-md) !important;
+}
+
+/* Modal/dialog surfaces use the larger floating radius. */
+:is(
+  [class$='-modal'], [class*='-modal '],
+  [class$='-dialog'], [class*='-dialog ']
+):not([class*='backdrop']):not([class*='overlay']) {
+  border-radius: var(--hi5-radius-lg) !important;
+}
+
+[role='dialog'] {
+  border-radius: var(--hi5-radius-lg) !important;
+}
+
+/* Notification drawer is inset on larger screens so all four corners can curve. */
+@media (min-width: 721px) {
+  .notification-drawer {
+    top: 12px;
+    right: 12px;
+    bottom: 12px;
+    height: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--hi5-radius-lg) !important;
+    overflow: hidden;
+    box-shadow: -12px 14px 44px rgba(5, 16, 36, .2);
+  }
+}
+
+.notification-drawer-close,
+.notification-drawer-mode,
+.notification-drawer-mode button,
+.notification-drawer-icon {
+  border-radius: var(--hi5-radius-sm) !important;
+}
+
+/* Preserve intentional pills/badges rather than converting them into rounded boxes. */
+:is(
+  .badge,
+  .status-badge,
+  .priority-badge,
+  .marketing-kicker,
+  .marketing-preview-live,
+  .notification-drawer-sources button
+) {
+  border-radius: var(--hi5-radius-pill) !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Dashboard and high-level operational surfaces                              */
+/* -------------------------------------------------------------------------- */
+
+.app-shell .dashboard-grid > *,
+.app-shell [class$='-widget'],
+.app-shell [class*='-widget '],
+.app-shell [class$='-metric'],
+.app-shell [class*='-metric '] {
+  border-radius: var(--hi5-radius-md) !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Public marketing + signup                                                  */
+/* -------------------------------------------------------------------------- */
+
+.marketing-site {
+  --marketing-radius-control: var(--hi5-radius-sm);
+  --marketing-radius-card: var(--hi5-radius-lg);
+  --marketing-radius-feature: var(--hi5-radius-xl);
+}
+
+.marketing-button,
+.marketing-button-small,
+.marketing-signup-card input,
+.marketing-form-error,
+.marketing-notice {
+  border-radius: var(--marketing-radius-control) !important;
+}
+
+.marketing-hero-panel,
+.marketing-product-card,
+.marketing-flow > div,
+.marketing-benefits article,
+.marketing-signup-card,
+.marketing-signup-success {
+  border-radius: var(--marketing-radius-feature) !important;
+}
+
+.marketing-preview-card,
+.marketing-preview-bridge,
+.marketing-product-choice,
+.marketing-created-urls > div,
+.marketing-success-icon,
+.marketing-product-icon {
+  border-radius: var(--marketing-radius-card) !important;
+}
+
+.marketing-slug-field {
+  overflow: hidden;
+  border-radius: var(--marketing-radius-control);
+}
+
+.marketing-slug-field input {
+  border-radius: var(--marketing-radius-control) 0 0 var(--marketing-radius-control) !important;
+}
+
+.marketing-slug-field > span {
+  border-radius: 0 var(--marketing-radius-control) var(--marketing-radius-control) 0 !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Production auth/onboarding                                                 */
+/* -------------------------------------------------------------------------- */
+
+.production-auth-card,
+.production-auth-layout > section,
+[class*='onboarding'] [class$='-shell-card'],
+[class*='onboarding'] [class*='-shell-card '] {
+  border-radius: var(--hi5-radius-lg) !important;
+}
+
+/* Mobile drawers/dialogs remain space-efficient, but still curved internally. */
+@media (max-width: 720px) {
+  .notification-drawer {
+    border-radius: var(--hi5-radius-lg) 0 0 var(--hi5-radius-lg) !important;
+  }
+
+  .marketing-hero-panel,
+  .marketing-product-card,
+  .marketing-signup-card,
+  .marketing-signup-success {
+    border-radius: var(--hi5-radius-lg) !important;
+  }
+}

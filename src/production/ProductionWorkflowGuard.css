@@ -1,0 +1,12 @@
+/* Problem and Change status is controlled by the end-to-end lifecycle card so
+   technicians cannot bypass workflow gates using the legacy generic status
+   selector. Incident status remains owned by the existing incident lifecycle. */
+body:has(.hi5-workflow-panel[data-hi5-workflow='Problem']) .record-workbench-status-command,
+body:has(.hi5-workflow-panel[data-hi5-workflow='Change']) .record-workbench-status-command {
+  display: none !important;
+}
+
+body:has(.hi5-workflow-panel[data-hi5-workflow='Problem']) .record-workbench-commands,
+body:has(.hi5-workflow-panel[data-hi5-workflow='Change']) .record-workbench-commands {
+  flex-wrap: wrap;
+}

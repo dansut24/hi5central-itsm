@@ -1,0 +1,106 @@
+/* Final authenticated-workspace chrome cleanup. Breadcrumbs and tabs already identify the current page. */
+.app-shell .view-header,
+.production-record-topbar {
+  display: none !important;
+}
+
+.catalogue-page-heading {
+  min-height: 44px !important;
+  padding-block: 6px !important;
+  align-items: center !important;
+}
+
+.catalogue-page-heading .eyebrow,
+.catalogue-page-heading h2 {
+  display: none !important;
+}
+
+.catalogue-page-heading p {
+  margin: 0 !important;
+  max-width: 76ch;
+  font-size: 10px !important;
+}
+
+.production-settings-topbar .production-settings-title-row > div {
+  display: none !important;
+}
+
+.production-settings-topbar .production-settings-title-row {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+/* The initial tenant/session check gets an obvious working-state shimmer rather than a static card. */
+.production-auth-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.production-auth-loading::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 24%, rgba(var(--accent-rgb), .08) 42%, rgba(255,255,255,.22) 50%, rgba(var(--accent-rgb), .08) 58%, transparent 76%);
+  background-size: 240% 100%;
+  animation: hi5-auth-loading-sweep 1.3s linear infinite;
+  pointer-events: none;
+  content: '';
+}
+
+.production-auth-loading img {
+  animation: hi5-auth-logo-pulse 1.25s ease-in-out infinite;
+}
+
+@keyframes hi5-auth-loading-sweep {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@keyframes hi5-auth-logo-pulse {
+  0%, 100% { opacity: .68; transform: scale(.98); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+/* API-backed catalogue data gets a skeleton-like loading treatment while PostgreSQL hydrates. */
+.service-catalogue-admin:has(.catalogue-sync-state.is-loading) .catalogue-item-card {
+  position: relative;
+  overflow: hidden;
+  opacity: .6;
+}
+
+.service-catalogue-admin:has(.catalogue-sync-state.is-loading) .catalogue-item-card::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, color-mix(in srgb, var(--surface) 65%, white) 48%, transparent 75%);
+  background-size: 230% 100%;
+  animation: hi5-auth-loading-sweep 1.25s linear infinite;
+  pointer-events: none;
+  content: '';
+}
+
+/* Small, consistent transitions for the authenticated shell without delaying navigation. */
+.app-shell .content-frame,
+.app-shell .workspace-tab,
+.app-shell .breadcrumb-bar,
+.catalogue-item-card,
+.catalogue-category-rail,
+.catalogue-content-surface {
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, color 160ms ease, transform 160ms ease, opacity 160ms ease;
+}
+
+.catalogue-item-card:hover {
+  transform: translateY(-1px);
+}
+
+@media (max-width: 760px) {
+  .catalogue-page-heading p {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .production-auth-loading::after,
+  .production-auth-loading img,
+  .service-catalogue-admin:has(.catalogue-sync-state.is-loading) .catalogue-item-card::after {
+    animation: none !important;
+  }
+}

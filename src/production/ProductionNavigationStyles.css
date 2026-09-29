@@ -1,0 +1,52 @@
+/* Personal navigation presentation. Position is handled by the existing dock
+   preference layer; this file only changes visual treatment. */
+
+/* Service Health belongs on dashboards/monitoring surfaces, not in primary navigation. */
+html[data-hi5-surface='workspace'] .sidebar .sidebar-status {
+  display: none !important;
+}
+
+html[data-hi5-surface='workspace'][data-hi5-nav-style='clean'] .sidebar {
+  border-radius: 18px !important;
+  background: var(--surface) !important;
+  box-shadow: 0 14px 32px rgba(7, 24, 50, .09) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html[data-hi5-surface='workspace'][data-hi5-nav-style='clean'] .sidebar::before {
+  display: none !important;
+}
+
+html[data-hi5-surface='workspace'][data-hi5-nav-style='clean'] .sidebar .brand,
+html[data-hi5-surface='workspace'][data-hi5-nav-style='clean'] .sidebar .sidebar-toggle,
+html[data-hi5-surface='workspace'][data-hi5-nav-style='clean'] .sidebar .mobile-drawer-close {
+  border-color: var(--line) !important;
+  background: var(--surface-soft) !important;
+  box-shadow: none !important;
+}
+
+html[data-hi5-surface='workspace'][data-hi5-nav-style='clean'] .sidebar .nav-item {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 10px !important;
+  background: transparent;
+  box-shadow: none !important;
+}
+
+html[data-hi5-surface='workspace'][data-hi5-nav-style='clean'] .sidebar .nav-item.active {
+  border-color: color-mix(in srgb, var(--line) 72%, rgb(var(--accent-rgb)) 28%) !important;
+  background: color-mix(in srgb, var(--surface-soft) 78%, rgb(var(--accent-rgb)) 22%) !important;
+  box-shadow: none !important;
+}
+
+html[data-hi5-surface='workspace'][data-hi5-nav-style='clean'] .sidebar .nav-item.active::before {
+  inset: 8px auto 8px -1px !important;
+  width: 3px !important;
+  border-radius: 999px;
+  background: rgb(var(--accent-rgb));
+}
+
+html[data-hi5-surface='workspace'][data-hi5-nav-style='floating'] .sidebar {
+  /* Current Liquid Glass treatment remains the default. */
+}

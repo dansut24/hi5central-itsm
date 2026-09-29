@@ -1,0 +1,29 @@
+html[data-hi5-surface='workspace'] .workspace-tab-livechat .live-chat-tab-notification,
+html[data-hi5-surface='workspace'] .workspace-tab[data-tab-module='livechat'] .live-chat-tab-notification {
+  display: none !important;
+}
+
+html[data-hi5-surface='workspace'] .workspace-tab-livechat.hi5-has-live-unread .workspace-tab-label,
+html[data-hi5-surface='workspace'] .workspace-tab[data-tab-module='livechat'].hi5-has-live-unread .workspace-tab-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+html[data-hi5-surface='workspace'] .workspace-tab-livechat.hi5-has-live-unread .workspace-tab-label::after,
+html[data-hi5-surface='workspace'] .workspace-tab[data-tab-module='livechat'].hi5-has-live-unread .workspace-tab-label::after {
+  content: attr(data-hi5-live-unread);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: rgb(var(--accent-rgb, 37 99 235));
+  color: #fff;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 800;
+}

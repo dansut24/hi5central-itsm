@@ -1,0 +1,902 @@
+/* Hi5Central Planning & Configuration surface contract.
+   Calendar, CMDB and Projects share the same density, edge, panel and responsive behaviour.
+   The global ProductionResponsiveViewport.css still loads after this file and owns shell chrome. */
+
+html[data-hi5-surface='workspace'] .calendar-view,
+html[data-hi5-surface='workspace'] .cmdb-view,
+html[data-hi5-surface='workspace'] .project-list-view,
+html[data-hi5-surface='workspace'] .project-detail-view {
+  --planning-edge: var(--hi5-workspace-edge, 2px);
+  --planning-gap: 8px;
+  --planning-radius: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: var(--planning-edge) !important;
+  gap: var(--planning-gap);
+  overflow: hidden;
+  background: var(--page);
+}
+
+html[data-hi5-surface='workspace'] .calendar-view > *,
+html[data-hi5-surface='workspace'] .cmdb-view > *,
+html[data-hi5-surface='workspace'] .project-list-view > *,
+html[data-hi5-surface='workspace'] .project-detail-view > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Shared surface language -------------------------------------------------- */
+html[data-hi5-surface='workspace'] .calendar-kpi-strip article,
+html[data-hi5-surface='workspace'] .calendar-toolbar,
+html[data-hi5-surface='workspace'] .calendar-month-shell,
+html[data-hi5-surface='workspace'] .calendar-week-shell,
+html[data-hi5-surface='workspace'] .calendar-day-shell,
+html[data-hi5-surface='workspace'] .calendar-agenda-shell,
+html[data-hi5-surface='workspace'] .asset-card,
+html[data-hi5-surface='workspace'] .cmdb-view .operational-band,
+html[data-hi5-surface='workspace'] .entity-detail-card,
+html[data-hi5-surface='workspace'] .entity-related-card,
+html[data-hi5-surface='workspace'] .project-kpi-strip article,
+html[data-hi5-surface='workspace'] .project-list-shell,
+html[data-hi5-surface='workspace'] .project-detail-card,
+html[data-hi5-surface='workspace'] .project-detail-summary,
+html[data-hi5-surface='workspace'] .project-task-list-shell,
+html[data-hi5-surface='workspace'] .project-timeline-shell,
+html[data-hi5-surface='workspace'] .project-workload-card {
+  border: 1px solid var(--line);
+  border-radius: var(--planning-radius);
+  background: var(--surface);
+  box-shadow: none;
+}
+
+/* CALENDAR ---------------------------------------------------------------- */
+html[data-hi5-surface='workspace'] .calendar-view {
+  display: grid;
+  grid-template-rows: auto auto auto auto minmax(0, 1fr);
+  align-content: stretch;
+}
+
+html[data-hi5-surface='workspace'] .calendar-page-header {
+  align-items: center;
+  min-height: 48px;
+  margin: 0;
+  padding: 6px 8px;
+}
+
+html[data-hi5-surface='workspace'] .calendar-page-header h2 {
+  margin: 1px 0 0;
+  font-size: clamp(18px, 1.8vw, 23px);
+}
+
+html[data-hi5-surface='workspace'] .calendar-page-header p {
+  display: none;
+}
+
+html[data-hi5-surface='workspace'] .calendar-new-event {
+  min-height: 34px;
+}
+
+html[data-hi5-surface='workspace'] .calendar-kpi-strip {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+}
+
+html[data-hi5-surface='workspace'] .calendar-kpi-strip article {
+  min-height: 62px;
+  padding: 8px 10px;
+}
+
+html[data-hi5-surface='workspace'] .calendar-kpi-strip strong {
+  font-size: 18px;
+}
+
+html[data-hi5-surface='workspace'] .calendar-toolbar {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin: 0;
+  padding: 5px 6px;
+  overflow: hidden;
+}
+
+html[data-hi5-surface='workspace'] .calendar-period-nav {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+html[data-hi5-surface='workspace'] .calendar-period-nav > strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-hi5-surface='workspace'] .calendar-view-switch {
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  min-width: max-content;
+}
+
+html[data-hi5-surface='workspace'] .calendar-filter-toggle {
+  flex: 0 0 auto;
+}
+
+html[data-hi5-surface='workspace'] .calendar-filter-bar {
+  grid-template-columns: minmax(180px, 1.4fr) repeat(4, minmax(118px, .7fr)) auto;
+  gap: 6px;
+  margin: 0;
+  min-width: 0;
+}
+
+html[data-hi5-surface='workspace'] .calendar-filter-bar select,
+html[data-hi5-surface='workspace'] .calendar-search,
+html[data-hi5-surface='workspace'] .calendar-clear-filters {
+  min-height: 34px;
+}
+
+html[data-hi5-surface='workspace'] .calendar-source-legend {
+  min-height: 32px;
+  margin: 0;
+  padding: 0 2px;
+}
+
+html[data-hi5-surface='workspace'] .calendar-month-shell,
+html[data-hi5-surface='workspace'] .calendar-week-shell,
+html[data-hi5-surface='workspace'] .calendar-day-shell,
+html[data-hi5-surface='workspace'] .calendar-agenda-shell {
+  min-height: 0;
+  overflow: auto;
+}
+
+html[data-hi5-surface='workspace'] .calendar-month-day {
+  min-height: 96px;
+}
+
+@container (max-width: 980px) {
+  html[data-hi5-surface='workspace'] .calendar-view {
+    grid-template-rows: auto auto auto auto minmax(0, 1fr);
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-kpi-strip {
+    grid-template-columns: repeat(4, minmax(110px, 1fr));
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-kpi-strip::-webkit-scrollbar { display: none; }
+
+  html[data-hi5-surface='workspace'] .calendar-toolbar {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-toolbar::-webkit-scrollbar { display: none; }
+
+  html[data-hi5-surface='workspace'] .calendar-period-nav {
+    flex: 1 0 300px;
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-filter-toggle {
+    display: inline-flex;
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-filter-bar {
+    display: none;
+    position: absolute;
+    z-index: 52;
+    top: 108px;
+    right: 10px;
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
+    width: min(560px, calc(100% - 20px));
+    max-height: min(70dvh, 520px);
+    padding: 10px;
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: 0 18px 48px rgba(10, 24, 48, .18);
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-filter-bar.mobile-open { display: grid; }
+  html[data-hi5-surface='workspace'] .calendar-filter-bar .calendar-search { grid-column: 1 / -1; }
+
+  html[data-hi5-surface='workspace'] .calendar-month-shell,
+  html[data-hi5-surface='workspace'] .calendar-week-shell {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-week-grid { min-width: 760px; }
+}
+
+@container (max-width: 720px) {
+  html[data-hi5-surface='workspace'] .calendar-page-header {
+    display: flex;
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-page-header .eyebrow { display: none; }
+  html[data-hi5-surface='workspace'] .calendar-new-event { width: auto; }
+
+  html[data-hi5-surface='workspace'] .calendar-kpi-strip article {
+    flex: 0 0 auto;
+    min-width: 118px;
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-view-switch button {
+    min-width: 64px;
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-filter-bar {
+    top: 96px;
+    grid-template-columns: 1fr;
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-filter-bar .calendar-search,
+  html[data-hi5-surface='workspace'] .calendar-filter-bar > label,
+  html[data-hi5-surface='workspace'] .calendar-filter-bar .calendar-clear-filters {
+    grid-column: 1;
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-weekday-row,
+  html[data-hi5-surface='workspace'] .calendar-month-grid,
+  html[data-hi5-surface='workspace'] .calendar-week-grid {
+    display: none;
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-mobile-month-list,
+  html[data-hi5-surface='workspace'] .calendar-mobile-days {
+    display: grid;
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-agenda-item {
+    grid-template-columns: 13px 68px minmax(0, 1fr) 16px;
+  }
+
+  html[data-hi5-surface='workspace'] .calendar-agenda-item .calendar-conflict-pill { display: none; }
+}
+
+/* CMDB -------------------------------------------------------------------- */
+html[data-hi5-surface='workspace'] .cmdb-view {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(160px, .42fr);
+  gap: 8px;
+}
+
+html[data-hi5-surface='workspace'] .cmdb-view .asset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+  align-content: start;
+  gap: 8px;
+  min-height: 0;
+  overflow: auto;
+  padding: 0;
+}
+
+html[data-hi5-surface='workspace'] .cmdb-view .asset-card {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  grid-template-areas:
+    'icon title health'
+    'meta meta meta'
+    'related related related'
+    'action action action';
+  gap: 8px 10px;
+  align-content: start;
+  min-width: 0;
+  min-height: 156px;
+  padding: 10px;
+}
+
+html[data-hi5-surface='workspace'] .cmdb-view .asset-icon { grid-area: icon; }
+html[data-hi5-surface='workspace'] .cmdb-view .asset-card > div:nth-of-type(2) { grid-area: title; min-width: 0; }
+html[data-hi5-surface='workspace'] .cmdb-view .asset-card > .health-pill { grid-area: health; align-self: start; }
+html[data-hi5-surface='workspace'] .cmdb-view .asset-meta { grid-area: meta; }
+html[data-hi5-surface='workspace'] .cmdb-view .relationship-list { grid-area: related; }
+html[data-hi5-surface='workspace'] .cmdb-view .asset-open-button { grid-area: action; justify-self: end; }
+
+html[data-hi5-surface='workspace'] .cmdb-view .asset-card h2 {
+  overflow: hidden;
+  margin: 2px 0 0;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-hi5-surface='workspace'] .cmdb-view .asset-meta,
+html[data-hi5-surface='workspace'] .cmdb-view .relationship-list {
+  min-width: 0;
+  overflow: hidden;
+}
+
+html[data-hi5-surface='workspace'] .cmdb-view .relationship-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+html[data-hi5-surface='workspace'] .cmdb-view .operational-band {
+  min-height: 0;
+  padding: 8px;
+  overflow: hidden;
+}
+
+html[data-hi5-surface='workspace'] .cmdb-view .operational-band .section-heading {
+  min-height: 34px;
+  margin: 0 0 4px;
+}
+
+html[data-hi5-surface='workspace'] .cmdb-view .queue-table {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+html[data-hi5-surface='workspace'] .cmdb-view .queue-row {
+  min-width: 680px;
+}
+
+html[data-hi5-surface='workspace'] .entity-detail-view {
+  gap: 8px;
+  padding: var(--hi5-workspace-edge, 2px) !important;
+}
+
+html[data-hi5-surface='workspace'] .entity-detail-card,
+html[data-hi5-surface='workspace'] .entity-related-card {
+  min-width: 0;
+  padding: 12px;
+}
+
+@media (max-width: 900px) {
+  html[data-hi5-surface='workspace'] .cmdb-view {
+    grid-template-rows: minmax(0, 1fr) minmax(150px, .36fr);
+  }
+
+  html[data-hi5-surface='workspace'] .cmdb-view .asset-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  html[data-hi5-surface='workspace'] .cmdb-view {
+    display: block;
+    overflow: auto;
+  }
+
+  html[data-hi5-surface='workspace'] .cmdb-view .asset-grid {
+    grid-template-columns: 1fr;
+    overflow: visible;
+  }
+
+  html[data-hi5-surface='workspace'] .cmdb-view .operational-band { margin-top: 8px; }
+
+  html[data-hi5-surface='workspace'] .entity-detail-view {
+    display: block;
+    overflow: auto;
+  }
+
+  html[data-hi5-surface='workspace'] .entity-related-card { margin-top: 8px; }
+}
+
+/* PROJECTS ---------------------------------------------------------------- */
+html[data-hi5-surface='workspace'] .project-list-view {
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 8px;
+}
+
+html[data-hi5-surface='workspace'] .project-list-header,
+html[data-hi5-surface='workspace'] .project-detail-header {
+  min-height: 50px;
+  margin: 0;
+  padding: 6px 8px;
+}
+
+html[data-hi5-surface='workspace'] .project-list-header h2,
+html[data-hi5-surface='workspace'] .project-detail-title h2 {
+  margin-block: 1px 2px;
+  font-size: clamp(18px, 1.8vw, 23px);
+}
+
+html[data-hi5-surface='workspace'] .project-list-header p,
+html[data-hi5-surface='workspace'] .project-detail-title > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+html[data-hi5-surface='workspace'] .project-kpi-strip,
+html[data-hi5-surface='workspace'] .project-detail-summary {
+  gap: 6px;
+  margin: 0;
+}
+
+html[data-hi5-surface='workspace'] .project-kpi-strip article,
+html[data-hi5-surface='workspace'] .project-detail-summary > div {
+  min-height: 58px;
+  padding: 8px 10px;
+}
+
+html[data-hi5-surface='workspace'] .project-list-shell {
+  min-height: 0;
+  overflow: hidden;
+}
+
+html[data-hi5-surface='workspace'] .project-list-toolbar,
+html[data-hi5-surface='workspace'] .project-board-actions,
+html[data-hi5-surface='workspace'] .project-task-toolbar {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+html[data-hi5-surface='workspace'] .project-list-toolbar::-webkit-scrollbar,
+html[data-hi5-surface='workspace'] .project-board-actions::-webkit-scrollbar,
+html[data-hi5-surface='workspace'] .project-task-toolbar::-webkit-scrollbar { display: none; }
+
+html[data-hi5-surface='workspace'] .project-search {
+  flex: 1 1 280px;
+  min-width: 180px;
+}
+
+html[data-hi5-surface='workspace'] .project-list-toolbar > label:not(.project-search) {
+  flex: 0 0 auto;
+  min-width: 132px;
+}
+
+html[data-hi5-surface='workspace'] .project-table-wrap,
+html[data-hi5-surface='workspace'] .project-task-table-wrap {
+  max-width: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+html[data-hi5-surface='workspace'] .project-detail-view {
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+}
+
+html[data-hi5-surface='workspace'] .project-detail-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+html[data-hi5-surface='workspace'] .project-detail-tabs::-webkit-scrollbar { display: none; }
+
+html[data-hi5-surface='workspace'] .project-detail-tabs > button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+html[data-hi5-surface='workspace'] .project-detail-panel {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+html[data-hi5-surface='workspace'] .project-board-wrap,
+html[data-hi5-surface='workspace'] .project-task-list-view,
+html[data-hi5-surface='workspace'] .project-timeline-view,
+html[data-hi5-surface='workspace'] .project-workload-view {
+  min-width: 0;
+  min-height: 0;
+}
+
+html[data-hi5-surface='workspace'] .project-board {
+  grid-auto-columns: minmax(250px, 1fr);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+/* Projects v2 task list */
+html[data-hi5-surface='workspace'] .project-task-list-view {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 8px;
+  height: 100%;
+}
+
+html[data-hi5-surface='workspace'] .project-task-toolbar {
+  min-height: 42px;
+  padding: 5px 7px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+}
+
+html[data-hi5-surface='workspace'] .project-task-toolbar > div:first-child {
+  flex: 1 1 auto;
+  min-width: 170px;
+}
+
+html[data-hi5-surface='workspace'] .project-task-toolbar strong,
+html[data-hi5-surface='workspace'] .project-task-toolbar span {
+  display: block;
+}
+
+html[data-hi5-surface='workspace'] .project-task-toolbar span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+html[data-hi5-surface='workspace'] .project-task-list-shell {
+  min-height: 0;
+  overflow: hidden;
+}
+
+html[data-hi5-surface='workspace'] .project-task-table {
+  width: 100%;
+  min-width: 880px;
+  border-collapse: collapse;
+}
+
+html[data-hi5-surface='workspace'] .project-task-table th,
+html[data-hi5-surface='workspace'] .project-task-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: middle;
+  font-size: 11px;
+}
+
+html[data-hi5-surface='workspace'] .project-task-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+html[data-hi5-surface='workspace'] .project-task-title-cell {
+  display: grid;
+  gap: 2px;
+  min-width: 220px;
+}
+
+html[data-hi5-surface='workspace'] .project-task-title-cell small { color: var(--muted); }
+
+html[data-hi5-surface='workspace'] .project-task-mobile-list { display: none; }
+
+/* Projects v2 timeline */
+html[data-hi5-surface='workspace'] .project-timeline-view {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 8px;
+  height: 100%;
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-heading,
+html[data-hi5-surface='workspace'] .project-workload-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 42px;
+  padding: 5px 7px;
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-heading p,
+html[data-hi5-surface='workspace'] .project-workload-heading p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-shell {
+  min-height: 0;
+  overflow: auto;
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-canvas {
+  position: relative;
+  min-width: 920px;
+  padding: 0 10px 12px 220px;
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-scale {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  min-height: 34px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-soft);
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-scale span {
+  padding: 9px 6px;
+  border-left: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  text-align: center;
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-row {
+  position: relative;
+  min-height: 52px;
+  border-bottom: 1px solid var(--line);
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-label {
+  position: absolute;
+  right: 100%;
+  top: 0;
+  display: grid;
+  align-content: center;
+  width: 220px;
+  height: 100%;
+  padding: 6px 10px;
+  border-right: 1px solid var(--line);
+  background: var(--surface);
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-label strong,
+html[data-hi5-surface='workspace'] .project-timeline-label small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-label small {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-track {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(to right, transparent 0, transparent calc(12.5% - 1px), var(--line) calc(12.5% - 1px), var(--line) 12.5%);
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-bar {
+  position: absolute;
+  z-index: 2;
+  top: 14px;
+  left: var(--task-left, 0%);
+  width: max(18px, var(--task-width, 12%));
+  height: 24px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--brand) 36%, var(--line));
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--brand) 13%, var(--surface));
+  color: var(--ink);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 22px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-bar.status-done {
+  background: color-mix(in srgb, #2a9d68 15%, var(--surface));
+  border-color: color-mix(in srgb, #2a9d68 44%, var(--line));
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-bar.status-blocked {
+  background: color-mix(in srgb, var(--danger) 11%, var(--surface));
+  border-color: color-mix(in srgb, var(--danger) 38%, var(--line));
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-milestone {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  left: var(--milestone-left, 50%);
+  width: 1px;
+  border-left: 1px dashed color-mix(in srgb, var(--warning) 70%, var(--line));
+  pointer-events: none;
+}
+
+html[data-hi5-surface='workspace'] .project-timeline-milestone span {
+  position: sticky;
+  top: 36px;
+  display: inline-block;
+  margin-left: 4px;
+  padding: 2px 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--warning) 12%, var(--surface));
+  color: var(--warning);
+  font-size: 8px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+/* Projects v2 workload */
+html[data-hi5-surface='workspace'] .project-workload-view {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 8px;
+  height: 100%;
+}
+
+html[data-hi5-surface='workspace'] .project-workload-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+  align-content: start;
+  gap: 8px;
+  min-height: 0;
+  overflow: auto;
+}
+
+html[data-hi5-surface='workspace'] .project-workload-card {
+  display: grid;
+  gap: 10px;
+  padding: 11px;
+}
+
+html[data-hi5-surface='workspace'] .project-workload-card > header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+html[data-hi5-surface='workspace'] .project-workload-card > header > div {
+  display: grid;
+  min-width: 0;
+}
+
+html[data-hi5-surface='workspace'] .project-workload-card > header small { color: var(--muted); }
+
+html[data-hi5-surface='workspace'] .project-workload-meter {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-strong);
+}
+
+html[data-hi5-surface='workspace'] .project-workload-meter i {
+  display: block;
+  width: var(--load, 0%);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--brand);
+}
+
+html[data-hi5-surface='workspace'] .project-workload-card.overloaded .project-workload-meter i { background: var(--danger); }
+
+html[data-hi5-surface='workspace'] .project-workload-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+
+html[data-hi5-surface='workspace'] .project-workload-facts > div {
+  display: grid;
+  gap: 1px;
+  padding: 6px;
+  border-radius: 7px;
+  background: var(--surface-soft);
+}
+
+html[data-hi5-surface='workspace'] .project-workload-facts span {
+  color: var(--muted);
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+html[data-hi5-surface='workspace'] .project-workload-facts strong { font-size: 13px; }
+
+@media (max-width: 980px) {
+  html[data-hi5-surface='workspace'] .project-kpi-strip,
+  html[data-hi5-surface='workspace'] .project-detail-summary {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  html[data-hi5-surface='workspace'] .project-kpi-strip::-webkit-scrollbar,
+  html[data-hi5-surface='workspace'] .project-detail-summary::-webkit-scrollbar { display: none; }
+
+  html[data-hi5-surface='workspace'] .project-kpi-strip article,
+  html[data-hi5-surface='workspace'] .project-detail-summary > div {
+    min-width: 138px;
+  }
+
+  html[data-hi5-surface='workspace'] .project-overview-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  html[data-hi5-surface='workspace'] .project-list-view,
+  html[data-hi5-surface='workspace'] .project-detail-view {
+    display: block;
+    overflow: auto;
+  }
+
+  html[data-hi5-surface='workspace'] .project-list-header,
+  html[data-hi5-surface='workspace'] .project-detail-header {
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  html[data-hi5-surface='workspace'] .project-list-header p,
+  html[data-hi5-surface='workspace'] .project-detail-title > p { display: none; }
+
+  html[data-hi5-surface='workspace'] .project-kpi-strip,
+  html[data-hi5-surface='workspace'] .project-detail-summary,
+  html[data-hi5-surface='workspace'] .project-detail-tabs { margin-bottom: 6px; }
+
+  html[data-hi5-surface='workspace'] .project-list-shell,
+  html[data-hi5-surface='workspace'] .project-detail-panel { overflow: visible; }
+
+  html[data-hi5-surface='workspace'] .project-table-wrap,
+  html[data-hi5-surface='workspace'] .project-task-table-wrap { display: none; }
+
+  html[data-hi5-surface='workspace'] .project-mobile-list,
+  html[data-hi5-surface='workspace'] .project-task-mobile-list { display: grid; }
+
+  html[data-hi5-surface='workspace'] .project-task-mobile-list {
+    gap: 7px;
+    padding: 7px;
+  }
+
+  html[data-hi5-surface='workspace'] .project-task-mobile-card {
+    display: grid;
+    gap: 7px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--surface);
+    color: var(--ink);
+    text-align: left;
+  }
+
+  html[data-hi5-surface='workspace'] .project-task-mobile-card > header,
+  html[data-hi5-surface='workspace'] .project-task-mobile-card > footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  html[data-hi5-surface='workspace'] .project-task-mobile-card small { color: var(--muted); }
+
+  html[data-hi5-surface='workspace'] .project-overview-grid { grid-template-columns: 1fr; }
+  html[data-hi5-surface='workspace'] .project-span-two { grid-column: auto; }
+
+  html[data-hi5-surface='workspace'] .project-board { grid-auto-columns: min(82vw, 300px); }
+  html[data-hi5-surface='workspace'] .project-timeline-canvas { min-width: 760px; padding-left: 180px; }
+  html[data-hi5-surface='workspace'] .project-timeline-label { width: 180px; }
+
+  html[data-hi5-surface='workspace'] .project-create-panel {
+    top: auto;
+    bottom: 0;
+    width: 100vw;
+    height: min(90dvh, 760px);
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 14px 14px 0 0;
+  }
+
+  html[data-hi5-surface='workspace'] .project-form-grid { grid-template-columns: 1fr; }
+}

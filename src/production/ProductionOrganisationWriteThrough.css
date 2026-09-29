@@ -1,0 +1,113 @@
+.production-org-write-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.38);
+  backdrop-filter: blur(4px);
+}
+
+.production-org-write-overlay > div {
+  width: min(420px, 100%);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 20px;
+  background: var(--surface, #ffffff);
+  color: var(--text, #0f172a);
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.24);
+}
+
+.production-org-write-overlay strong {
+  font-size: 15px;
+}
+
+.production-org-write-overlay small {
+  grid-column: 2;
+  color: var(--muted, #64748b);
+  line-height: 1.45;
+}
+
+.production-org-write-spinner {
+  grid-row: 1 / span 2;
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(148, 163, 184, 0.38);
+  border-top-color: currentColor;
+  border-radius: 999px;
+  animation: production-org-write-spin 0.75s linear infinite;
+}
+
+.production-org-write-notice {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 100001;
+  width: min(440px, calc(100vw - 32px));
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 16px;
+  background: var(--surface, #ffffff);
+  color: var(--text, #0f172a);
+  box-shadow: 0 16px 42px rgba(15, 23, 42, 0.18);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.production-org-write-notice.error {
+  border-color: rgba(220, 38, 38, 0.35);
+}
+
+.production-org-write-notice.success {
+  border-color: rgba(22, 163, 74, 0.35);
+}
+
+.production-org-write-notice button {
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@keyframes production-org-write-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 680px) {
+  .production-org-write-overlay {
+    padding: 16px;
+  }
+
+  .production-org-write-overlay > div {
+    border-radius: 16px;
+    padding: 18px;
+  }
+
+  .production-org-write-notice {
+    left: 16px;
+    right: 16px;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .production-org-write-spinner {
+    animation-duration: 1.6s;
+  }
+}

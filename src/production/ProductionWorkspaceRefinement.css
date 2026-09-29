@@ -1,0 +1,268 @@
+/* Workspace-wide refinement layer: live preferences, clean scrolling, motion and loading feedback. */
+.production-settings-nav,
+.nav-stack,
+.production-unified-detail-nav-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.production-settings-nav::-webkit-scrollbar,
+.nav-stack::-webkit-scrollbar,
+.production-unified-detail-nav-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.production-settings-sidebar,
+.sidebar,
+.production-unified-rail {
+  position: relative;
+}
+
+.production-scroll-assist {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+
+.production-scroll-assist.is-settings { top: 72px; bottom: 8px; }
+.production-scroll-assist.is-primary { top: 82px; bottom: 82px; }
+.production-scroll-assist.is-record { top: 205px; bottom: 8px; }
+
+.production-scroll-assist button {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(var(--accent-rgb), .30);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  color: var(--brand);
+  box-shadow: 0 8px 22px rgba(16, 33, 63, .16);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 150ms ease, transform 150ms ease, background 150ms ease, border-color 150ms ease;
+}
+
+.sidebar .production-scroll-assist button {
+  border-color: rgba(255,255,255,.18);
+  background: rgba(9, 29, 61, .76);
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 88%, white);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .26);
+}
+
+.production-scroll-assist button:hover,
+.production-scroll-assist button:focus-visible {
+  border-color: rgba(var(--accent-rgb), .58);
+  background: color-mix(in srgb, var(--surface) 78%, rgb(var(--accent-rgb)) 22%);
+  transform: translateY(-1px) scale(1.03);
+}
+
+.production-scroll-assist button.is-hidden {
+  opacity: 0;
+  transform: scale(.82);
+  pointer-events: none;
+}
+
+/* Page location is already represented by workspace tabs + breadcrumbs. */
+.view-header { display: none !important; }
+.production-settings-topbar {
+  min-height: 48px !important;
+  padding-block: 6px !important;
+}
+.production-settings-title-row > div { display: none !important; }
+.production-settings-title-row { min-height: 34px; }
+.production-record-topbar { display: none !important; }
+
+/* Production queues: neutral white list surface with pagination pinned to the panel floor. */
+.production-record-main {
+  height: 100%;
+  min-height: 0;
+  grid-template-rows: auto auto minmax(0, 1fr) auto !important;
+  background: var(--surface) !important;
+}
+
+.production-record-toolbar {
+  border-radius: var(--record-radius-lg) var(--record-radius-lg) 0 0;
+  background: var(--surface) !important;
+}
+
+.production-record-content {
+  min-height: 0;
+  overflow: auto;
+  background: var(--surface) !important;
+  padding: 12px 14px 16px;
+}
+
+.production-record-result-line,
+.production-record-pagination,
+.production-record-table-wrap,
+.production-record-compact-list {
+  background: var(--surface) !important;
+}
+
+.production-record-pagination {
+  align-self: end;
+  margin-top: 0;
+  border-top: 1px solid var(--line);
+}
+
+.production-record-toolbar .production-record-new { flex: 0 0 auto; }
+.production-record-filter-trigger { display: none !important; }
+
+/* Shared motion language. */
+@keyframes hi5-content-enter {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hi5-drawer-enter {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes hi5-skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.production-motion-enter,
+.production-settings-content,
+.service-catalogue-admin,
+.organisation-workspace,
+.dashboard-view,
+.people-view,
+.knowledge-view {
+  animation: hi5-content-enter 190ms cubic-bezier(.2,.75,.25,1) both;
+}
+
+.production-motion-enter-fast { animation-duration: 130ms; }
+.production-motion-drawer { animation: hi5-drawer-enter 180ms cubic-bezier(.2,.75,.25,1) both; }
+
+button,
+.workspace-tab,
+.nav-item,
+.production-record-card,
+.production-record-compact-list > button,
+.production-settings-panel,
+.production-settings-nav button {
+  transition-property: background-color, border-color, color, box-shadow, transform, opacity;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
+
+button:active:not(:disabled),
+.production-record-card:active,
+.production-record-compact-list > button:active {
+  transform: translateY(1px) scale(.995);
+}
+
+/* Skeletons intentionally mirror the eventual layout to prevent large content jumps. */
+.production-skeleton {
+  position: relative;
+  overflow: hidden;
+}
+
+.production-skeleton i,
+.production-record-skeleton-head i {
+  display: block;
+  border-radius: 7px;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--surface-strong) 78%, transparent) 20%,
+    color-mix(in srgb, var(--surface-soft) 45%, white) 38%,
+    color-mix(in srgb, var(--surface-strong) 78%, transparent) 58%);
+  background-size: 240% 100%;
+  animation: hi5-skeleton-shimmer 1.25s linear infinite;
+}
+
+.production-record-skeleton-table {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--record-radius-md, 16px);
+  background: var(--surface);
+}
+
+.production-record-skeleton-head,
+.production-record-skeleton-row {
+  display: grid;
+  grid-template-columns: 120px minmax(180px, 1.7fr) 110px 110px 150px 135px 170px 115px;
+  gap: 15px;
+  align-items: center;
+  min-width: 1050px;
+  padding: 12px 14px;
+}
+
+.production-record-skeleton-head { border-bottom: 1px solid var(--line); background: var(--surface-soft); }
+.production-record-skeleton-head i { height: 9px; width: 72%; }
+.production-record-skeleton-row { min-height: 52px; border-bottom: 1px solid var(--line); }
+.production-record-skeleton-row:last-child { border-bottom: 0; }
+.production-record-skeleton-row i { height: 11px; width: 82%; }
+.production-record-skeleton-row i:nth-child(2) { height: 16px; width: 92%; }
+.production-record-skeleton-row i:nth-child(3),
+.production-record-skeleton-row i:nth-child(4) { height: 24px; width: 72px; border-radius: 999px; }
+
+.production-record-skeleton-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.production-record-skeleton-card { min-height: 160px; display: grid; gap: 11px; align-content: start; padding: 14px; border: 1px solid var(--line); border-radius: var(--record-radius-md, 16px); }
+.production-record-skeleton-card i:nth-child(1) { width: 34%; height: 14px; }
+.production-record-skeleton-card i:nth-child(2) { width: 78%; height: 20px; }
+.production-record-skeleton-card i:nth-child(3) { width: 55%; height: 26px; }
+.production-record-skeleton-card i:nth-child(4) { width: 100%; height: 44px; }
+
+.production-record-skeleton-compact { display: grid; gap: 5px; }
+.production-record-skeleton-line { min-height: 48px; display: grid; grid-template-columns: 120px minmax(160px,1fr) 90px 110px; align-items: center; gap: 12px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 12px; }
+.production-record-skeleton-line i { height: 12px; width: 80%; }
+.production-record-skeleton-line i:nth-child(3),
+.production-record-skeleton-line i:nth-child(4) { height: 24px; border-radius: 999px; }
+
+/* The authenticated phone shell owns sidebar positioning. Keep this later-loaded
+   refinement layer from overriding App.css's fixed off-canvas drawer contract. */
+@media (max-width: 680px) and (any-pointer: coarse),
+       (max-height: 600px) and (any-pointer: coarse) {
+  .sidebar,
+  .sidebar-collapsed .sidebar {
+    position: fixed;
+  }
+}
+
+@media (max-width: 760px) {
+  .production-scroll-assist.is-primary,
+  .production-scroll-assist.is-record { display: none; }
+
+  .production-record-filter-trigger { display: inline-flex !important; }
+  .production-record-toolbar { flex-wrap: wrap; padding: 9px 10px; }
+  .production-record-search { order: 4; flex-basis: 100%; }
+  .production-record-content { background: var(--surface) !important; padding: 8px; }
+  .production-settings-topbar { min-height: 44px !important; }
+  .production-record-skeleton-cards { grid-template-columns: 1fr; }
+  .production-record-skeleton-table { overflow-x: hidden; }
+  .production-record-skeleton-head,
+  .production-record-skeleton-row { min-width: 0; grid-template-columns: 88px minmax(0,1fr) 72px; }
+  .production-record-skeleton-head i:nth-child(n+4),
+  .production-record-skeleton-row i:nth-child(n+4) { display: none; }
+  .production-record-skeleton-line { grid-template-columns: 86px minmax(0,1fr) 76px; }
+  .production-record-skeleton-line i:nth-child(4) { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}

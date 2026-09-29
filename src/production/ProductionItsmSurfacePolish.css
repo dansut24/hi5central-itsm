@@ -1,0 +1,249 @@
+/* Production ITSM queue visual alignment with the floating Settings surfaces. */
+.production-record-shell {
+  --record-radius-sm: var(--hi5-radius-sm, 12px);
+  --record-radius-md: var(--hi5-radius-md, 16px);
+  --record-radius-lg: var(--hi5-radius-lg, 20px);
+  box-sizing: border-box;
+  gap: 14px;
+  padding: 14px;
+  background: var(--page);
+}
+
+.production-record-filter-rail,
+.production-record-main {
+  border: 1px solid var(--line);
+  border-radius: var(--record-radius-lg);
+  box-shadow: 0 14px 36px rgba(16, 33, 63, .08);
+}
+
+.production-record-filter-rail {
+  border-right: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+}
+
+.production-record-main {
+  position: relative;
+  background: var(--page);
+}
+
+.app-shell[data-theme='dark'] .production-record-filter-rail,
+.app-shell[data-theme='dark'] .production-record-main {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .24);
+}
+
+.production-record-filter-heading {
+  margin: 7px 8px 0;
+  min-height: 58px;
+  border: 0;
+  border-radius: var(--record-radius-md);
+  background: linear-gradient(105deg, rgba(var(--accent-rgb), .14), var(--surface-soft) 72%);
+}
+
+.production-record-filter-heading span,
+.production-record-topbar > div > span {
+  color: var(--brand);
+}
+
+.production-record-view-list button {
+  border-radius: var(--record-radius-sm);
+}
+
+.production-record-view-list button.is-active {
+  border-color: rgba(var(--accent-rgb), .34);
+  background: rgba(var(--accent-rgb), .15);
+  color: var(--ink);
+  box-shadow: inset 4px 0 0 rgb(var(--accent-rgb)), 0 5px 16px rgba(var(--accent-rgb), .08);
+}
+
+.production-record-filter-field select,
+.production-record-pagination select,
+.production-record-view-select,
+.production-record-search,
+.production-record-refresh,
+.production-record-mobile-filter-row button {
+  border-radius: var(--record-radius-sm);
+}
+
+.production-record-filter-field select:focus,
+.production-record-pagination select:focus,
+.production-record-view-select:focus-within,
+.production-record-search:focus-within {
+  outline: 0;
+  border-color: rgba(var(--accent-rgb), .58);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), .12);
+}
+
+.production-record-topbar {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--record-radius-lg) var(--record-radius-lg) 0 0;
+  background: linear-gradient(105deg, rgba(var(--accent-rgb), .14) 0%, var(--surface) 38%, var(--surface) 100%);
+}
+
+.production-record-topbar::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgb(var(--accent-rgb)), rgba(var(--accent-rgb), .16) 55%, transparent 100%);
+  pointer-events: none;
+}
+
+.production-record-new {
+  box-shadow: 0 8px 20px rgba(var(--accent-rgb), .20);
+}
+
+.production-record-new:hover,
+.production-record-new:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(var(--accent-rgb), .28);
+}
+
+.production-record-toolbar {
+  background: color-mix(in srgb, var(--surface) 97%, rgba(var(--accent-rgb), .06));
+}
+
+.production-record-search {
+  background: color-mix(in srgb, var(--surface-soft) 94%, rgba(var(--accent-rgb), .08));
+}
+
+.production-record-search > svg,
+.production-record-view-select > svg,
+.production-record-refresh:hover,
+.production-record-clear {
+  color: var(--brand);
+}
+
+.production-record-view-select {
+  border-color: rgba(var(--accent-rgb), .22);
+  background: rgba(var(--accent-rgb), .08);
+}
+
+.production-record-refresh:hover,
+.production-record-pagination button:hover:not(:disabled),
+.production-record-mobile-filter-row button:hover {
+  border-color: rgba(var(--accent-rgb), .34);
+  background: rgba(var(--accent-rgb), .10);
+}
+
+.production-record-result-line {
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), .07), transparent 42%);
+}
+
+.production-record-table-wrap,
+.production-record-compact-list,
+.production-record-card {
+  border-radius: var(--record-radius-md);
+}
+
+.production-record-table-wrap {
+  border-color: color-mix(in srgb, var(--line) 82%, rgb(var(--accent-rgb)) 18%);
+}
+
+.production-record-table th {
+  background: linear-gradient(180deg, rgba(var(--accent-rgb), .08), var(--surface-soft));
+}
+
+.production-record-table tbody tr:hover,
+.production-record-compact-list > button:hover {
+  background: rgba(var(--accent-rgb), .055);
+}
+
+.production-record-table td:first-child button,
+.production-record-compact-list > button > strong,
+.production-record-card > div:first-child > strong {
+  color: var(--brand);
+}
+
+.production-record-status {
+  background: rgba(var(--accent-rgb), .10);
+  color: var(--brand);
+}
+
+.production-record-card {
+  border-color: color-mix(in srgb, var(--line) 86%, rgb(var(--accent-rgb)) 14%);
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), .055), var(--surface) 34%);
+  box-shadow: inset 3px 0 0 rgba(var(--accent-rgb), .48);
+}
+
+.production-record-card:hover {
+  border-color: rgba(var(--accent-rgb), .34);
+  box-shadow: inset 3px 0 0 rgb(var(--accent-rgb)), 0 10px 26px rgba(var(--accent-rgb), .10);
+}
+
+.production-record-compact-list {
+  border-color: color-mix(in srgb, var(--line) 86%, rgb(var(--accent-rgb)) 14%);
+}
+
+.production-record-pagination {
+  border-radius: 0 0 var(--record-radius-lg) var(--record-radius-lg);
+  background: color-mix(in srgb, var(--surface) 97%, rgba(var(--accent-rgb), .05));
+}
+
+.production-record-mobile-filter {
+  border-radius: var(--record-radius-lg) 0 0 var(--record-radius-lg);
+  overflow: hidden;
+}
+
+.production-record-mobile-filter header {
+  background: linear-gradient(105deg, rgba(var(--accent-rgb), .14), var(--surface) 68%);
+}
+
+@media (max-width: 1050px) and (min-width: 761px) {
+  .production-record-shell {
+    gap: 12px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 760px) {
+  .production-record-shell {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 9px;
+    overflow: hidden;
+  }
+
+  .production-record-main {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--record-radius-lg);
+    overflow: hidden;
+    box-shadow: 0 10px 28px rgba(16, 33, 63, .08);
+  }
+
+  .app-shell[data-theme='dark'] .production-record-main {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .22);
+  }
+
+  .production-record-topbar {
+    background: linear-gradient(105deg, rgba(var(--accent-rgb), .17) 0%, var(--surface) 64%);
+  }
+
+  .production-record-mobile-filter-row {
+    background: var(--surface);
+  }
+
+  .production-record-mobile-filter-row button {
+    border-color: rgba(var(--accent-rgb), .28);
+    background: rgba(var(--accent-rgb), .10);
+    color: var(--brand);
+  }
+
+  .production-record-toolbar {
+    background: var(--surface);
+  }
+
+  .production-record-result-line {
+    background: rgba(var(--accent-rgb), .07);
+  }
+
+  .production-record-content {
+    background: color-mix(in srgb, var(--page) 96%, rgba(var(--accent-rgb), .05));
+  }
+
+  .production-record-pagination {
+    border-radius: 0 0 var(--record-radius-lg) var(--record-radius-lg);
+  }
+}

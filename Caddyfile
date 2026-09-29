@@ -1,0 +1,19 @@
+:80 {
+  handle /healthz {
+    respond "ok" 200
+  }
+
+  handle {
+    encode zstd gzip
+    root * /srv
+    try_files {path} /index.html
+    file_server
+
+    header {
+      X-Content-Type-Options "nosniff"
+      Referrer-Policy "strict-origin-when-cross-origin"
+      X-Frame-Options "SAMEORIGIN"
+      -Server
+    }
+  }
+}

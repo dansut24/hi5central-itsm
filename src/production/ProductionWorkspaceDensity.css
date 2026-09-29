@@ -1,0 +1,94 @@
+/*
+ * Authenticated workspace density contract.
+ *
+ * The outer frame around every routed workspace surface is deliberately 2px.
+ * Internal component spacing (cards, forms, toolbars, lists and navigation)
+ * remains owned by the component so density is gained without making controls
+ * cramped. Keep new authenticated workspace surfaces aligned to this token.
+ */
+:root {
+  --hi5-workspace-edge: 2px;
+  --hi5-context-edge: var(--hi5-workspace-edge);
+}
+
+/* Feature workspaces that previously carried 12-20px page gutters. */
+html[data-hi5-surface='workspace'] .calendar-view,
+html[data-hi5-surface='workspace'] .rota-view,
+html[data-hi5-surface='workspace'] .organisation-content,
+html[data-hi5-surface='workspace'] .project-list-view,
+html[data-hi5-surface='workspace'] .project-detail-view,
+html[data-hi5-surface='workspace'] .new-tab-view,
+html[data-hi5-surface='workspace'] .new-record-page,
+html[data-hi5-surface='workspace'] .cmdb-view,
+html[data-hi5-surface='workspace'] .reports-view,
+html[data-hi5-surface='workspace'] .entity-detail-view,
+html[data-hi5-surface='workspace'] .knowledge-article-view {
+  box-sizing: border-box;
+  padding: var(--hi5-workspace-edge) !important;
+}
+
+/* New-record workbench has its own inner shell rather than using page padding. */
+html[data-hi5-surface='workspace'] .unified-new-record-shell {
+  box-sizing: border-box;
+  padding: var(--hi5-workspace-edge) !important;
+}
+
+/* Production ITSM list/table views use a separate routed shell. Surface polish
+   previously applied 14px desktop / 12px tablet / 9px mobile padding directly
+   to that shell, so reducing only the results area left the old outer frame
+   visible. The shell itself now follows the same 2px workspace edge contract.
+   The rail-to-list gap remains component-owned internal spacing. */
+html[data-hi5-surface='workspace'] .production-record-shell {
+  box-sizing: border-box;
+  padding: var(--hi5-workspace-edge) !important;
+}
+
+html[data-hi5-surface='workspace'] .production-record-content {
+  padding: var(--hi5-workspace-edge) !important;
+}
+
+/* Settings uses a contextual rail plus a content surface. The 14px gap between
+   those two controls remains intentional; only the unused outer frame becomes
+   2px. */
+html[data-hi5-surface='workspace'] .production-settings-content {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  box-sizing: border-box;
+  padding: var(--hi5-workspace-edge) !important;
+}
+
+@media (min-width: 721px) {
+  html[data-hi5-surface='workspace'] .production-settings-shell {
+    padding: var(--hi5-workspace-edge) !important;
+  }
+}
+
+/* Knowledge desktop/tablet uses --hi5-context-edge, including the space
+   reserved for its floating category rail. Mobile keeps only the functional
+   top allowance for the category bar; its true outside edge is still 2px. */
+@media (max-width: 720px) {
+  html[data-hi5-surface='workspace'] .knowledge-view {
+    padding: 60px var(--hi5-workspace-edge) var(--hi5-workspace-edge) !important;
+  }
+
+  html[data-hi5-surface='workspace'] .production-settings-content {
+    padding: var(--hi5-workspace-edge) var(--hi5-workspace-edge)
+      calc(var(--hi5-workspace-edge) + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* Dashboard v3 had already been reduced to 2px/4px. Finish the job so its
+   outside frame matches record details exactly at every breakpoint. */
+html[data-hi5-surface='workspace'] .dashboard-builder-v3 .dashboard-canvas {
+  padding: var(--hi5-workspace-edge) !important;
+}
+
+/* Live Chat was effectively edge-to-edge. Give it the same tiny visual frame
+   without changing any conversation/message padding inside the application. */
+html[data-hi5-surface='workspace'] .live-chat-view {
+  width: calc(100% - 4px) !important;
+  height: calc(100% - 4px) !important;
+  margin: var(--hi5-workspace-edge) !important;
+  box-sizing: border-box;
+}

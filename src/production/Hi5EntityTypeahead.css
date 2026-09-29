@@ -1,0 +1,147 @@
+.hi5-entity-typeahead {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.hi5-entity-input-shell,
+.hi5-entity-selected {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.hi5-entity-input-shell {
+  padding: 0 10px;
+}
+
+.hi5-entity-input-shell > svg {
+  flex: 0 0 auto;
+  color: var(--muted);
+}
+
+.hi5-entity-input-shell input {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 11px;
+}
+.hi5-entity-input-shell:focus-within {
+  border-color: rgba(var(--accent-rgb), .42);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), .08);
+}
+
+.hi5-entity-selected {
+  padding: 5px 7px;
+  background: color-mix(in srgb, var(--surface) 92%, rgb(var(--accent-rgb)) 8%);
+}
+
+.hi5-entity-avatar {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(var(--accent-rgb), .14);
+  color: var(--brand);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.hi5-entity-selected-copy,
+.hi5-entity-results button > span:last-child {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  gap: 1px;
+}
+
+.hi5-entity-selected strong,
+.hi5-entity-results strong {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hi5-entity-selected small,
+.hi5-entity-results small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hi5-entity-selected > button {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.hi5-entity-results {
+  position: absolute;
+  z-index: 80;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 4px;
+  border: 1px solid color-mix(in srgb, var(--line) 76%, rgb(var(--accent-rgb)) 24%);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 18px 42px rgba(16, 30, 54, .16);
+}
+
+.hi5-entity-results > button {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.hi5-entity-results > button:hover,
+.hi5-entity-results > button.is-active {
+  background: color-mix(in srgb, var(--surface-soft) 90%, rgb(var(--accent-rgb)) 10%);
+}
+
+.hi5-entity-empty {
+  padding: 11px 10px;
+  color: var(--muted);
+  font-size: 10px;
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .hi5-entity-results {
+    max-height: 240px;
+  }
+}

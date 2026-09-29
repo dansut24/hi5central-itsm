@@ -1,0 +1,407 @@
+/* Workspace Shell v3 corrective layer.
+   Loaded last so the visible tab strip, overlays and user docking preferences
+   remain authoritative without disturbing the proven underlying workspace engine. */
+
+/* -------------------------------------------------------------------------- */
+/* Top workspace dock                                                         */
+/* -------------------------------------------------------------------------- */
+html[data-hi5-surface='workspace'] .tabbar {
+  z-index: 90 !important;
+  isolation: isolate;
+  overflow: visible !important;
+}
+
+.production-workspace-tabdock {
+  display: flex !important;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  overflow: visible;
+}
+
+.production-workspace-mobile-nav {
+  order: 0;
+  flex: 0 0 32px;
+}
+
+.production-workspace-tabs-viewport {
+  position: relative;
+  z-index: 1;
+  order: 1;
+  flex: 1 1 auto;
+  min-width: 80px !important;
+  max-width: 100%;
+  overflow: hidden !important;
+  contain: inline-size;
+}
+
+.production-workspace-tabs {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100%;
+  padding-right: 2px;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+.production-workspace-tabdock-actions {
+  position: relative;
+  z-index: 3;
+  order: 2;
+  flex: 0 0 auto;
+  min-width: max-content;
+  padding-left: 4px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  backdrop-filter: blur(20px) saturate(1.16);
+  -webkit-backdrop-filter: blur(20px) saturate(1.16);
+}
+
+/* The production Notification Centre is authoritative for unread state.
+   The underlying workspace still contains its historical local counter,
+   so keep that legacy badge hidden even when the real server count is zero.
+   A real non-zero count is rendered by ProductionNotificationCenter via the
+   hi5-has-server-notifications pseudo-element. */
+html[data-hi5-surface='workspace'] .production-workspace-notifications > span,
+html[data-hi5-surface='workspace'] .notification-trigger .notification-count,
+html[data-hi5-surface='workspace'] .notification-trigger .notification-badge {
+  display: none !important;
+}
+
+/* Search owns its border; the global form focus ring must not escape the
+   floating workspace dock. */
+.production-workspace-search,
+.production-workspace-search.is-open,
+.production-workspace-search:focus-within {
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.production-workspace-search input,
+.production-workspace-search input:focus,
+.production-workspace-search input:focus-visible {
+  outline: 0 !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.production-workspace-search.is-open {
+  border-color: rgba(var(--accent-rgb), 0.32) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--accent-rgb), 0.035) !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Workspace menu is portalled to body so page content can never cover it.    */
+/* -------------------------------------------------------------------------- */
+.production-workspace-menu-backdrop {
+  position: fixed;
+  z-index: 9998;
+  inset: 0;
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.production-workspace-menu.production-workspace-menu-floating {
+  position: fixed !important;
+  z-index: 9999 !important;
+  top: var(--hi5-workspace-menu-top) !important;
+  left: var(--hi5-workspace-menu-left) !important;
+  right: auto !important;
+  width: min(214px, calc(100vw - 16px));
+  max-height: min(420px, calc(100dvh - 16px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-shadow:
+    0 24px 64px rgba(5, 16, 36, 0.28),
+    0 0 0 1px rgba(var(--accent-rgb), 0.04) !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Primary navigation: match the professional Settings rail treatment.        */
+/* -------------------------------------------------------------------------- */
+html[data-hi5-surface='workspace'] .sidebar,
+html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar {
+  grid-template-rows: auto minmax(0, 1fr) !important;
+  gap: 12px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--hi5-radius-lg, 20px) !important;
+  background: color-mix(in srgb, var(--surface) 96%, transparent) !important;
+  color: var(--ink) !important;
+  box-shadow: 0 18px 48px rgba(16, 33, 63, 0.12) !important;
+  backdrop-filter: blur(24px) saturate(1.16);
+  -webkit-backdrop-filter: blur(24px) saturate(1.16);
+}
+
+html[data-hi5-surface='workspace'] .app-shell[data-theme='dark'] .sidebar {
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28) !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar::before {
+  display: none !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .brand {
+  border: 0 !important;
+  border-radius: var(--hi5-radius-md, 16px) !important;
+  background: var(--surface-soft) !important;
+  box-shadow: none !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .sidebar-toggle,
+html[data-hi5-surface='workspace'] .sidebar .mobile-drawer-close {
+  border: 1px solid var(--line) !important;
+  border-radius: var(--hi5-radius-sm, 12px) !important;
+  background: var(--surface-soft) !important;
+  color: var(--muted) !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .sidebar-toggle:hover,
+html[data-hi5-surface='workspace'] .sidebar .mobile-drawer-close:hover {
+  border-color: rgba(var(--accent-rgb), 0.24) !important;
+  background: rgba(var(--accent-rgb), 0.065) !important;
+  color: var(--ink) !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-stack {
+  gap: 10px !important;
+  padding: 3px 1px 8px !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-group {
+  gap: 3px !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-group-label,
+html[data-hi5-surface='workspace'] .sidebar .nav-group-active .nav-group-label {
+  color: var(--muted) !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-group-active .nav-group-label::before {
+  display: none !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-item {
+  min-height: 38px !important;
+  padding: 7px 10px !important;
+  border: 1px solid transparent !important;
+  border-radius: var(--hi5-radius-sm, 12px) !important;
+  background: transparent !important;
+  color: var(--muted) !important;
+  box-shadow: none !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-item svg {
+  color: var(--muted) !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-item:hover {
+  border-color: color-mix(in srgb, var(--line) 76%, rgb(var(--accent-rgb)) 24%) !important;
+  background: color-mix(in srgb, var(--surface-soft) 88%, rgb(var(--accent-rgb)) 12%) !important;
+  color: var(--ink) !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-item:hover svg {
+  color: var(--ink) !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-item.active {
+  border-color: rgba(var(--accent-rgb), 0.30) !important;
+  background: rgba(var(--accent-rgb), 0.075) !important;
+  color: var(--ink) !important;
+  font-weight: 800;
+  box-shadow: none !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-item.active svg {
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 72%, var(--ink)) !important;
+}
+
+html[data-hi5-surface='workspace'] .sidebar .nav-item.active::before {
+  display: none !important;
+}
+
+/* Service Health duplicated information already available in Dashboard/SLA
+   surfaces and no longer belongs in the primary navigation. */
+html[data-hi5-surface='workspace'] .sidebar .sidebar-status {
+  display: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Desktop left/right docking                                                 */
+/* -------------------------------------------------------------------------- */
+@media (min-width: 1181px) {
+  html[data-hi5-nav-side='right'][data-hi5-surface='workspace'] .app-shell:not(.sidebar-hidden) {
+    grid-template-columns: minmax(0, 1fr) 276px !important;
+  }
+
+  html[data-hi5-nav-side='right'][data-hi5-surface='workspace'] .app-shell.sidebar-collapsed {
+    grid-template-columns: minmax(0, 1fr) 78px !important;
+  }
+
+  html[data-hi5-nav-side='right'][data-hi5-surface='workspace'] .app-shell > .sidebar {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    margin: 10px 10px 10px 0 !important;
+  }
+
+  html[data-hi5-nav-side='right'][data-hi5-surface='workspace'] .app-shell > .main-frame {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  html[data-hi5-nav-side='right'][data-hi5-surface='workspace'] .sidebar {
+    box-shadow: -8px 18px 48px rgba(16, 33, 63, 0.12) !important;
+  }
+
+  html[data-hi5-nav-side='right'][data-hi5-surface='workspace'] .app-shell[data-theme='dark'] .sidebar {
+    box-shadow: -8px 18px 48px rgba(0, 0, 0, 0.28) !important;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Tablet / portrait                                                          */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 1180px) {
+  .production-workspace-tabdock {
+    display: flex !important;
+  }
+
+  .production-workspace-mobile-nav {
+    display: inline-grid !important;
+    order: 0;
+  }
+
+  .production-workspace-tabs-viewport {
+    order: 1;
+    flex: 1 1 auto;
+    min-width: 96px !important;
+  }
+
+  .production-workspace-tabdock-actions {
+    order: 2;
+    flex: 0 0 auto;
+  }
+
+  /* Navigation is an overlay at tablet/mobile widths. Keep both the drawer
+     and its backdrop above the floating tab dock (z-index 90), otherwise the
+     dock remains interactive and visually cuts across the open navigation. */
+  html[data-hi5-surface='workspace'] .sidebar,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar {
+    z-index: 160 !important;
+  }
+
+  html[data-hi5-surface='workspace'] .mobile-nav-backdrop {
+    z-index: 150 !important;
+  }
+
+  /* The tab viewport ends before the fixed actions. It can scroll internally,
+     but can never visually pass underneath Search / Notifications / New / More. */
+  .production-workspace-tabdock-actions::before {
+    position: absolute;
+    inset: 0 100% 0 auto;
+    width: 10px;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--surface) 88%, transparent));
+    pointer-events: none;
+    content: '';
+  }
+
+  html[data-hi5-mobile-nav-side='right'] .production-workspace-tabs-viewport {
+    order: 0;
+  }
+
+  html[data-hi5-mobile-nav-side='right'] .production-workspace-tabdock-actions {
+    order: 1;
+  }
+
+  html[data-hi5-mobile-nav-side='right'] .production-workspace-mobile-nav {
+    order: 2;
+  }
+
+  /* Drawer follows the mobile trigger side. */
+  html[data-hi5-mobile-nav-side='right'][data-hi5-surface='workspace'] .sidebar,
+  html[data-hi5-mobile-nav-side='right'][data-hi5-surface='workspace'] .sidebar-collapsed .sidebar {
+    inset: 8px 8px 8px auto !important;
+    transform: translateX(calc(100% + 24px)) !important;
+  }
+
+  html[data-hi5-mobile-nav-side='right'][data-hi5-surface='workspace'] .sidebar.mobile-open,
+  html[data-hi5-mobile-nav-side='right'][data-hi5-surface='workspace'] .sidebar-collapsed .sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+}
+
+@media (max-width: 940px) {
+  .production-workspace-new {
+    width: 32px !important;
+    min-width: 32px !important;
+    padding: 0 !important;
+  }
+
+  .production-workspace-new > span {
+    display: none !important;
+  }
+
+  .production-workspace-tab-title {
+    max-width: 96px !important;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Mobile                                                                     */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 680px) {
+  .production-workspace-tabdock {
+    gap: 3px !important;
+    padding-inline: 3px !important;
+  }
+
+  .production-workspace-tabs-viewport {
+    min-width: 58px !important;
+  }
+
+  .production-workspace-tabdock-actions {
+    gap: 2px !important;
+    padding-left: 2px;
+  }
+
+  .production-workspace-tabdock.is-searching .production-workspace-tabs-viewport {
+    display: none !important;
+  }
+
+  .production-workspace-tabdock.is-searching .production-workspace-tabdock-actions {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .production-workspace-tabdock.is-searching .production-workspace-search.is-open {
+    flex: 1 1 auto;
+    width: auto !important;
+    min-width: 0;
+    max-width: none !important;
+  }
+
+  .production-workspace-tabdock.is-searching .production-workspace-search.is-open input {
+    min-width: 0;
+  }
+
+  html[data-hi5-mobile-nav-side='right'][data-hi5-surface='workspace'] .sidebar,
+  html[data-hi5-mobile-nav-side='right'][data-hi5-surface='workspace'] .sidebar-collapsed .sidebar {
+    inset: 7px 7px 7px auto !important;
+  }
+
+  .production-workspace-menu.production-workspace-menu-floating {
+    width: min(214px, calc(100vw - 12px));
+  }
+}
+
+@media (max-width: 420px) {
+  .production-workspace-tab-title {
+    max-width: 82px !important;
+  }
+
+  .production-workspace-tabs {
+    gap: 3px !important;
+  }
+}
