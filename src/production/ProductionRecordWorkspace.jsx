@@ -52,7 +52,7 @@ function rmmDeviceHref(deviceId) {
   const encoded = encodeURIComponent(String(deviceId || '').toUpperCase())
   const surface = resolveTenantSurface()
   const deployment = deploymentConfig()
-  if (deployment.tenancyMode === 'single') return `/rmm/devices/${encoded}`
+  if (deployment.tenancyMode === 'single') return deployment.rmmUrl ? `${deployment.rmmUrl}/devices/${encoded}` : `/rmm/devices/${encoded}`
   if (surface?.canonical && surface?.tenantSlug) return `https://${surface.tenantSlug}-rmm.${deployment.rootDomain}/devices/${encoded}`
   return `/rmm/devices/${encoded}`
 }
