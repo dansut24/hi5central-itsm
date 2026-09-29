@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronLeft,
+  ChevronRight,
   CircleDot,
   Clock3,
   Download,
@@ -722,6 +723,7 @@ function RecordWorkspace({ route }) {
       ]
 
   const latest = meaningfulActivities.slice(0, 4)
+  const activeTabLabel = (tabs.find(([value]) => value === tab)?.[1] || 'Overview').replace(/\s+\d+$/, '')
 
   const renderOverview = () => <div className="record-lab-overview-grid">
     <section className="record-lab-panel record-lab-summary-panel">
@@ -847,15 +849,6 @@ function RecordWorkspace({ route }) {
   }
 
   const renderActivity = () => <section className="record-lab-panel record-lab-tab-panel record-lab-activity-panel">
-    <div className="record-lab-action-strip record-lab-activity-actions">
-      <button type="button" className={composerMode === 'internal' ? 'is-active' : ''} onClick={() => beginAction('internal')}><MessageSquareText size={16} />Internal note</button>
-      <button type="button" className={composerMode === 'customer' ? 'is-active' : ''} onClick={() => beginAction('customer')}><Send size={16} />Customer update</button>
-      <i />
-      <button type="button" className={composerMode === 'reassign' ? 'is-active' : ''} onClick={() => beginAction('reassign')}><UserRoundCog size={16} />Reassign</button>
-      <button type="button" className={composerMode === 'resolve' ? 'is-active' : ''} onClick={() => beginAction('resolve')}><CheckCircle2 size={16} />{route.type === 'Service Request' ? 'Complete' : 'Resolve'}</button>
-      {route.type === 'Incident' ? <button type="button" className={composerMode === 'pending' ? 'is-active' : ''} onClick={() => beginAction('pending')}><Clock3 size={16} />Pending</button> : null}
-      <button type="button" onClick={() => { setComposerMode(''); setTab('attachments') }}><Paperclip size={16} />Attachments</button>
-    </div>
     {composerMode ? <div className="record-lab-activity-composer"><ActionComposer key={composerMode} mode={composerMode} detail={detail} saving={saving} onClose={() => setComposerMode('')} onPost={postNote} onReassign={reassign} onResolve={resolve} onPending={pending} /></div> : null}
     <header className="record-lab-activity-heading"><div><span>Timeline</span><h2>Activity</h2><small>{meaningfulActivities.length ? `Latest update ${relativeTime(meaningfulActivities[0]?.createdAt)}` : 'No human updates yet'}</small></div><div className="record-lab-activity-heading-tools">{longActivity ? <><label className="record-lab-activity-search"><Search size={13} /><input type="search" value={activityQuery} onChange={(event) => setActivityQuery(event.target.value)} placeholder="Search activity…" /></label>{activityDays.length > 1 ? <select aria-label="Jump to activity date" defaultValue="" onChange={(event) => { jumpToDay(event.target.value); event.target.value = '' }}><option value="">Jump to date…</option>{activityDays.map((day) => <option key={day.key} value={day.key}>{day.label}</option>)}</select> : null}<button type="button" className="record-lab-jump-latest" onClick={jumpToLatest}><ArrowUp size={13} />Latest</button></> : null}<div className="record-lab-activity-filter"><button type="button" className={!showSystemEvents ? 'is-active' : ''} onClick={() => setShowSystemEvents(false)}>Human updates</button><button type="button" className={showSystemEvents ? 'is-active' : ''} onClick={() => setShowSystemEvents(true)}>All events{auditActivities.length ? ` ${auditActivities.length}` : ''}</button></div></div></header>
     <div className="record-lab-timeline record-lab-timeline-scroll" ref={timelineRef}>{visibleActivities.length ? activityRows : <div className="record-lab-empty">{normalizedActivityQuery ? 'No activity matches this search.' : 'No notes or customer updates have been recorded yet.'}</div>}</div>
@@ -891,7 +884,13 @@ function RecordWorkspace({ route }) {
                   : renderAudit()
 
   return <div className="record-lab-shell" ref={scrollRef}>
-    <button type="button" className="record-lab-page-back" onClick={() => navigateLab(`/${route.section}`)} title={`Back to ${route.section}`}><ArrowLeft size={17} /><span>Back to {route.section}</span></button>
+    <nav className="record-lab-breadcrumbs" aria-label="Breadcrumb">
+      <button type="button" onClick={() => navigateLab(`/${route.section}`)}>{route.section.charAt(0).toUpperCase() + route.section.slice(1)}</button>
+      <ChevronRight size={13} aria-hidden="true" />
+      <button type="button" onClick={() => setTab('overview')}>{detail.id || detail.reference}</button>
+      <ChevronRight size={13} aria-hidden="true" />
+      <span>{activeTabLabel}</span>
+    </nav>
 
     <section className="record-lab-masthead">
       <div className="record-lab-masthead-leading">
@@ -903,10 +902,22 @@ function RecordWorkspace({ route }) {
       <div className="record-lab-heading"><div><strong>{detail.id || detail.reference}</strong><LabPill tone="accent">{detail.type || route.type}</LabPill><LabPill tone={['Resolved','Closed','Completed'].includes(detail.status) ? 'good' : 'neutral'}>{detail.status}</LabPill><LabPill tone={detail.priority === 'Critical' || detail.priority === 'High' ? 'danger' : detail.priority === 'Medium' ? 'warning' : 'good'}>{detail.priority}</LabPill></div><h1>{detail.title}</h1><p>{detail.requester || 'Requester not recorded'} · {detail.team || 'Unassigned'} / {detail.assignee || 'Unassigned'} · Updated {relativeTime(detail.updatedAt)}</p></div>
       <div className="record-lab-masthead-signals">{contextualSignal ? <button type="button" className={`record-lab-context-signal is-${contextualSignal.tone}`} onClick={() => { setInspectorCollapsed(false); setContextView(contextualSignal.label === 'Repeat contact' ? 'user' : 'insights') }}><Sparkles size={16} /><span><small>{contextualSignal.label}</small><strong>{contextualSignal.detail}</strong></span></button> : null}<button type="button" className={`record-lab-sla-badge is-${primarySlaTone}`} onClick={() => setTab('sla')}><Clock3 size={18} /><span><small>Resolution SLA</small><strong>{primarySlaLabel}</strong></span></button></div>
       <div className="record-lab-hero-actions">
-        <button type="button" className="is-primary" onClick={() => beginAction('internal')}><MessageSquareText size={17} />Internal note</button>
-        <button type="button" onClick={() => beginAction('customer')}><Send size={17} />Customer update</button>
-        <button type="button" onClick={() => beginAction('reassign')}><UserRoundCog size={17} />Reassign</button>
-        <button type="button" onClick={() => beginAction('resolve')}><CheckCircle2 size={17} />{route.type === 'Service Request' ? 'Complete' : 'Resolve'}</button>
+        <details className="record-lab-action-menu">
+          <summary><MessageSquareText size={16} /><span>Note</span><ChevronDown size={14} /></summary>
+          <div className="record-lab-action-menu-popover">
+            <button type="button" onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open'); beginAction('internal') }}><MessageSquareText size={15} /><span><strong>Internal note</strong><small>Visible to technicians only</small></span></button>
+            <button type="button" onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open'); beginAction('customer') }}><Send size={15} /><span><strong>Customer update</strong><small>Visible to the requester</small></span></button>
+          </div>
+        </details>
+        <details className="record-lab-action-menu">
+          <summary><UserRoundCog size={16} /><span>Reassign</span><ChevronDown size={14} /></summary>
+          <div className="record-lab-action-menu-popover align-right">
+            <button type="button" onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open'); beginAction('reassign') }}><UserRoundCog size={15} /><span><strong>Reassign</strong><small>Change team or technician</small></span></button>
+            <div className="record-lab-action-menu-label">Status</div>
+            {route.type === 'Incident' ? <button type="button" onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open'); beginAction('pending') }}><Clock3 size={15} /><span><strong>Set pending</strong><small>Customer or vendor hold</small></span></button> : null}
+            <button type="button" onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open'); beginAction('resolve') }}><CheckCircle2 size={15} /><span><strong>{route.type === 'Service Request' ? 'Complete request' : 'Resolve record'}</strong><small>{route.type === 'Service Request' ? 'Mark fulfilment complete' : 'Set final resolution'}</small></span></button>
+          </div>
+        </details>
       </div>
     </section>
 
