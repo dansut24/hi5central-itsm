@@ -1460,7 +1460,6 @@ html[data-hi5-surface='workspace'] .itsm-rmm-metric-grid > button {
   color: var(--ink);
   box-shadow: var(--itsm-card-shadow);
   text-align: left;
-  font: inherit;
   cursor: pointer;
 }
 
@@ -1846,25 +1845,28 @@ html[data-hi5-surface='workspace'] .dashboard-builder-v3.is-editing {
     min-height: 40px;
   }
 
+  /* KPI cards intentionally keep the RMM base geometry here.
+     RMM only compacts them further at <=640px. */
   html[data-hi5-surface='workspace'] .itsm-rmm-metric-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-    margin-bottom: 14px;
+    gap: 11px;
+    margin-bottom: 16px;
   }
 
   html[data-hi5-surface='workspace'] .itsm-rmm-metric-grid > button {
-    min-height: 86px;
-    grid-template-columns: 38px minmax(0, 1fr);
-    gap: 9px;
-    padding: 11px;
+    min-height: 0;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    gap: 10px;
+    padding: 13px;
   }
 
   html[data-hi5-surface='workspace'] .itsm-rmm-metric-grid > button > svg {
-    display: none;
+    display: block;
   }
 
   html[data-hi5-surface='workspace'] .itsm-rmm-metric-grid strong {
-    font-size: 18px;
+    font-size: 21px;
+    line-height: 1.1;
   }
 
   html[data-hi5-surface='workspace'] .itsm-rmm-health-summary {
