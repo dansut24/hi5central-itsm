@@ -1114,3 +1114,602 @@ html[data-hi5-surface='workspace'] .production-task-experience .production-task-
     margin-top: 8px;
   }
 }
+
+
+/* ========================================================================== */
+/* RMM-PARITY TASK DETAIL                                                     */
+/* Breadcrumb -> identity/actions -> section rail -> content cards.            */
+/* ========================================================================== */
+
+html[data-hi5-surface='workspace'] .task-detail-rmm {
+  width: 100%;
+  height: auto !important;
+  min-height: 100%;
+  display: block !important;
+  overflow: visible !important;
+  padding: 20px 24px 48px;
+  background: var(--page);
+}
+
+html[data-hi5-surface='workspace'] .task-detail-breadcrumbs {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-breadcrumbs button {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-breadcrumbs button:hover {
+  color: rgb(var(--accent-rgb));
+}
+
+html[data-hi5-surface='workspace'] .task-detail-breadcrumbs span {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-breadcrumbs svg {
+  flex: 0 0 auto;
+  color: var(--muted);
+}
+
+html[data-hi5-surface='workspace'] .task-detail-hero {
+  position: relative;
+  z-index: 30;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface);
+  box-shadow: var(--itsm-card-shadow);
+  overflow: visible;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-hero-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 58px;
+  border-radius: 14px;
+  background: rgba(var(--accent-rgb), .11);
+  color: rgb(var(--accent-rgb));
+}
+
+html[data-hi5-surface='workspace'] .task-detail-identity {
+  min-width: 0;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-identity > div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-identity > div > strong {
+  color: rgb(var(--accent-rgb));
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-identity h1 {
+  margin: 3px 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.12;
+  letter-spacing: -.025em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-identity p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-hero-actions {
+  position: relative;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-hero-actions > button {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 9px;
+  font-weight: 820;
+  cursor: pointer;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-hero-actions > button.is-primary {
+  border-color: rgb(var(--accent-rgb));
+  background: rgb(var(--accent-rgb));
+  color: #fff;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-hero-actions > button:disabled,
+html[data-hi5-surface='workspace'] .task-detail-action-menu button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-action-menu {
+  min-width: 128px;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-action-menu > summary {
+  width: 100%;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-action-menu[open] {
+  z-index: 130;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-tabs {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 14px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-tabs > button {
+  min-height: 34px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0 10px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 8px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-tabs > button.is-active {
+  border-color: var(--line);
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+html[data-hi5-surface='workspace'] .task-detail-tabs .task-detail-refresh {
+  margin-left: auto;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-content {
+  width: 100%;
+  min-height: 0;
+  overflow: visible;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-overview {
+  display: grid;
+  gap: 14px;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-card {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface);
+  box-shadow: var(--itsm-card-shadow);
+  overflow: visible;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-card > header {
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 11px 11px 0 0;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-card > header > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-card > header span {
+  color: rgb(var(--accent-rgb));
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-card > header h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-card > header > button {
+  min-height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 0 9px;
+  background: var(--surface-soft);
+  color: var(--ink);
+  font: inherit;
+  font-size: 8px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-card > header > button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-card-body {
+  padding: 14px 16px;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-card-body > p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 11px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-completion-note {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: start;
+  gap: 9px;
+  margin-top: 14px;
+  padding: 10px;
+  border-radius: 9px;
+  background: rgba(35,158,99,.08);
+  color: #188c61;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-completion-note > span {
+  display: grid;
+  gap: 2px;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-completion-note small {
+  font-size: 8px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-completion-note strong {
+  color: var(--ink);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+html[data-hi5-surface='workspace'] .task-detail-facts > div,
+html[data-hi5-surface='workspace'] .task-detail-facts > button {
+  min-width: 0;
+  min-height: 70px;
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  padding: 11px 16px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  font: inherit;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-facts > :nth-child(3n) {
+  border-right: 0;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-facts > :nth-last-child(-n+3) {
+  border-bottom: 0;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-facts > button {
+  cursor: pointer;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-facts > button:hover {
+  background: var(--surface-soft);
+}
+
+html[data-hi5-surface='workspace'] .task-detail-facts small,
+html[data-hi5-surface='workspace'] .task-detail-assignment-summary small,
+html[data-hi5-surface='workspace'] .task-detail-assignment-editor label > span {
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 800;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-facts strong,
+html[data-hi5-surface='workspace'] .task-detail-assignment-summary strong {
+  overflow: hidden;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-facts > div > span,
+html[data-hi5-surface='workspace'] .task-detail-facts > button > span {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-facts span.is-danger {
+  color: var(--danger);
+}
+
+html[data-hi5-surface='workspace'] .task-detail-assignment-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-assignment-summary > span {
+  min-width: 0;
+  min-height: 64px;
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  padding: 11px 16px;
+  border-right: 1px solid var(--line);
+}
+
+html[data-hi5-surface='workspace'] .task-detail-assignment-summary > span:last-child {
+  border-right: 0;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-assignment-editor {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: end;
+  gap: 10px;
+  padding: 12px 16px 16px;
+  border-top: 1px solid var(--line);
+  background: var(--surface-soft);
+  border-radius: 0 0 11px 11px;
+  overflow: visible;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-assignment-editor > label {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-assignment-editor > button {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgb(var(--accent-rgb));
+  border-radius: 8px;
+  padding: 0 11px;
+  background: rgb(var(--accent-rgb));
+  color: #fff;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-activity .task-work-item-composer {
+  border-bottom: 1px solid var(--line);
+  border-radius: 11px 11px 0 0;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-timeline,
+html[data-hi5-surface='workspace'] .task-detail-list {
+  padding: 10px 16px 14px;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-empty {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: var(--muted);
+  font-size: 10px;
+  text-align: center;
+}
+
+html[data-hi5-surface='workspace'] .task-detail-rmm .activity-canvas-banner {
+  margin: 0 0 10px;
+  border-radius: 9px;
+}
+
+@media (max-width: 820px) {
+  html[data-hi5-surface='workspace'] .task-detail-rmm {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 4px 2px calc(34px + env(safe-area-inset-bottom)) !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  html[data-hi5-surface='workspace'] .content-frame.production-task-mounted {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-hero {
+    grid-template-columns: 58px minmax(0, 1fr);
+    align-items: start;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-identity h1 {
+    font-size: 22px;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-hero-actions {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    margin-top: 2px;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-hero-actions > button,
+  html[data-hi5-surface='workspace'] .task-detail-action-menu {
+    width: 100%;
+    min-width: 0;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-hero-actions > button,
+  html[data-hi5-surface='workspace'] .task-detail-action-menu > summary {
+    min-height: 40px;
+    width: 100%;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-tabs {
+    min-height: 48px;
+    margin-bottom: 14px;
+    padding: 6px;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-tabs > button {
+    min-height: 34px;
+    padding: 0 10px;
+    font-size: 8px;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-tabs .task-detail-refresh {
+    margin-left: 0;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-tabs .task-detail-refresh span {
+    display: none;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-facts {
+    grid-template-columns: 1fr;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-facts > div,
+  html[data-hi5-surface='workspace'] .task-detail-facts > button,
+  html[data-hi5-surface='workspace'] .task-detail-facts > :nth-child(3n),
+  html[data-hi5-surface='workspace'] .task-detail-facts > :nth-last-child(-n+3) {
+    min-height: 58px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-facts > :last-child {
+    border-bottom: 0;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-assignment-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-assignment-editor {
+    grid-template-columns: 1fr;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-assignment-editor > button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-timeline,
+  html[data-hi5-surface='workspace'] .task-detail-list {
+    padding: 8px 14px 12px;
+  }
+
+  html[data-hi5-surface='workspace'] .task-work-item-composer {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 12px 14px;
+  }
+
+  html[data-hi5-surface='workspace'] .task-work-item-composer > button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 430px) {
+  html[data-hi5-surface='workspace'] .task-detail-identity h1 {
+    font-size: 20px;
+  }
+
+  html[data-hi5-surface='workspace'] .task-detail-hero-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
