@@ -998,3 +998,17 @@ export function ProductionRecordWorkspace() {
       node.classList.add('production-record-workspace-mounted')
       setTarget(node)
       return true
+    }
+    if (attach()) return () => mounted?.classList.remove('production-record-workspace-mounted')
+    const observer = new MutationObserver(() => { if (attach()) observer.disconnect() })
+    observer.observe(document.body, { childList: true, subtree: true })
+    return () => {
+      observer.disconnect()
+      mounted?.classList.remove('production-record-workspace-mounted')
+    }
+  }, [route])
+
+  const key = useMemo(() => route ? `${route.type}:${route.reference}` : 'none', [route])
+  if (!route || !target) return null
+  return createPortal(<RecordWorkspace key={key} route={route} />, target)
+}
