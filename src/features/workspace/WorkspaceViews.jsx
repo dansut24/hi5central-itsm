@@ -2894,6 +2894,8 @@ function UnifiedNewRecordForm({
   const selectedUser = ticketDraft.requesterId ? workspaceUsers.find((user) => user.id === ticketDraft.requesterId) : null
   const requestCost = (ticketDraft.requestedItems || []).reduce((sum, item) => sum + Number(item.unitCost || 0) * Number(item.quantity || 1), 0)
   const meta = unifiedRecordMeta[recordType] || unifiedRecordMeta.Incident
+  const pageTitle = `New ${recordType}`
+  const sectionLabel = recordType === 'Service Request' ? 'Service Requests' : `${recordType}s`
   const normalizedQuery = userQuery.trim().toLowerCase()
   const userResults = normalizedQuery
     ? workspaceUsers
@@ -2973,11 +2975,18 @@ function UnifiedNewRecordForm({
   return (
     <div className="unified-new-record-page">
       <section className="unified-new-record-shell">
+        <nav className="unified-new-record-breadcrumbs" aria-label="Breadcrumb">
+          <span>{sectionLabel}</span>
+          <ChevronRight size={13} aria-hidden="true" />
+          <strong>{pageTitle}</strong>
+        </nav>
+
         <header className="unified-new-record-header">
+          <span className={`record-type-mark ${recordType.toLowerCase().replace(/\s+/g, '-')}`}>{recordType === 'Service Request' ? 'SR' : recordType[0]}</span>
           <div>
             <span className="eyebrow">Create record</span>
-            <h2>New record</h2>
-            <p>Select the record type and requester first. The relevant form appears once the requester is confirmed.</p>
+            <h2>{pageTitle}</h2>
+            <p>Capture the requester and the information needed to route and work this {meta.singular.toLowerCase()}.</p>
           </div>
           {hasUnsavedChanges && <span className="draft-status">Unsaved changes</span>}
         </header>
@@ -2987,34 +2996,18 @@ function UnifiedNewRecordForm({
             <button className={recordType === type ? 'active' : ''} key={type} onClick={() => changeType(type)} type="button">
               <span className={`record-type-mark ${type.toLowerCase().replace(/\s+/g, '-')}`}>{type === 'Service Request' ? 'SR' : type[0]}</span>
               <span><strong>{type}</strong><small>{unifiedRecordMeta[type].description}</small></span>
-              {recordType === type && <CheckCircle2 size={17} aria-hidden="true" />}
+              {recordType === type && <CheckCircle2 size={15} aria-hidden="true" />}
             </button>
           ))}
         </nav>
 
-        <ol className="incident-stepper unified-record-stepper" aria-label="Record creation progress">
-          <li className={selectedUser ? 'complete' : 'active'}>
-            <span>1</span>
-            <div><strong>Select requester</strong><small>Name, email or staff number</small></div>
-          </li>
-          <li className={selectedUser ? 'active' : ''}>
-            <span>2</span>
-            <div><strong>{recordType} details</strong><small>Fields adapt to record type</small></div>
-          </li>
-          <li>
-            <span>3</span>
-            <div><strong>Submitted</strong><small>{meta.singular} workspace</small></div>
-          </li>
-        </ol>
-
         {!selectedUser ? (
-          <section className="incident-stage-card unified-requester-lookup-stage">
-            <div className="incident-stage-heading">
-              <span className="stage-number">1</span>
+          <section className="unified-form-section unified-requester-lookup-stage">
+            <div className="unified-form-section-heading">
+              <span><UserRound size={15} aria-hidden="true" /></span>
               <div>
-                <span className="eyebrow">Requester</span>
-                <h3>Who is this {meta.singular.toLowerCase()} for?</h3>
-                <p>Start typing and select a person from the People directory. The {meta.singular.toLowerCase()} form will appear after selection.</p>
+                <strong>Requester</strong>
+                <small>Who is this {meta.singular.toLowerCase()} for?</small>
               </div>
             </div>
 
@@ -3074,10 +3067,10 @@ function UnifiedNewRecordForm({
           </section>
         ) : (
           <div className="unified-new-record-details-layout">
-            <aside className="incident-requester-card unified-record-requester-card">
-              <div className="incident-stage-heading compact">
-                <span className="stage-number complete">1</span>
-                <div><span className="eyebrow">Requester selected</span><h3>{selectedUser.name}</h3></div>
+            <section className="unified-form-section unified-record-requester-card">
+              <div className="unified-form-section-heading">
+                <span><UserRound size={15} aria-hidden="true" /></span>
+                <div><strong>Requester</strong><small>{selectedUser.name}</small></div>
               </div>
               <div className="requester-profile">
                 <span className="directory-avatar large">{userInitials(selectedUser.name)}</span>
@@ -3091,7 +3084,7 @@ function UnifiedNewRecordForm({
                 <div><dt>Manager</dt><dd>{selectedUser.manager}</dd></div>
               </dl>
               <button className="secondary-action full-width" onClick={clearRequester} type="button">Change requester</button>
-            </aside>
+            </section>
 
             <form className="unified-new-record-form" onSubmit={handleTicketSubmit}>
               <section className="unified-form-section">
