@@ -685,3 +685,178 @@ html[data-hi5-surface='workspace'] .record-lab-activity-filter > button {
     font-size: 8.5px;
   }
 }
+
+
+/* ========================================================================== */
+/* DESKTOP RECORD READABILITY / SPACING                                       */
+/* ========================================================================== */
+
+@media (min-width: 761px) {
+  html[data-hi5-surface='workspace'] .production-record-toolbar {
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+  }
+
+  html[data-hi5-surface='workspace'] .production-record-search,
+  html[data-hi5-surface='workspace'] .production-record-refresh,
+  html[data-hi5-surface='workspace'] .production-record-view-select,
+  html[data-hi5-surface='workspace'] .production-record-filter-trigger {
+    min-height: 40px;
+    font-size: 11px;
+  }
+
+  html[data-hi5-surface='workspace'] .production-record-result-line {
+    min-height: 34px;
+    font-size: 11px;
+  }
+
+  html[data-hi5-surface='workspace'] .production-record-table thead th {
+    padding: 11px 12px;
+    font-size: 9px;
+    letter-spacing: .06em;
+  }
+
+  html[data-hi5-surface='workspace'] .production-record-table tbody td {
+    padding: 13px 12px;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  html[data-hi5-surface='workspace'] .production-record-table tbody tr {
+    transition: background-color 120ms ease;
+  }
+
+  html[data-hi5-surface='workspace'] .production-record-table-wrap {
+    border-radius: 12px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-shell {
+    gap: 14px;
+    min-height: 0;
+    padding: 20px 24px 48px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-header {
+    gap: 24px;
+    padding: 18px 20px;
+    border-radius: 12px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-reference-row {
+    font-size: 10px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-identity h2 {
+    margin-top: 7px;
+    font-size: clamp(24px, 2vw, 32px);
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-badges {
+    gap: 8px;
+    margin-top: 11px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-badges > span:not(.status-pill):not(.unified-detail-priority),
+  html[data-hi5-surface='workspace'] .unified-detail-priority {
+    min-height: 28px;
+    padding-inline: 10px;
+    font-size: 10px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-header-actions {
+    gap: 8px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-header-actions > button,
+  html[data-hi5-surface='workspace'] .unified-detail-status-control select {
+    min-height: 38px;
+    border-radius: 8px;
+    font-size: 11px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-status-control {
+    font-size: 9px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-lifecycle {
+    gap: 7px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-lifecycle > div {
+    min-height: 44px;
+    padding: 8px 10px;
+    border-radius: 9px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-lifecycle > div > strong {
+    font-size: 10px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-tabs {
+    gap: 4px;
+    padding: 5px;
+    border-radius: 10px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-tabs button {
+    min-height: 38px;
+    padding-inline: 14px;
+    font-size: 11px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-overview-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+    gap: 16px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-overview-main,
+  html[data-hi5-surface='workspace'] .unified-detail-context-column,
+  html[data-hi5-surface='workspace'] .unified-type-overview,
+  html[data-hi5-surface='workspace'] .unified-detail-activity-layout,
+  html[data-hi5-surface='workspace'] .unified-detail-task-layout,
+  html[data-hi5-surface='workspace'] .unified-detail-attachment-layout {
+    gap: 14px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-context-column {
+    top: 14px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-section {
+    padding: 17px;
+    border-radius: 11px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-section-heading {
+    margin-bottom: 14px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-section-heading h3 {
+    font-size: 15px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-description,
+  html[data-hi5-surface='workspace'] .unified-detail-long-copy {
+    font-size: 13px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-property {
+    gap: 4px;
+    padding: 11px 12px;
+    border-radius: 9px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-property span {
+    font-size: 9px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-property strong {
+    font-size: 11px;
+  }
+
+  html[data-hi5-surface='workspace'] .unified-detail-requester > div > span,
+  html[data-hi5-surface='workspace'] .unified-detail-requester small {
+    font-size: 10px;
+  }
+}
