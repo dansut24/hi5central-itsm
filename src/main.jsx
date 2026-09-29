@@ -32,7 +32,6 @@ import { ProductionRecordDetailRouter } from './production/ProductionRecordDetai
 import { ProductionRecordWorkspace } from './production/ProductionRecordWorkspace.jsx'
 import { ProductionRecordExportEnhancer } from './production/ProductionRecordExportEnhancer.jsx'
 import { ProductionRecordListInteractionEnhancer } from './production/ProductionRecordListInteractionEnhancer.jsx'
-import { ProductionServiceRequestIntake } from './production/ProductionServiceRequestIntake.jsx'
 import { ProductionUniversalPeekV2 } from './production/ProductionUniversalPeekV2.jsx'
 import { ProductionWorkflowExperience } from './production/ProductionWorkflowExperience.jsx'
 import { ProductionWorkspaceBootstrap } from './production/ProductionWorkspaceBootstrap.jsx'
@@ -111,7 +110,6 @@ createRoot(rootElement).render(
     {productionWorkspace && !productionOnboarding ? <ProductionRecordWorkspace /> : null}
     {productionWorkspace && !productionOnboarding ? <ProductionRecordExportEnhancer /> : null}
     {productionWorkspace && !productionOnboarding ? <ProductionRecordListInteractionEnhancer /> : null}
-    {productionWorkspace && !productionOnboarding ? <ProductionServiceRequestIntake /> : null}
     {productionWorkspace && !productionOnboarding ? <ProductionWorkflowExperience /> : null}
     {productionWorkspace && !productionOnboarding ? <ProductionNotificationCenter /> : null}
     {productionWorkspace && !productionOnboarding ? <ProductionWorkspaceRefinement /> : null}
