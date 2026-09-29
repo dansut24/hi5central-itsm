@@ -1005,3 +1005,112 @@
   .task-work-item-primary { height: auto; min-height: 520px; }
   .task-work-item-content { min-height: 460px; }
 }
+
+
+/* ========================================================================== */
+/* RMM-PARITY TASK QUEUE                                                      */
+/* Quick-view slider + filters + desktop table / mobile cards.                */
+/* ========================================================================== */
+
+html[data-hi5-surface='workspace'] .production-task-experience.production-record-shell {
+  display: block !important;
+  width: 100%;
+  padding: 0 !important;
+}
+
+html[data-hi5-surface='workspace'] .production-task-experience .production-record-main {
+  display: block !important;
+  width: 100%;
+}
+
+html[data-hi5-surface='workspace'] .production-task-viewbar {
+  margin-bottom: 11px;
+}
+
+html[data-hi5-surface='workspace'] .production-task-ownership-error {
+  margin: 0 0 10px;
+  border: 1px solid rgba(198,52,52,.18);
+  border-radius: 9px;
+  background: rgba(198,52,52,.07);
+}
+
+html[data-hi5-surface='workspace'] .production-task-experience .production-record-table-wrap {
+  border-radius: 11px;
+  box-shadow: var(--itsm-card-shadow);
+}
+
+html[data-hi5-surface='workspace'] .production-task-experience .production-record-table tbody tr.is-task-overdue {
+  box-shadow: inset 3px 0 0 var(--danger);
+}
+
+html[data-hi5-surface='workspace'] .production-task-experience .production-task-ownership-button {
+  min-height: 32px;
+  border-radius: 7px;
+  font-size: 8px;
+}
+
+@media (max-width: 760px) {
+  html[data-hi5-surface='workspace'] .production-task-mobile-card-list {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .production-task-mobile-card {
+    width: 100%;
+    min-width: 0;
+    display: block !important;
+    padding: 0 !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 11px !important;
+    background: var(--surface) !important;
+    box-shadow: var(--itsm-card-shadow) !important;
+    overflow: hidden;
+  }
+
+  html[data-hi5-surface='workspace'] .production-task-mobile-card.is-task-overdue {
+    box-shadow: inset 3px 0 0 var(--danger), var(--itsm-card-shadow) !important;
+  }
+
+  html[data-hi5-surface='workspace'] .production-task-mobile-card-open {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    display: grid !important;
+    grid-template-columns: 38px minmax(0, 1fr) auto 18px;
+    align-items: center;
+    gap: 9px !important;
+    padding: 11px !important;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    text-align: left;
+    font: inherit;
+  }
+
+  html[data-hi5-surface='workspace'] .production-task-mobile-card-open:active {
+    background: var(--surface-soft);
+  }
+
+  html[data-hi5-surface='workspace'] .production-task-mobile-card .production-record-card-facts strong.is-overdue {
+    color: var(--danger);
+  }
+
+  html[data-hi5-surface='workspace'] .production-task-mobile-card-action {
+    padding: 0 11px 11px 58px;
+  }
+
+  html[data-hi5-surface='workspace'] .production-task-mobile-card-action .production-task-ownership-button {
+    width: 100%;
+    min-height: 36px;
+    justify-content: center;
+    border-color: rgb(var(--accent-rgb));
+    background: rgb(var(--accent-rgb));
+    color: #fff;
+    font-size: 9px;
+  }
+
+  html[data-hi5-surface='workspace'] .production-task-experience .production-record-pagination {
+    margin-top: 8px;
+  }
+}
