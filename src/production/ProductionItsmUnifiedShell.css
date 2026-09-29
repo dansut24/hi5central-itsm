@@ -1008,3 +1008,11 @@ html[data-hi5-surface='workspace'] .production-workspace-mobile-nav {
     max-width: 92px !important;
   }
 }
+
+/* Exact RMM workspace colour contract. Product identity remains in labels, not
+   a separate UI theme. */
+html[data-hi5-surface='workspace'] .app-shell {
+  --accent-rgb: 217, 138, 10 !important;
+  --accent-ink: #ffffff !important;
+  --itsm-card-shadow: 0 12px 34px rgba(19, 45, 84, .08);
+}
