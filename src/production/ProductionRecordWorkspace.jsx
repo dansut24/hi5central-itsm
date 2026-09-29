@@ -67,10 +67,12 @@ function recordWorkspaceRoute(pathname = window.location.pathname) {
   const match = pathname.match(/^\/(incidents|requests|problems|changes)\/([^/]+)\/?$/i)
   if (!match) return null
   const section = match[1].toLowerCase()
+  const reference = decodeURIComponent(match[2])
+  if (reference.toLowerCase() === 'new') return null
   return {
     section,
     type: section === 'requests' ? 'Service Request' : GENERIC_TYPES[section],
-    reference: decodeURIComponent(match[2]),
+    reference,
   }
 }
 
