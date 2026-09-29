@@ -860,3 +860,473 @@ html[data-hi5-surface='workspace'] .record-lab-activity-filter > button {
     font-size: 10px;
   }
 }
+
+
+/* ========================================================================== */
+/* RMM-PARITY RECORD DETAIL                                                   */
+/* Back link -> identity card -> metrics -> section rail -> content cards.     */
+/* ========================================================================== */
+
+html[data-hi5-surface='workspace'] .record-lab-page-back {
+  width: fit-content;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 10px;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 820;
+  cursor: pointer;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-page-back:hover {
+  color: var(--ink);
+}
+
+html[data-hi5-surface='workspace'] .record-lab-hero-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 58px;
+  border-radius: 14px;
+  background: rgba(var(--accent-rgb), .11);
+  color: rgb(var(--accent-rgb));
+}
+
+html[data-hi5-surface='workspace'] .record-lab-hero-icon.is-incident {
+  background: rgba(218,73,91,.11);
+  color: #d04458;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-hero-icon.is-change {
+  background: rgba(61,115,232,.11);
+  color: #3d73e8;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-hero-icon.is-problem {
+  background: rgba(120,88,223,.11);
+  color: #7858df;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-hero-actions {
+  display: none;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 12px 0 14px;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metric {
+  min-width: 0;
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--itsm-card-shadow);
+  text-align: left;
+  font: inherit;
+}
+
+html[data-hi5-surface='workspace'] button.record-lab-summary-metric {
+  cursor: pointer;
+}
+
+html[data-hi5-surface='workspace'] button.record-lab-summary-metric:hover {
+  border-color: rgba(var(--accent-rgb), .28);
+  box-shadow: 0 9px 24px rgba(19,45,84,.09);
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metric > span {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metric.is-good > span {
+  background: rgba(35,158,99,.11);
+  color: #188c61;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metric.is-warning > span {
+  background: rgba(217,138,10,.12);
+  color: #c47809;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metric.is-danger > span {
+  background: rgba(218,73,91,.11);
+  color: #d04458;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metric.is-accent > span {
+  background: rgba(var(--accent-rgb), .11);
+  color: rgb(var(--accent-rgb));
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metric > div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metric small {
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 760;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metric strong {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 820px) {
+  html[data-hi5-surface='workspace'] .record-lab-shell {
+    height: auto !important;
+    min-height: 100%;
+    overflow: visible !important;
+    padding: 18px 13px calc(34px + env(safe-area-inset-bottom)) !important;
+    background: var(--page) !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-page-back {
+    min-height: 32px;
+    margin-bottom: 10px;
+    font-size: 10px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-masthead {
+    width: 100%;
+    min-height: 0;
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start !important;
+    gap: 12px !important;
+    margin: 0 0 14px;
+    padding: 15px !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 11px !important;
+    background: var(--surface) !important;
+    box-shadow: var(--itsm-card-shadow) !important;
+    overflow: hidden;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-masthead::after {
+    display: none !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-masthead-leading {
+    align-self: start;
+    gap: 7px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-details-restore {
+    display: none !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-heading {
+    align-self: start;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-heading > div {
+    gap: 5px;
+    margin-bottom: 5px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-heading > div > strong {
+    color: rgb(var(--accent-rgb));
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-heading h1 {
+    margin-top: 1px;
+    font-size: 22px !important;
+    line-height: 1.12;
+    letter-spacing: -.025em;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-heading p {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 9px !important;
+    line-height: 1.45;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-pill {
+    min-height: 24px;
+    padding-inline: 8px;
+    font-size: 8px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-masthead-signals {
+    display: none !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-hero-actions {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin-top: 2px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-hero-actions > button {
+    width: 100%;
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0 10px;
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-size: 10px;
+    font-weight: 830;
+    cursor: pointer;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-hero-actions > button.is-primary {
+    border-color: rgb(var(--accent-rgb));
+    background: rgb(var(--accent-rgb));
+    color: #fff;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-summary-metrics {
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin: 0 0 14px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-summary-metric {
+    min-height: 78px;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 8px;
+    padding: 11px;
+    border-radius: 10px;
+    box-shadow: var(--itsm-card-shadow);
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-summary-metric > span {
+    width: 34px;
+    height: 34px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-summary-metric small {
+    font-size: 8px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-summary-metric strong {
+    font-size: 12px;
+    white-space: normal;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-workspace-grid,
+  html[data-hi5-surface='workspace'] .record-lab-workspace-grid.is-inspector-collapsed {
+    display: block !important;
+    margin: 0 !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-inspector:not(.is-mobile-copy) {
+    display: none !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-primary-workspace,
+  html[data-hi5-surface='workspace'] .record-lab-primary-workspace.is-activity-view {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-primary-workspace > .record-lab-tabs {
+    position: static !important;
+    top: auto !important;
+    width: 100%;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 0 14px !important;
+    padding: 5px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border: 1px solid var(--line) !important;
+    border-radius: 10px !important;
+    background: var(--surface) !important;
+    box-shadow: var(--itsm-card-shadow) !important;
+    scrollbar-width: none;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-primary-workspace > .record-lab-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-tabs > button {
+    min-width: max-content;
+    min-height: 38px;
+    flex: 0 0 auto;
+    padding: 0 12px;
+    border: 1px solid transparent;
+    border-radius: 7px !important;
+    background: transparent;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 840;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-tabs > button.is-active {
+    border-color: var(--line);
+    background: var(--surface-soft) !important;
+    color: var(--ink) !important;
+    box-shadow: none !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-tabs .record-lab-refresh {
+    margin-left: 0 !important;
+    font-size: 0;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-tabs .record-lab-refresh svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-content,
+  html[data-hi5-surface='workspace'] .record-lab-primary-workspace.is-activity-view > .record-lab-content {
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-overview-grid,
+  html[data-hi5-surface='workspace'] .record-lab-work-rail {
+    grid-template-columns: 1fr !important;
+    gap: 14px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-panel {
+    border: 1px solid var(--line) !important;
+    border-radius: 11px !important;
+    background: var(--surface) !important;
+    box-shadow: var(--itsm-card-shadow) !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-panel > header {
+    min-height: 60px;
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-panel > header > span {
+    color: rgb(var(--accent-rgb));
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-panel > header h2,
+  html[data-hi5-surface='workspace'] .record-lab-panel > header h3 {
+    font-size: 14px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-description {
+    padding: 14px;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-facts-grid,
+  html[data-hi5-surface='workspace'] .record-lab-answer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-fact,
+  html[data-hi5-surface='workspace'] .record-lab-fact:nth-child(2n),
+  html[data-hi5-surface='workspace'] .record-lab-answer-grid .record-lab-fact:nth-child(2n),
+  html[data-hi5-surface='workspace'] .record-lab-answer-grid .record-lab-fact:nth-child(3n) {
+    min-height: 58px;
+    padding: 11px 14px;
+    border-right: 0 !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-fact > span {
+    font-size: 8px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-fact > strong {
+    font-size: 10px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-activity-actions {
+    position: static !important;
+    top: auto !important;
+    gap: 5px;
+    padding: 6px 7px !important;
+    overflow-x: auto;
+    border-radius: 10px 10px 0 0;
+    background: var(--surface);
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-activity-actions > button {
+    min-height: 36px;
+    flex: 0 0 auto;
+    padding-inline: 10px;
+    font-size: 9px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-activity-composer,
+  html[data-hi5-surface='workspace'] .record-lab-activity-heading,
+  html[data-hi5-surface='workspace'] .record-lab-timeline,
+  html[data-hi5-surface='workspace'] .record-lab-timeline-scroll {
+    position: static !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 430px) {
+  html[data-hi5-surface='workspace'] .record-lab-heading h1 {
+    font-size: 20px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-hero-actions > button {
+    padding-inline: 7px;
+    font-size: 9px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-summary-metric {
+    min-height: 74px;
+    padding: 10px;
+  }
+}
