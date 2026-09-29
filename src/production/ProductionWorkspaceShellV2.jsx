@@ -5,19 +5,22 @@ import {
   Copy,
   LogOut,
   Menu,
+  Monitor,
   Moon,
   MoreHorizontal,
   PanelLeftOpen,
   Plus,
   Search,
   Settings,
+  ShieldCheck,
   Sun,
   X,
 } from 'lucide-react'
+import { deploymentConfig } from '../lib/deploymentConfig.js'
 
 const TAB_SELECTOR = '.tab-list .workspace-tab'
 const WORKSPACE_MENU_WIDTH = 214
-const WORKSPACE_MENU_HEIGHT = 330
+const WORKSPACE_MENU_HEIGHT = 410
 
 function cleanTabTitle(button) {
   const label = button?.querySelector('.workspace-tab-label')
@@ -161,6 +164,7 @@ function menuPositionFor(button) {
 }
 
 export function ProductionWorkspaceShellV2() {
+  const platform = deploymentConfig()
   const [tabbar, setTabbar] = useState(null)
   const [snapshot, setSnapshot] = useState(() => readWorkspaceSnapshot())
   const [searchOpen, setSearchOpen] = useState(false)
@@ -273,6 +277,11 @@ export function ProductionWorkspaceShellV2() {
 
   const openSettings = () => {
     proxyClick('.breadcrumb-desktop-actions button[title="Settings"], .breadcrumb-mobile-actions button[title="Settings"]')
+    setWorkspaceMenuOpen(false)
+  }
+
+  const openPlatform = (url) => {
+    if (url) window.location.assign(url)
     setWorkspaceMenuOpen(false)
   }
 
@@ -510,6 +519,19 @@ export function ProductionWorkspaceShellV2() {
                 Show navigation
               </button>
             )}
+            {platform.rmmUrl ? (
+              <button onClick={() => openPlatform(platform.rmmUrl)} role="menuitem" type="button">
+                <Monitor size={14} aria-hidden="true" />
+                Open RMM
+              </button>
+            ) : null}
+            {platform.adminUrl ? (
+              <button onClick={() => openPlatform(platform.adminUrl)} role="menuitem" type="button">
+                <ShieldCheck size={14} aria-hidden="true" />
+                Open Admin
+              </button>
+            ) : null}
+            <span className="production-workspace-menu-separator" role="separator" />
             <button onClick={toggleTheme} role="menuitem" type="button">
               {snapshot.theme === 'dark' ? <Sun size={14} aria-hidden="true" /> : <Moon size={14} aria-hidden="true" />}
               {snapshot.theme === 'dark' ? 'Light mode' : 'Dark mode'}
