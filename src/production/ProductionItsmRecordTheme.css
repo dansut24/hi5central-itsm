@@ -1330,3 +1330,350 @@ html[data-hi5-surface='workspace'] .record-lab-summary-metric strong {
     padding: 10px;
   }
 }
+
+/* ========================================================================== */
+/* EXACT RMM DEVICE-DETAIL GEOMETRY                                           */
+/* ========================================================================== */
+
+html[data-hi5-surface='workspace'] .record-lab-breadcrumbs {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-breadcrumbs button {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-breadcrumbs button:hover {
+  color: rgb(var(--accent-rgb));
+}
+
+html[data-hi5-surface='workspace'] .record-lab-breadcrumbs span {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-breadcrumbs svg {
+  flex: 0 0 auto;
+  color: var(--muted);
+}
+
+html[data-hi5-surface='workspace'] .record-lab-masthead {
+  gap: 14px;
+  margin-bottom: 14px;
+  padding: 16px;
+  border-radius: 11px;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-heading > div > strong {
+  color: rgb(var(--accent-rgb));
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-heading h1 {
+  margin: 3px 0 3px;
+  font-size: 22px;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-heading p {
+  margin: 0 0 7px;
+  font-size: 9px;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metrics {
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metric {
+  min-height: 0;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 8px;
+  padding: 11px;
+  border-radius: 10px;
+  box-shadow: var(--itsm-card-shadow);
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metric > span {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metric small {
+  font-size: 7px;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-summary-metric strong {
+  font-size: 15px;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-primary-workspace > .record-lab-tabs {
+  min-height: 48px;
+  gap: 4px;
+  margin: 0 0 14px !important;
+  padding: 6px !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-tabs > button {
+  min-height: 34px;
+  gap: 6px;
+  padding: 0 10px;
+  border-radius: 8px !important;
+  font-size: 8px;
+  font-weight: 850;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-tabs > button.is-active {
+  border-color: var(--line) !important;
+  background: var(--surface-soft) !important;
+  color: var(--ink) !important;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-panel {
+  border-radius: 11px !important;
+  box-shadow: var(--itsm-card-shadow) !important;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-panel > header {
+  min-height: 0;
+  padding: 14px 16px !important;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-panel > header > span {
+  color: rgb(var(--accent-rgb));
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-panel > header h2,
+html[data-hi5-surface='workspace'] .record-lab-panel > header h3 {
+  margin: 3px 0 0;
+  font-size: 14px;
+}
+
+/* Two compact action menus replace four competing hero buttons. */
+html[data-hi5-surface='workspace'] .record-lab-hero-actions {
+  position: relative;
+  gap: 6px;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu {
+  position: relative;
+  min-width: 0;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu > summary {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 9px;
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu:first-child > summary {
+  border-color: rgb(var(--accent-rgb));
+  background: rgb(var(--accent-rgb));
+  color: #fff;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu > summary > svg:last-child {
+  margin-left: auto;
+  transition: transform 140ms ease;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu[open] > summary > svg:last-child {
+  transform: rotate(180deg);
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu-popover {
+  position: absolute;
+  z-index: 80;
+  top: calc(100% + 6px);
+  left: 0;
+  width: min(260px, calc(100vw - 38px));
+  overflow: hidden;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 18px 42px rgba(5, 16, 36, .18);
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu-popover.align-right {
+  right: 0;
+  left: auto;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu-popover > button {
+  width: 100%;
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu-popover > button:hover {
+  background: var(--surface-soft);
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu-popover > button > svg {
+  color: var(--muted);
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu-popover > button > span {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu-popover strong {
+  font-size: 9px;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu-popover small {
+  color: var(--muted);
+  font-size: 7px;
+}
+
+html[data-hi5-surface='workspace'] .record-lab-action-menu-label {
+  margin: 4px 4px 2px;
+  padding: 6px 4px 3px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 820px) {
+  /* UnifiedPages already contributes an 11px mobile page gutter. RMM has a
+     13px gutter, so the record shell contributes only the remaining 2px. */
+  html[data-hi5-surface='workspace'] .record-lab-shell {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 4px 2px calc(34px + env(safe-area-inset-bottom)) !important;
+    margin: 0 !important;
+  }
+
+  html[data-hi5-surface='workspace'] .content-frame.production-record-workspace-mounted {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-breadcrumbs {
+    margin-bottom: 12px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-masthead {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 14px !important;
+    margin-bottom: 14px;
+    padding: 16px !important;
+    border-radius: 11px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-hero-actions {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-action-menu > summary {
+    width: 100%;
+    min-height: 36px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-summary-metrics {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-summary-metric {
+    min-height: 64px;
+    padding: 11px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-summary-metric strong {
+    font-size: 15px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-primary-workspace > .record-lab-tabs {
+    min-height: 48px;
+    gap: 4px;
+    padding: 6px !important;
+    margin-bottom: 14px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-tabs > button {
+    min-height: 34px;
+    padding: 0 10px;
+    font-size: 8px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-panel > header {
+    padding: 14px 16px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-description {
+    padding: 14px 16px;
+  }
+
+  html[data-hi5-surface='workspace'] .record-lab-fact,
+  html[data-hi5-surface='workspace'] .record-lab-fact:nth-child(2n),
+  html[data-hi5-surface='workspace'] .record-lab-answer-grid .record-lab-fact:nth-child(2n),
+  html[data-hi5-surface='workspace'] .record-lab-answer-grid .record-lab-fact:nth-child(3n) {
+    padding: 11px 16px;
+  }
+}
