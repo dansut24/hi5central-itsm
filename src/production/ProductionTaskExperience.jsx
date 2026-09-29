@@ -403,12 +403,11 @@ function TaskDetail({ taskKey }) {
   const [completionNotes, setCompletionNotes] = useState('')
   const [completionOpen, setCompletionOpen] = useState(false)
   const [assignmentEditing, setAssignmentEditing] = useState(false)
-  const [tab, setTab] = useState('activity')
+  const [tab, setTab] = useState('overview')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
-  const [inspectorCollapsed, setInspectorCollapsed] = useState(() => window.localStorage.getItem('hi5central-task-inspector-collapsed') === '1')
 
   async function load({ quiet = false } = {}) {
     if (!quiet) setLoading(true)
@@ -429,7 +428,6 @@ function TaskDetail({ taskKey }) {
   }
 
   useEffect(() => { void load() }, [taskKey])
-  useEffect(() => { window.localStorage.setItem('hi5central-task-inspector-collapsed', inspectorCollapsed ? '1' : '0') }, [inspectorCollapsed])
 
   async function patch(body, success) {
     setSaving(true); setError(''); setNotice('')
@@ -475,10 +473,12 @@ function TaskDetail({ taskKey }) {
   const taskEvents = (parentRequest?.activities || []).filter((activity) => activity?.metadata?.taskKey === task.id)
   const taskAttachments = taskEvents.flatMap((activity) => (activity.attachments || []).map((item, index) => ({ ...item, eventId: activity.id, _key: item.id || `${activity.id}-${index}` })))
   const tabs = [
+    ['overview', 'Overview'],
     ['activity', `Activity${taskEvents.length ? ` ${taskEvents.length + 1}` : ''}`],
     ['attachments', `Attachments${taskAttachments.length ? ` ${taskAttachments.length}` : ''}`],
     ['audit', 'Audit Log'],
   ]
+  const activeTabLabel = (tabs.find(([value]) => value === tab)?.[1] || 'Overview').replace(/\s+\d+$/, '')
 
   const personMatches = (left, right) => {
     if (!left || !right) return false
@@ -507,58 +507,89 @@ function TaskDetail({ taskKey }) {
     if (!stillEligible) setAssignee('Unassigned')
   }
 
-  const renderInspector = () => inspectorCollapsed
-    ? null
-    : <aside className="task-work-item-inspector">
-      <section className="task-work-item-panel task-work-item-context">
-        <header><div><span>Task details</span><h2>Context</h2></div><button type="button" onClick={() => setInspectorCollapsed(true)} title="Collapse task details"><PanelLeftClose size={17} /></button></header>
-        <div className="task-work-item-facts">
-          <button type="button" onClick={() => navigate(`/requests/${encodeURIComponent(parent.id)}`)}><span>Primary request</span><strong>{parent.id || '—'}</strong><small>{parent.title || 'Open parent request'}</small></button>
-          <div><span>Requester</span><strong>{parent.requester || 'Not recorded'}</strong><small>{parent.requesterEmail || ''}</small></div>
-          <div><span>Service</span><strong>{parent.service || 'Not recorded'}</strong></div>
-          <div><span>Due / target</span><strong>{task.dueAt ? formatDate(task.dueAt) : 'No due date'}</strong><small>{detailDue.label}</small></div>
-          <div><span>Dependencies</span><strong>{task.dependencies?.length ? `${task.dependencies.length} prerequisite${task.dependencies.length === 1 ? '' : 's'}` : 'None'}</strong></div>
-        </div>
-        <div className="task-work-item-assignment">
-          <button type="button" className="task-work-item-assignment-toggle" onClick={() => setAssignmentEditing((value) => !value)}><span>Assignment</span><strong>{task.team || 'Unassigned'}</strong><small>{task.assignee || 'Unassigned'}</small></button>
-          {assignmentEditing ? <div className="task-work-item-assignment-editor"><label><span>Assignment group</span><Hi5EntityTypeahead items={teams} value={selectedTeam} disabled={completed || saving} onSelect={changeTeam} placeholder="Type at least 2 characters…" minimumCharacters={2} emptyLabel="No matching assignment groups" getSearchText={(item) => item.name || ''} getMeta={(item) => `${(item.members || []).length} eligible technician${(item.members || []).length === 1 ? '' : 's'}`} /></label><label><span>Assignee</span><Hi5EntityTypeahead items={teamPeople} value={selectedAssignee} disabled={completed || saving} onSelect={chooseAssignee} placeholder="Type at least 2 characters…" minimumCharacters={2} emptyLabel={team ? `No matching eligible users in ${team}` : 'No matching eligible technicians'} /></label>{assignmentDirty && !completed ? <button type="button" disabled={saving} onClick={() => patch({ team, assignee }, 'Assignment saved')}><Check size={15} />Save assignment</button> : null}</div> : null}
-        </div>
-      </section>
-    </aside>
+  const renderAssignmentEditor = () => <div className="task-detail-assignment-editor">
+    <label><span>Assignment group</span><Hi5EntityTypeahead items={teams} value={selectedTeam} disabled={completed || saving} onSelect={changeTeam} placeholder="Type at least 2 characters…" minimumCharacters={2} emptyLabel="No matching assignment groups" getSearchText={(item) => item.name || ''} getMeta={(item) => `${(item.members || []).length} eligible technician${(item.members || []).length === 1 ? '' : 's'}`} /></label>
+    <label><span>Assignee</span><Hi5EntityTypeahead items={teamPeople} value={selectedAssignee} disabled={completed || saving} onSelect={chooseAssignee} placeholder="Type at least 2 characters…" minimumCharacters={2} emptyLabel={team ? `No matching eligible users in ${team}` : 'No matching eligible technicians'} /></label>
+    {assignmentDirty && !completed ? <button type="button" disabled={saving} onClick={() => patch({ team, assignee }, 'Assignment saved')}><Check size={15} />Save assignment</button> : null}
+  </div>
 
-  const renderActivity = () => <section className="task-work-item-panel task-work-item-activity">
-    <div className="task-work-item-actions">
-      {canTake ? <button type="button" disabled={saving} onClick={() => ownershipAction('take', 'Task taken')}><UserPlus size={15} />Take task</button> : null}
-      {canRelease ? <button type="button" disabled={saving} onClick={() => ownershipAction('release', 'Task released to team queue')}><UserMinus size={15} />Release task</button> : null}
-      {!completed ? <><button type="button" className={task.status === 'In Progress' ? 'is-active' : ''} disabled={saving || completed || !taskIsMine} onClick={() => patch({ status: 'In Progress' }, 'Task started')}><PlayCircle size={15} />Start</button><button type="button" className={task.status === 'Blocked' ? 'is-active' : ''} disabled={saving || completed || !taskIsMine} onClick={() => patch({ status: 'Blocked' }, 'Task blocked')}><CircleStop size={15} />Block</button><button type="button" className={completionOpen ? 'is-active' : ''} disabled={saving || completed || !taskIsMine} onClick={() => setCompletionOpen((value) => !value)}><CheckCircle2 size={15} />Complete</button></> : null}
-    </div>
+  const renderOverview = () => <div className="task-detail-overview">
+    <section className="task-detail-card task-detail-instructions">
+      <header><div><span>Work item</span><h2>Task instructions</h2></div></header>
+      <div className="task-detail-card-body"><p>{task.instructions || 'No additional instructions were supplied for this task.'}</p>{task.completionNotes ? <div className="task-detail-completion-note"><CheckCircle2 size={16} /><span><small>Completion notes</small><strong>{task.completionNotes}</strong></span></div> : null}</div>
+    </section>
+
+    <section className="task-detail-card">
+      <header><div><span>Context</span><h2>Task information</h2></div></header>
+      <div className="task-detail-facts">
+        <button type="button" onClick={() => parent.id && navigate(`/requests/${encodeURIComponent(parent.id)}`)}><small>Primary request</small><strong>{parent.id || 'Not recorded'}</strong><span>{parent.title || 'No parent request title'}</span></button>
+        <div><small>Requester</small><strong>{parent.requester || 'Not recorded'}</strong><span>{parent.requesterEmail || 'No requester email'}</span></div>
+        <div><small>Service</small><strong>{parent.service || 'Not recorded'}</strong><span>Service context</span></div>
+        <div><small>Due / target</small><strong>{task.dueAt ? formatDate(task.dueAt) : 'No due date'}</strong><span className={detailDue.overdue ? 'is-danger' : ''}>{detailDue.label}</span></div>
+        <div><small>Dependencies</small><strong>{task.dependencies?.length ? `${task.dependencies.length} prerequisite${task.dependencies.length === 1 ? '' : 's'}` : 'None'}</strong><span>{task.dependencies?.length ? 'Workflow dependencies recorded' : 'No prerequisites'}</span></div>
+        <div><small>Created</small><strong>{formatDate(task.createdAt)}</strong><span>Task creation time</span></div>
+      </div>
+    </section>
+
+    <section className="task-detail-card">
+      <header><div><span>Ownership</span><h2>Assignment</h2></div><button type="button" disabled={completed} onClick={() => setAssignmentEditing((value) => !value)}>{assignmentEditing ? 'Close' : 'Edit'}</button></header>
+      <div className="task-detail-assignment-summary"><span><small>Team</small><strong>{task.team || 'Unassigned'}</strong></span><span><small>Assignee</small><strong>{task.assignee || 'Unassigned'}</strong></span></div>
+      {assignmentEditing ? renderAssignmentEditor() : null}
+    </section>
+  </div>
+
+  const renderActivity = () => <section className="task-detail-card task-detail-activity">
     {completionOpen && !completed ? <div className="task-work-item-composer"><label><span>Completion notes</span><textarea rows="3" value={completionNotes} disabled={saving || !taskIsMine} onChange={(event) => setCompletionNotes(event.target.value)} placeholder="Record what was completed and any relevant outcome…" /></label><button type="button" disabled={saving || !taskIsMine || !completionNotes.trim()} onClick={() => patch({ status: 'Completed', completionNotes }, 'Task completed')}><CheckCircle2 size={15} />Complete task</button></div> : null}
-    <header><div><span>Timeline</span><h2>Activity</h2><small>Task work and lifecycle events</small></div></header>
-    <div className="task-work-item-scroll"><article className="task-work-item-message"><span className="task-work-item-message-icon"><ListChecks size={17} /></span><div><header><strong>Task instructions</strong><time>{formatDate(task.createdAt)}</time></header><p>{task.instructions || 'No additional instructions were supplied for this task.'}</p></div></article>{taskEvents.map((event) => <div className="task-work-item-event" key={event.id}><i /><div><strong>{event.text || event.message || 'Task updated'}</strong><small>{event.actor || 'Hi5Central'} · {formatDate(event.createdAt)}</small></div></div>)}{completed && !taskEvents.length ? <div className="task-work-item-event"><i /><div><strong>Task completed</strong><small>{task.completionNotes || 'No completion notes'} · {formatDate(task.completedAt)}</small></div></div> : null}</div>
+    <header><div><span>Timeline</span><h2>Activity</h2></div></header>
+    <div className="task-detail-timeline">{taskEvents.length ? taskEvents.map((event) => <div className="task-work-item-event" key={event.id}><i /><div><strong>{event.text || event.message || 'Task updated'}</strong><small>{event.actor || 'Hi5Central'} · {formatDate(event.createdAt)}</small></div></div>) : <div className="task-detail-empty">No task-specific activity has been recorded yet.</div>}{completed && !taskEvents.length ? <div className="task-work-item-event"><i /><div><strong>Task completed</strong><small>{task.completionNotes || 'No completion notes'} · {formatDate(task.completedAt)}</small></div></div> : null}</div>
   </section>
-  const renderAttachments = () => <section className="task-work-item-panel task-work-item-tab-panel"><header><div><span>Evidence</span><h2>Attachments</h2></div></header><div className="task-work-item-scroll">{taskAttachments.length ? taskAttachments.map((item, index) => <div className="task-work-item-attachment" key={item.id || item._key || index}><span><Paperclip size={17} /></span><div><strong>{item.name || item.fileName || 'Attachment'}</strong><small>{item.size ? `${Math.max(1, Math.round(Number(item.size) / 1024))} KB` : 'Attached to task activity'}</small></div></div>) : <div className="activity-canvas-empty">No attachments are linked to this task yet.</div>}</div></section>
 
-  const renderAudit = () => <section className="task-work-item-panel task-work-item-tab-panel"><header><div><span>Forensic history</span><h2>Audit Log</h2></div></header><div className="task-work-item-scroll">{taskEvents.length ? taskEvents.map((event) => <div className="task-work-item-audit" key={event.id}><time>{formatDate(event.createdAt)}</time><div><strong>{event.text || event.message || event.metadata?.event || 'Task updated'}</strong><small>{event.actor || 'Hi5Central'}{event.metadata?.event ? ` · ${event.metadata.event}` : ''}</small></div></div>) : <div className="activity-canvas-empty">No task-specific audit events have been recorded yet.</div>}</div></section>
+  const renderAttachments = () => <section className="task-detail-card"><header><div><span>Evidence</span><h2>Attachments</h2></div></header><div className="task-detail-list">{taskAttachments.length ? taskAttachments.map((item, index) => <div className="task-work-item-attachment" key={item.id || item._key || index}><span><Paperclip size={17} /></span><div><strong>{item.name || item.fileName || 'Attachment'}</strong><small>{item.size ? `${Math.max(1, Math.round(Number(item.size) / 1024))} KB` : 'Attached to task activity'}</small></div></div>) : <div className="task-detail-empty">No attachments are linked to this task yet.</div>}</div></section>
 
-  const activeContent = tab === 'attachments' ? renderAttachments() : tab === 'audit' ? renderAudit() : renderActivity()
+  const renderAudit = () => <section className="task-detail-card"><header><div><span>Forensic history</span><h2>Audit Log</h2></div></header><div className="task-detail-list">{taskEvents.length ? taskEvents.map((event) => <div className="task-work-item-audit" key={event.id}><time>{formatDate(event.createdAt)}</time><div><strong>{event.text || event.message || event.metadata?.event || 'Task updated'}</strong><small>{event.actor || 'Hi5Central'}{event.metadata?.event ? ` · ${event.metadata.event}` : ''}</small></div></div>) : <div className="task-detail-empty">No task-specific audit events have been recorded yet.</div>}</div></section>
 
-  return <section className={`production-task-experience task-work-item production-motion-enter${inspectorCollapsed ? ' is-inspector-collapsed' : ''}`}>
-    <header className="task-work-item-masthead">
-      <div className="task-work-item-leading"><button type="button" className="task-work-item-back" onClick={() => navigate('/tasks')} title="Back to Tasks"><ArrowLeft size={19} /></button>{inspectorCollapsed ? <button type="button" className="task-work-item-details-restore" onClick={() => setInspectorCollapsed(false)} title="Show task details"><PanelLeftOpen size={17} /><span>Details</span></button> : null}</div>
-      <div className="task-work-item-title"><div><strong>{task.id}</strong><span className={`activity-canvas-pill ${statusClass(task.status)}`}>{task.status}</span><span className={`activity-canvas-pill ${priorityClass(parent.priority || 'Medium')}`}>{parent.priority || 'Medium'}</span></div><h1>{task.title}</h1><p>{task.team || 'Unassigned'} / {task.assignee || 'Unassigned'} · Parent {parent.id || 'not recorded'}</p></div>
-      <div className="task-work-item-masthead-actions"><button type="button" className={`task-work-item-due ${detailDue.className}`}><Clock3 size={17} /><span><small>Due / target</small><strong>{task.dueAt ? formatDate(task.dueAt) : 'No due date'}</strong><em>{detailDue.label}</em></span></button><button type="button" className="task-work-item-parent" onClick={() => navigate(`/requests/${encodeURIComponent(parent.id)}`)}><ExternalLink size={16} />Open parent</button></div>
-    </header>
+  const activeContent = tab === 'overview' ? renderOverview() : tab === 'attachments' ? renderAttachments() : tab === 'audit' ? renderAudit() : renderActivity()
+
+  return <section className="production-task-experience task-work-item task-detail-rmm production-motion-enter">
+    <nav className="task-detail-breadcrumbs" aria-label="Breadcrumb">
+      <button type="button" onClick={() => navigate('/tasks')}>Tasks</button><ChevronRight size={13} />
+      <button type="button" onClick={() => setTab('overview')}>{task.id}</button><ChevronRight size={13} />
+      <span>{activeTabLabel}</span>
+    </nav>
+
+    <section className="task-detail-hero">
+      <span className="task-detail-hero-icon"><ListChecks size={27} /></span>
+      <div className="task-detail-identity">
+        <div><strong>{task.id}</strong><span className={`activity-canvas-pill ${statusClass(task.status)}`}>{task.status}</span><span className={`activity-canvas-pill ${priorityClass(parent.priority || 'Medium')}`}>{parent.priority || 'Medium'}</span></div>
+        <h1>{task.title}</h1>
+        <p>{task.team || 'Unassigned'} / {task.assignee || 'Unassigned'} · Parent {parent.id || 'not recorded'} · {detailDue.label}</p>
+      </div>
+      <div className="task-detail-hero-actions">
+        {canTake ? <button type="button" className="is-primary" disabled={saving} onClick={() => ownershipAction('take', 'Task taken')}><UserPlus size={16} />Take task</button> : null}
+        {canRelease ? <button type="button" disabled={saving} onClick={() => ownershipAction('release', 'Task released to team queue')}><UserMinus size={16} />Release</button> : null}
+        <details className="record-lab-action-menu task-detail-action-menu">
+          <summary><UserPlus size={16} /><span>Assignment</span><ChevronDown size={14} /></summary>
+          <div className="record-lab-action-menu-popover">
+            <button type="button" disabled={completed} onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open'); setTab('overview'); setAssignmentEditing(true) }}><UserPlus size={15} /><span><strong>Edit assignment</strong><small>Change team or technician</small></span></button>
+            <button type="button" disabled={!parent.id} onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open'); if (parent.id) navigate(`/requests/${encodeURIComponent(parent.id)}`) }}><ExternalLink size={15} /><span><strong>Open parent</strong><small>{parent.id || 'No parent request'}</small></span></button>
+          </div>
+        </details>
+        <details className="record-lab-action-menu task-detail-action-menu">
+          <summary><CheckCircle2 size={16} /><span>Status</span><ChevronDown size={14} /></summary>
+          <div className="record-lab-action-menu-popover align-right">
+            <button type="button" disabled={saving || completed || !taskIsMine} onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open'); void patch({ status: 'In Progress' }, 'Task started') }}><PlayCircle size={15} /><span><strong>Start</strong><small>Set task in progress</small></span></button>
+            <button type="button" disabled={saving || completed || !taskIsMine} onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open'); void patch({ status: 'Blocked' }, 'Task blocked') }}><CircleStop size={15} /><span><strong>Block</strong><small>Mark task blocked</small></span></button>
+            <button type="button" disabled={saving || completed || !taskIsMine} onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open'); setTab('activity'); setCompletionOpen(true) }}><CheckCircle2 size={15} /><span><strong>Complete</strong><small>Add completion notes and finish</small></span></button>
+          </div>
+        </details>
+      </div>
+    </section>
 
     {error ? <div className="activity-canvas-banner is-error"><AlertTriangle size={17} /><span>{error}</span><button type="button" onClick={() => setError('')}><X size={15} /></button></div> : null}
     {notice ? <div className="activity-canvas-banner is-success"><CheckCircle2 size={17} /><span>{notice}</span><button type="button" onClick={() => setNotice('')}><X size={15} /></button></div> : null}
 
-    <div className="task-work-item-body">
-      {renderInspector()}
-      <section className="task-work-item-primary">
-        <nav className="task-work-item-tabs">{tabs.map(([value, label]) => <button type="button" key={value} className={tab === value ? 'is-active' : ''} onClick={() => { setCompletionOpen(false); setTab(value) }}>{label}</button>)}<button type="button" className="task-work-item-refresh" onClick={() => load({ quiet: true })}><RefreshCw size={15} />Refresh</button></nav>
-        <main className="task-work-item-content">{activeContent}</main>
-      </section>
-    </div>
+    <nav className="task-detail-tabs">{tabs.map(([value, label]) => <button type="button" key={value} className={tab === value ? 'is-active' : ''} onClick={() => { setCompletionOpen(false); setTab(value) }}>{label}</button>)}<button type="button" className="task-detail-refresh" onClick={() => load({ quiet: true })}><RefreshCw size={15} /><span>Refresh</span></button></nav>
+    <main className="task-detail-content">{activeContent}</main>
   </section>
 }
 
