@@ -107,5 +107,3 @@ export async function createProductionProjectRisk(projectId, draft) {
     body: JSON.stringify(draft),
   }))
 }
-
-[executed on device: hi5central-prod-01 (39f38b48-395a-48ec-b87b-4b9bb80cf4b5)]
