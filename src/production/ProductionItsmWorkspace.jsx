@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import {
+  AlertTriangle,
   BookmarkPlus,
   Check,
   ChevronDown,
@@ -8,6 +9,7 @@ import {
   ChevronRight,
   Columns3,
   Eye,
+  FileText,
   Filter,
   GripVertical,
   LayoutGrid,
@@ -15,6 +17,7 @@ import {
   Plus,
   RefreshCw,
   Search,
+  ShieldCheck,
   TableProperties,
   X,
 } from 'lucide-react'
@@ -46,6 +49,7 @@ const COLUMN_DEFINITIONS = [
   { key: 'updated', label: 'Updated', width: 132 },
 ]
 const DEFAULT_FILTERS = { status: 'All', priority: 'All', team: 'All', assignee: 'All', service: 'All', __view: 'all' }
+const QUEUE_QUICK_VIEWS = [['all', 'All records'], ['mine', 'Assigned to me'], ['unassigned', 'Unassigned'], ['high', 'High priority'], ['closed', 'Closed']]
 const LIST_STATE_PREFIX = 'hi5central-record-list-state-v3'
 const SAVED_VIEWS_KEY = 'hi5central-record-saved-views-v3'
 const COLUMN_STATE_KEY = 'hi5central-record-columns-v3'
@@ -187,33 +191,12 @@ function FilterSelect({ label, options, value, onChange }) {
   )
 }
 
-function QueueFilters({ filterOptions, filters, onChange, onClear, sessionName, savedViews, onApplySaved, onDeleteSaved, onSaveView }) {
-  const quickViews = [
-    ['all', 'All records'],
-    ['mine', 'Assigned to me'],
-    ['unassigned', 'Unassigned'],
-    ['high', 'High priority'],
-    ['closed', 'Closed'],
-  ]
-  const activeQuick = filters.__view || 'all'
-
-  function quick(id) {
-    if (id === 'mine') onChange({ ...filters, __view: id, assignee: sessionName || 'All', status: 'All', priority: 'All' })
-    else if (id === 'unassigned') onChange({ ...filters, __view: id, assignee: 'Unassigned', status: 'All', priority: 'All' })
-    else if (id === 'high') onChange({ ...filters, __view: id, assignee: 'All', status: 'All', priority: 'High' })
-    else if (id === 'closed') onChange({ ...filters, __view: id, assignee: 'All', status: 'Closed', priority: 'All' })
-    else onChange({ ...DEFAULT_FILTERS })
-  }
-
+function QueueFilters({ filterOptions, filters, onChange, onClear, query, onQueryChange, savedViews, onApplySaved, onDeleteSaved, onSaveView }) {
   return (
     <div className="production-record-filter-content">
       <section>
-        <span className="production-record-filter-label">Views</span>
-        <div className="production-record-view-list">
-          {quickViews.map(([id, label]) => (
-            <button className={activeQuick === id ? 'is-active' : ''} key={id} onClick={() => quick(id)} type="button">{label}</button>
-          ))}
-        </div>
+        <span className="production-record-filter-label">Search</span>
+        <label className="production-record-drawer-search"><Search size={15} /><input value={query} onChange={(event) => onQueryChange(event.target.value)} placeholder="Search records…" type="search" /></label>
       </section>
 
       {savedViews.length ? <section>
@@ -307,26 +290,33 @@ function CompactList({ items, onOpen, returnRecord }) {
   )
 }
 
+function RecordTypeIcon({ record }) {
+  const type = String(record.type || '')
+  if (type === 'Incident') return <AlertTriangle size={18} />
+  if (type === 'Change') return <ShieldCheck size={18} />
+  return <FileText size={18} />
+}
+
 function CardList({ items, onOpen, returnRecord }) {
   return (
     <div className="production-record-card-list">
       {items.map((record) => (
         <article className={`production-record-card production-record-card-enhanced${returnRecord === record.id ? ' is-returned' : ''}`} key={record.id}>
           <button className="production-record-card-open" onClick={() => onOpen(record)} type="button" aria-label={`Open ${record.id}`}>
-            <div><strong>{record.id}</strong><span className={`production-record-priority ${priorityClass(record.priority)}`}>{record.priority}</span></div>
-            <h3>{record.title}</h3>
-            <div className="production-record-card-state"><span className={`production-record-status ${statusClass(record.status)}`}>{record.status}</span><span>{record.service || 'Unclassified'}</span></div>
-            <dl>
-              <div><dt>Requester</dt><dd>{record.requester || 'Not recorded'}</dd></div>
-              <div><dt>Assignment</dt><dd>{record.team || 'Unassigned'} · {record.assignee || 'Unassigned'}</dd></div>
-            </dl>
-            <footer><span>Updated {formatDate(record.updatedAt)}</span><ChevronRight size={16} /></footer>
+            <span className={`production-record-card-icon is-${String(record.type || '').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}><RecordTypeIcon record={record} /></span>
+            <span className="production-record-card-copy">
+              <strong>{record.id}</strong>
+              <b>{record.title}</b>
+              <small>{record.requester || 'Requester not recorded'} · {record.team || 'Unassigned'} / {record.assignee || 'Unassigned'}</small>
+            </span>
+            <span className={`production-record-status ${statusClass(record.status)}`}>{record.status}</span>
+            <span className="production-record-card-facts">
+              <span><small>Priority</small><strong>{record.priority || 'Not set'}</strong></span>
+              <span><small>Service</small><strong>{record.service || 'Unclassified'}</strong></span>
+              <span><small>Updated</small><strong>{formatDate(record.updatedAt)}</strong></span>
+            </span>
+            <ChevronRight className="production-record-card-chevron" size={17} />
           </button>
-          <div className="production-record-card-actions">
-            <button type="button" onClick={() => openPeek(requesterPeek(record))}>Requester</button>
-            <button type="button" onClick={() => openPeek(assignmentPeek(record))}>Assignment</button>
-            <button type="button" aria-label={`Preview ${record.id}`} onClick={() => openPeek(recordPeek(record))}><Eye size={15} />Preview</button>
-          </div>
         </article>
       ))}
     </div>
@@ -441,6 +431,14 @@ function ProductionQueue({ route }) {
     setPage(0)
   }
 
+  function applyQuickView(id) {
+    if (id === 'mine') changeFilters({ ...filters, __view: id, assignee: productionSession.name || 'All', status: 'All', priority: 'All' })
+    else if (id === 'unassigned') changeFilters({ ...filters, __view: id, assignee: 'Unassigned', status: 'All', priority: 'All' })
+    else if (id === 'high') changeFilters({ ...filters, __view: id, assignee: 'All', status: 'All', priority: 'High' })
+    else if (id === 'closed') changeFilters({ ...filters, __view: id, assignee: 'All', status: 'Closed', priority: 'All' })
+    else changeFilters({ ...DEFAULT_FILTERS })
+  }
+
   function changeViewStyle(value) {
     setViewStyle(value)
     const current = readJson('hi5central-record-view-style-v1', {})
@@ -510,34 +508,26 @@ function ProductionQueue({ route }) {
   }
 
   const pageCount = Math.max(1, Math.ceil(Number(payload.total || 0) / pageSize))
-  const start = payload.total ? page * pageSize + 1 : 0
-  const end = Math.min((page + 1) * pageSize, Number(payload.total || 0))
-  const renderedViewStyle = isMobileQueue ? 'cards' : viewStyle
-  const ActiveViewIcon = VIEW_STYLES.find((item) => item.id === renderedViewStyle)?.icon || TableProperties
+  const renderedViewStyle = isMobileQueue ? 'cards' : 'table'
+  const activeFilterCount = [
+    query.trim(),
+    filters.status !== 'All' ? filters.status : '',
+    filters.priority !== 'All' ? filters.priority : '',
+    filters.team !== 'All' ? filters.team : '',
+    filters.assignee !== 'All' ? filters.assignee : '',
+    filters.service !== 'All' ? filters.service : '',
+  ].filter(Boolean).length
 
   return (
     <section className="production-record-shell production-motion-enter production-record-shell-enhanced">
-      <aside className="production-record-filter-rail">
-        <div className="production-record-filter-heading"><span>Queue</span><strong>{route.title}</strong></div>
-        <QueueFilters filterOptions={payload.filters || {}} filters={filters} onChange={changeFilters} onClear={clearFilters} sessionName={productionSession.name} savedViews={savedViews} onApplySaved={applySavedView} onDeleteSaved={deleteSavedView} onSaveView={saveView} />
-      </aside>
-
       <main className="production-record-main">
-        <div className="production-record-toolbar">
-          <button className="production-record-filter-trigger" onClick={() => setMobileFilters(true)} type="button"><Filter size={15} />Filters</button>
-          <label className="production-record-search"><Search size={17} /><input value={query} onChange={(event) => changeQuery(event.target.value)} placeholder={`Search ${route.title.toLowerCase()}...`} type="search" /></label>
-          <button className="production-record-refresh" onClick={() => setRevision((value) => value + 1)} type="button" title="Refresh"><RefreshCw size={16} /></button>
-          <label className="production-record-view-select"><ActiveViewIcon size={15} /><select value={viewStyle} onChange={(event) => changeViewStyle(event.target.value)}>{VIEW_STYLES.map((style) => <option key={style.id} value={style.id}>{style.label}</option>)}</select></label>
-          {viewStyle === 'table' ? <details className="production-record-columns-menu"><summary><Columns3 size={15} /><span>Columns</span><ChevronDown size={13} /></summary><div><header><strong>Columns</strong><small>Drag to reorder</small></header>{columnOrder.map((key) => {
-            const column = COLUMN_DEFINITIONS.find((item) => item.key === key)
-            if (!column) return null
-            const visible = column.locked || !hiddenColumns.includes(key)
-            return <button type="button" draggable onDragStart={() => setDragColumn(key)} onDragEnd={() => setDragColumn('')} onDragOver={(event) => event.preventDefault()} onDrop={() => dropColumn(key)} className={visible ? 'is-visible' : ''} key={key}><GripVertical size={13} /><span>{column.label}</span><i onClick={(event) => { event.preventDefault(); event.stopPropagation(); toggleColumn(key) }}>{visible ? <Check size={13} /> : null}</i></button>
-          })}</div></details> : null}
-          <button className="production-record-new" onClick={createRecord} type="button"><Plus size={16} />New</button>
+        <div className="production-record-viewbar">
+          <div className="production-record-view-pills" aria-label="Record quick views">
+            {QUEUE_QUICK_VIEWS.map(([id, label]) => <button className={(filters.__view || 'all') === id ? 'is-active' : ''} key={id} onClick={() => applyQuickView(id)} type="button">{label}</button>)}
+          </div>
+          <button className="production-record-viewbar-filter" onClick={() => setMobileFilters(true)} type="button"><Filter size={15} />Filters{activeFilterCount > 0 ? <b>{activeFilterCount}</b> : null}</button>
+          <button className="production-record-viewbar-new" onClick={createRecord} type="button"><Plus size={15} />New</button>
         </div>
-
-        <div className="production-record-result-line"><span><strong>{payload.total || 0}</strong> {Number(payload.total) === 1 ? route.singular : route.title.toLowerCase()}</span><span>{start}–{end} of {payload.total || 0}</span></div>
 
         <div className="production-record-content" ref={contentRef}>
           {loading ? <QueueSkeleton viewStyle={renderedViewStyle} /> : null}
@@ -545,9 +535,9 @@ function ProductionQueue({ route }) {
           {!loading && !error && !payload.items?.length ? <div className="production-record-state"><strong>No {route.title.toLowerCase()} in this view</strong><span>Change the filters or create the first {route.singular}.</span></div> : null}
           {!loading && !error && payload.items?.length ? (
             <div className="production-motion-enter production-motion-enter-fast">
-              {renderedViewStyle === 'compact' ? <CompactList items={payload.items} onOpen={openRecord} returnRecord={returnRecord} />
-                : renderedViewStyle === 'cards' ? <CardList items={payload.items} onOpen={openRecord} returnRecord={returnRecord} />
-                  : <RecordTable items={payload.items} onOpen={openRecord} columns={visibleColumns} widths={columnWidths} onWidthChange={(key, width) => setColumnWidths((current) => ({ ...current, [key]: width }))} returnRecord={returnRecord} />}
+              {renderedViewStyle === 'cards'
+                ? <CardList items={payload.items} onOpen={openRecord} returnRecord={returnRecord} />
+                : <RecordTable items={payload.items} onOpen={openRecord} columns={visibleColumns} widths={columnWidths} onWidthChange={(key, width) => setColumnWidths((current) => ({ ...current, [key]: width }))} returnRecord={returnRecord} />}
             </div>
           ) : null}
         </div>
@@ -560,7 +550,7 @@ function ProductionQueue({ route }) {
       </main>
 
       {mobileFilters ? (
-        <><button className="production-record-filter-backdrop" aria-label="Close filters" onClick={() => setMobileFilters(false)} type="button" /><aside className="production-record-mobile-filter production-motion-drawer"><header><div><span>Queue filters</span><strong>{route.title}</strong></div><button onClick={() => setMobileFilters(false)} type="button"><X size={17} /></button></header><QueueFilters filterOptions={payload.filters || {}} filters={filters} onChange={changeFilters} onClear={clearFilters} sessionName={productionSession.name} savedViews={savedViews} onApplySaved={(view) => { applySavedView(view); setMobileFilters(false) }} onDeleteSaved={deleteSavedView} onSaveView={saveView} /></aside></>
+        <><button className="production-record-filter-backdrop" aria-label="Close filters" onClick={() => setMobileFilters(false)} type="button" /><aside className="production-record-mobile-filter production-motion-drawer"><header><div><span>Queue filters</span><strong>{route.title}</strong></div><button onClick={() => setMobileFilters(false)} type="button"><X size={17} /></button></header><QueueFilters filterOptions={payload.filters || {}} filters={filters} onChange={changeFilters} onClear={clearFilters} query={query} onQueryChange={changeQuery} savedViews={savedViews} onApplySaved={(view) => { applySavedView(view); setMobileFilters(false) }} onDeleteSaved={deleteSavedView} onSaveView={saveView} /></aside></>
       ) : null}
     </section>
   )
