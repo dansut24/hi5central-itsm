@@ -2989,20 +2989,31 @@ function UnifiedNewRecordForm({
   handleTicketSubmit,
   hasUnsavedChanges,
   onRecordTypeChange,
+  people = [],
   setTicketDraft,
   ticketDraft,
 }) {
   const [userQuery, setUserQuery] = useState('')
   const recordType = ticketDraft.type || 'Incident'
   const selectedTemplate = serviceRequestCatalogTemplates.find((template) => template.id === ticketDraft.requestTemplateId)
-  const selectedUser = ticketDraft.requesterId ? workspaceUsers.find((user) => user.id === ticketDraft.requesterId) : null
+  const requesterDirectory = (people.length ? people : workspaceUsers)
+    .filter((person) => person.active !== false)
+    .map((person) => ({
+      ...person,
+      staffNumber: person.staffNumber || '',
+      jobTitle: person.jobTitle || person.role || '',
+      department: person.department || '',
+      manager: person.manager || people.find((candidate) => candidate.id === person.managerId)?.name || '',
+      location: person.location || person.site || '',
+    }))
+  const selectedUser = ticketDraft.requesterId ? requesterDirectory.find((user) => user.id === ticketDraft.requesterId) : null
   const requestCost = (ticketDraft.requestedItems || []).reduce((sum, item) => sum + Number(item.unitCost || 0) * Number(item.quantity || 1), 0)
   const meta = unifiedRecordMeta[recordType] || unifiedRecordMeta.Incident
   const pageTitle = `New ${recordType}`
   const sectionLabel = recordType === 'Service Request' ? 'Service Requests' : `${recordType}s`
   const normalizedQuery = userQuery.trim().toLowerCase()
   const userResults = normalizedQuery
-    ? workspaceUsers
+    ? requesterDirectory
         .filter((user) =>
           [
             user.name,
@@ -3731,7 +3742,7 @@ export function CmdbView({ assets, openAsset, tickets }) {
                 <strong>{ticket.id}</strong>
                 {ticket.title}
               </span>
-              <span>{ticket.linkedAssets.join(', ') || 'No CI linked'}</span>
+              <span>{Array.isArray(ticket.linkedAssets) && ticket.linkedAssets.length ? ticket.linkedAssets.join(', ') : 'No CI linked'}</span>
               <span className={`status-pill ${statusClass(ticket.status)}`}>{ticket.status}</span>
             </div>
           ))}
