@@ -496,15 +496,21 @@ function ProductionQueue({ route }) {
     setDragColumn('')
   }
 
+  function navigateWorkspace(path) {
+    window.history.pushState({}, '', path)
+    window.dispatchEvent(new PopStateEvent('popstate', { state: window.history.state }))
+    window.dispatchEvent(new CustomEvent('hi5-routechange', { detail: { path } }))
+  }
+
   async function openRecord(record) {
     persistListState({ returnRecord: record.id })
     try { await hydrateProductionItsmWorkspaceRecords() } catch { /* Queue record still remains navigable. */ }
-    window.location.assign(recordRoute(record))
+    navigateWorkspace(recordRoute(record))
   }
 
   function createRecord() {
     persistListState({ returnRecord: '' })
-    window.location.assign(`/${route.section}/new`)
+    navigateWorkspace(`/${route.section}/new`)
   }
 
   const pageCount = Math.max(1, Math.ceil(Number(payload.total || 0) / pageSize))
@@ -564,17 +570,9 @@ export function ProductionItsmWorkspace() {
     let active = true
     const hydrate = async () => {
       try {
-        const before = window.localStorage.getItem('hi5central-tickets') || '[]'
-        const records = await hydrateProductionItsmWorkspaceRecords()
-        const signature = records.map((record) => `${record.id}:${record.updatedAt || record.updated}`).join('|')
-        const after = window.localStorage.getItem('hi5central-tickets') || '[]'
-        const reloadKey = 'hi5central-production-itsm-hydrated-v1'
-        if (active && before !== after && window.sessionStorage.getItem(reloadKey) !== signature) {
-          window.sessionStorage.setItem(reloadKey, signature)
-          window.location.reload()
-        }
+        if (active) await hydrateProductionItsmWorkspaceRecords()
       } catch (error) {
-        console.error('Production ITSM hydration failed', error)
+        if (active) console.error('Production ITSM hydration failed', error)
       }
     }
     void hydrate()
