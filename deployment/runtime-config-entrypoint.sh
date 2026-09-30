@@ -6,7 +6,10 @@ json_escape() {
 }
 
 DEPLOYMENT_MODE_RAW="${DEPLOYMENT_MODE:-managed}"
+SELF_HOST_EDITION_RAW="${SELF_HOST_EDITION:-standard}"
 TENANCY_MODE_RAW="${TENANCY_MODE:-multi}"
+RUNTIME_ENVIRONMENT_RAW="${RUNTIME_ENVIRONMENT:-live}"
+FEATURE_MODE_RAW="${FEATURE_MODE:-controlled}"
 ROOT_DOMAIN_RAW="${ROOT_DOMAIN:-hi5central.com}"
 APP_URL_RAW="${APP_URL:-}"
 API_URL_RAW="${API_URL:-}"
@@ -20,7 +23,10 @@ if [ -z "$API_URL_RAW" ]; then
 fi
 
 DEPLOYMENT_MODE_VALUE="$(json_escape "$DEPLOYMENT_MODE_RAW")"
+SELF_HOST_EDITION_VALUE="$(json_escape "$SELF_HOST_EDITION_RAW")"
 TENANCY_MODE_VALUE="$(json_escape "$TENANCY_MODE_RAW")"
+RUNTIME_ENVIRONMENT_VALUE="$(json_escape "$RUNTIME_ENVIRONMENT_RAW")"
+FEATURE_MODE_VALUE="$(json_escape "$FEATURE_MODE_RAW")"
 ROOT_DOMAIN_VALUE="$(json_escape "$ROOT_DOMAIN_RAW")"
 PRIMARY_TENANT_VALUE="$(json_escape "${PRIMARY_TENANT_SLUG:-demo-tenant}")"
 APP_URL_VALUE="$(json_escape "$APP_URL_RAW")"
@@ -35,7 +41,10 @@ TURN_URL_VALUE="$(json_escape "${TURN_URL:-}")"
 cat > /srv/runtime-config.js <<EOF
 window.__HI5_CONFIG__ = Object.freeze({
   deploymentMode: "${DEPLOYMENT_MODE_VALUE}",
+  selfHostEdition: "${SELF_HOST_EDITION_VALUE}",
   tenancyMode: "${TENANCY_MODE_VALUE}",
+  runtimeEnvironment: "${RUNTIME_ENVIRONMENT_VALUE}",
+  featureMode: "${FEATURE_MODE_VALUE}",
   rootDomain: "${ROOT_DOMAIN_VALUE}",
   primaryTenantSlug: "${PRIMARY_TENANT_VALUE}",
   appUrl: "${APP_URL_VALUE}",

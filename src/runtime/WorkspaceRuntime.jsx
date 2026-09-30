@@ -3088,7 +3088,7 @@ function WorkspaceRuntime() {
               <Menu size={19} aria-hidden="true" />
             </button>
             <div>
-              <span>ITSM</span>
+              <span>ITSM {platform.runtimeEnvironment !== 'live' ? <b className={`hi5-env-badge hi5-env-${platform.runtimeEnvironment}`}>{platform.runtimeEnvironment.toUpperCase()}{platform.featureMode === 'all_enabled' ? ' · ALL FEATURES' : ''}</b> : null}</span>
               <strong>{shellPageTitle}</strong>
             </div>
           </div>
