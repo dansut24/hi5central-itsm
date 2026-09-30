@@ -23,6 +23,14 @@ function formatDate(value) {
   }).format(date)
 }
 
+function workspaceSla(value, fallback = 'Not yet calculated') {
+  if (!value || typeof value !== 'object') return { label: typeof value === 'string' && value ? value : fallback, percent: 0, detail: null }
+  const metric = value.resolution || value.response || null
+  const state = String(metric?.state || '')
+  const label = value.paused ? 'Paused' : state === 'met' ? 'Met' : state === 'breached' ? 'Breached' : state === 'warning' ? 'At risk' : state === 'on_track' ? 'On track' : fallback
+  return { label, percent: Number(metric?.percent || 0), detail: value }
+}
+
 function nextStepFor(status) {
   if (status === 'Pending Approval') return 'Waiting for approval'
   if (status === 'Approved') return 'Approval complete. Fulfilment can begin.'
@@ -55,6 +63,7 @@ function mergeOperationalState(request, state) {
 }
 
 export function serviceRequestForWorkspace(request) {
+  const sla = workspaceSla(request.sla, request.status === 'Pending Approval' ? 'Paused for approval' : 'Not yet calculated')
   return {
     id: request.id,
     databaseId: request.databaseId,
@@ -78,8 +87,9 @@ export function serviceRequestForWorkspace(request) {
     updated: formatDate(request.updatedAt),
     createdAt: request.createdAt,
     updatedAt: request.updatedAt,
-    sla: request.sla && typeof request.sla === 'object' ? request.sla : (request.status === 'Pending Approval' ? 'Paused for approval' : 'Not yet calculated'),
-    slaPercent: Number(request.sla?.resolution?.percent || 0),
+    sla: sla.label,
+    slaPercent: sla.percent,
+    slaDetail: sla.detail,
     nextStep: nextStepFor(request.status),
     catalogueItemId: request.catalogueItemId || '',
     catalogueItemTitle: request.catalogueItemTitle || '',
