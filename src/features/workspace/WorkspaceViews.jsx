@@ -3514,6 +3514,7 @@ export function SelfServicePortal({
   handlePortalSubmit,
   openPortalRequest,
   portalDraft,
+  portalTitle = 'IT Help Centre',
   portalQuery,
   portalResults,
   serviceCatalog,
@@ -3531,7 +3532,7 @@ export function SelfServicePortal({
     <div className="portal-view">
       <section className="portal-hero">
         <div>
-          <span className="eyebrow">Self-Service Portal</span>
+          <span className="eyebrow">{portalTitle}</span>
           <h2>Get help, request access, and track IT work in one place.</h2>
         </div>
         <label className="portal-search">
