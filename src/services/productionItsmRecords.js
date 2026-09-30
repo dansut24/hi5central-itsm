@@ -12,6 +12,14 @@ function formatDate(value) {
   }).format(date)
 }
 
+function workspaceSla(value, fallback = 'Not yet calculated') {
+  if (!value || typeof value !== 'object') return { label: typeof value === 'string' && value ? value : fallback, percent: 0, detail: null }
+  const metric = value.resolution || value.response || null
+  const state = String(metric?.state || '')
+  const label = value.paused ? 'Paused' : state === 'met' ? 'Met' : state === 'breached' ? 'Breached' : state === 'warning' ? 'At risk' : state === 'on_track' ? 'On track' : fallback
+  return { label, percent: Number(metric?.percent || 0), detail: value }
+}
+
 async function apiJson(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
     credentials: 'include',
@@ -28,12 +36,14 @@ async function apiJson(path, options = {}) {
 
 export function itsmRecordForWorkspace(record) {
   const activities = Array.isArray(record.activities) ? record.activities : []
+  const sla = workspaceSla(record.sla, record.type === 'Incident' ? 'Not yet calculated' : '—')
   return {
     ...record,
     created: formatDate(record.createdAt),
     updated: formatDate(record.updatedAt),
-    sla: record.sla || (record.type === 'Incident' ? 'Not yet calculated' : '—'),
-    slaPercent: Number(record.slaPercent || 0),
+    sla: sla.label,
+    slaPercent: sla.percent || Number(record.slaPercent || 0),
+    slaDetail: sla.detail,
     nextStep: record.nextStep || (record.status === 'Closed' ? 'Record closed.' : 'Review and progress this record.'),
     comments: Array.isArray(record.comments) ? record.comments : [],
     activities: activities.map((activity) => ({
