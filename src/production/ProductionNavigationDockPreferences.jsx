@@ -112,15 +112,6 @@ export function ProductionNavigationDockPreferences() {
       </label>
 
       <label className="production-settings-field hi5-navigation-side-field">
-        <span>Sidebar style</span>
-        <select value={navStyle} onChange={(event) => setNavStyle(event.target.value)}>
-          <option value="floating">Floating glass</option>
-          <option value="clean">Clean panel</option>
-        </select>
-        <small>Floating glass keeps the curved Liquid Glass treatment. Clean panel matches the restrained Settings navigation style.</small>
-      </label>
-
-      <label className="production-settings-field hi5-navigation-side-field">
         <span>Mobile navigation button</span>
         <select value={mobileSide} onChange={(event) => setMobileSide(event.target.value)}>
           <option value="left">Left side</option>
