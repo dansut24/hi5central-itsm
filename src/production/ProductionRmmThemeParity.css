@@ -549,3 +549,82 @@ html[data-hi5-surface='workspace'] .sidebar .sidebar-footer {
     border-radius:7px !important;
   }
 }
+/* Authoritative workspace chrome geometry.
+   Matches the specificity of legacy shell rules so no hidden row or old
+   58px mobile tab slot can override the current RMM-parity shell. */
+html[data-hi5-surface='workspace'] .main-frame {
+  grid-template-rows:62px 52px minmax(0,1fr) !important;
+}
+
+html[data-hi5-surface='workspace'] .tabbar {
+  grid-row:2 !important;
+  height:52px !important;
+  min-height:52px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:5px 20px !important;
+  border:0 !important;
+  border-bottom:1px solid var(--rmm-border) !important;
+  background:var(--rmm-surface) !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+}
+
+html[data-hi5-surface='workspace'] .tabbar-tab-zone {
+  width:100% !important;
+  max-width:1280px !important;
+  height:42px !important;
+  margin:0 auto !important;
+  display:flex !important;
+  align-items:center !important;
+  padding:4px !important;
+  border:1px solid var(--rmm-border) !important;
+  border-radius:10px !important;
+  background:var(--rmm-soft) !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+}
+
+html[data-hi5-surface='workspace'] .tabbar-tab-zone > .tab-list {
+  width:100% !important;
+  height:34px !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:4px !important;
+  margin:0 !important;
+}
+
+html[data-hi5-surface='workspace'] .workspace {
+  grid-row:3 !important;
+}
+
+@media (max-width:900px) {
+  html[data-hi5-surface='workspace'] .main-frame {
+    grid-template-rows:62px 48px minmax(0,1fr) !important;
+  }
+
+  html[data-hi5-surface='workspace'] .tabbar {
+    height:48px !important;
+    min-height:48px !important;
+    padding:4px 11px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .tabbar-tab-zone {
+    width:100% !important;
+    max-width:none !important;
+    height:40px !important;
+    padding:4px !important;
+    border-radius:10px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .tabbar-tab-zone > .tab-list {
+    height:32px !important;
+  }
+
+  html[data-hi5-surface='workspace'] .workspace-tab,
+  html[data-hi5-surface='workspace'] .tab-add {
+    height:32px !important;
+    border-radius:7px !important;
+  }
+}
