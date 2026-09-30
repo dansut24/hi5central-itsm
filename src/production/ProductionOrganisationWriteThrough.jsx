@@ -4,7 +4,6 @@ import './ProductionOrganisationWriteThrough.css'
 const API_BASE = window.__HI5_API_BASE__
 const POLL_MS = 300
 const RETRY_MS = 1200
-const BASELINE_RELOAD_KEY = 'hi5central-production-org-baseline-reload-v1'
 const NOTICE_KEY = 'hi5central-production-org-write-notice-v1'
 
 const collections = [
@@ -119,14 +118,9 @@ export function ProductionOrganisationWriteThrough() {
       retryRef.current = null
     }
 
-    function authoritativeReload(snapshot, reason) {
+    function publishSnapshot(snapshot) {
       cacheSnapshot(snapshot)
-      try {
-        window.sessionStorage.setItem(BASELINE_RELOAD_KEY, reason)
-      } catch {
-        // Reload remains safe without the marker.
-      }
-      window.location.reload()
+      window.dispatchEvent(new CustomEvent('hi5-organisation-hydrated', { detail: snapshot }))
     }
 
     async function synchroniseLocalChanges() {
@@ -156,20 +150,24 @@ export function ProductionOrganisationWriteThrough() {
           authoritative = await putCollection(id, mergeRecords(latestItems, changes))
         }
 
-        cacheSnapshot(authoritative)
         baselineRef.current = snapshotCollections(authoritative)
-        writeNotice('success', 'Organisation changes saved to PostgreSQL.')
-        window.location.reload()
+        publishSnapshot(authoritative)
+        setNotice({ type: 'success', message: 'Organisation changes saved to PostgreSQL.' })
       } catch (error) {
         console.error('Production Organisation write-through failed.', error)
         try {
           const restore = await fetchOrganisation()
-          if (restore.response.ok) cacheSnapshot(restore.payload)
+          if (restore.response.ok) {
+            baselineRef.current = snapshotCollections(restore.payload)
+            publishSnapshot(restore.payload)
+          }
         } catch {
           // Keep the original error as the actionable failure.
         }
-        writeNotice('error', error?.message || 'Organisation changes could not be saved. The server version has been restored.')
-        window.location.reload()
+        setNotice({ type: 'error', message: error?.message || 'Organisation changes could not be saved. The server version has been restored.' })
+      } finally {
+        syncingRef.current = false
+        setPhase('idle')
       }
     }
 
@@ -185,19 +183,8 @@ export function ProductionOrganisationWriteThrough() {
         if (!response.ok) throw new Error(payload.error || 'Could not load the production Organisation directory.')
 
         const authoritative = snapshotCollections(payload)
-        const local = localCollections()
-        const mismatch = collections.some(({ id }) => collectionChanged(local[id], authoritative[id]))
-        const alreadyReloaded = window.sessionStorage.getItem(BASELINE_RELOAD_KEY) === 'postgres-authoritative'
-
         baselineRef.current = authoritative
-        cacheSnapshot(payload)
-
-        if (mismatch && !alreadyReloaded) {
-          authoritativeReload(payload, 'postgres-authoritative')
-          return
-        }
-
-        window.sessionStorage.removeItem(BASELINE_RELOAD_KEY)
+        publishSnapshot(payload)
         pollRef.current = window.setInterval(synchroniseLocalChanges, POLL_MS)
       } catch (error) {
         console.error('Production Organisation baseline failed.', error)
