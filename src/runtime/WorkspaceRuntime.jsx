@@ -446,6 +446,31 @@ function WorkspaceRuntime() {
   }, [tickets])
 
   useEffect(() => {
+    const hydrateTickets = (event) => {
+      const next = event?.detail?.tickets
+      setTickets(Array.isArray(next) ? next : loadTickets())
+    }
+    const reconcileTicket = () => setTickets(loadTickets())
+    const hydrateOrganisation = (event) => {
+      const snapshot = event?.detail || {}
+      setPeople(Array.isArray(snapshot.people) ? snapshot.people : loadOrganisationPeople())
+      setTeams(Array.isArray(snapshot.teams) ? snapshot.teams : loadOrganisationTeams())
+      setDepartments(Array.isArray(snapshot.departments) ? snapshot.departments : loadOrganisationDepartments())
+    }
+
+    window.addEventListener('hi5-production-itsm-hydrated', hydrateTickets)
+    window.addEventListener('hi5-service-requests-hydrated', reconcileTicket)
+    window.addEventListener('hi5-service-request-reconciled', reconcileTicket)
+    window.addEventListener('hi5-organisation-hydrated', hydrateOrganisation)
+    return () => {
+      window.removeEventListener('hi5-production-itsm-hydrated', hydrateTickets)
+      window.removeEventListener('hi5-service-requests-hydrated', reconcileTicket)
+      window.removeEventListener('hi5-service-request-reconciled', reconcileTicket)
+      window.removeEventListener('hi5-organisation-hydrated', hydrateOrganisation)
+    }
+  }, [])
+
+  useEffect(() => {
     saveProjects(projects)
   }, [projects])
 
@@ -1000,8 +1025,10 @@ function WorkspaceRuntime() {
           }[activeTab?.newRecordType]
         : activeView
   const breadcrumbs = getBreadcrumbs(activeTab, selectedTicket, selectedAsset, selectedArticle, selectedProject)
-  const sidebarCollapsed = sidebarMode === 'collapsed'
-  const sidebarHidden = sidebarMode === 'hidden'
+  // Match the RMM desktop shell: the primary navigation is always a fixed rail.
+  // sidebarMode is retained only for backwards-compatible preference storage and mobile behaviour.
+  const sidebarCollapsed = false
+  const sidebarHidden = false
   const shellUserInitials = String(session?.name || session?.user?.name || 'HC')
     .split(/\s+/)
     .filter(Boolean)
@@ -2639,6 +2666,7 @@ function WorkspaceRuntime() {
           hasUnsavedChanges={activeHasUnsavedChanges}
           recordType={activeTab.newRecordType || ticketDraft.type}
           onRecordTypeChange={updateNewRecordType}
+          people={people}
           setTicketDraft={setTicketDraft}
           ticketDraft={ticketDraft}
         />
@@ -2931,12 +2959,18 @@ function WorkspaceRuntime() {
           })}
         </nav>
 
-        <div className="sidebar-status">
-          <div>
-            <strong>Service Health</strong>
-            <span>{metrics.slaPressure} SLA watch items</span>
+        <div className="sidebar-footer">
+          <div className="sidebar-product-switches">
+            {platform.rmmUrl ? <a href={platform.rmmUrl}>RMM</a> : null}
+            {platform.adminUrl ? <a href={platform.adminUrl}>Admin</a> : null}
           </div>
-          <CircleGauge size={22} aria-hidden="true" />
+          <div className="sidebar-identity">
+            <span>{shellUserInitials}</span>
+            <div>
+              <strong>{session?.name || session?.user?.name || 'Hi5Central'}</strong>
+              <small>{metrics.slaPressure} SLA watch items</small>
+            </div>
+          </div>
         </div>
       </aside>}
 
