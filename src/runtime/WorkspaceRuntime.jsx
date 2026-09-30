@@ -91,6 +91,13 @@ import {
   saveWorkspace,
 } from '../services/runtimeState.js'
 import {
+  createProductionItsmRecord,
+} from '../services/productionItsmRecords.js'
+import {
+  createProductionServiceRequest,
+  serviceRequestForWorkspace,
+} from '../services/productionServiceRequests.js'
+import {
   addProductionProjectActivity,
   addProductionProjectTask,
   createProductionProject,
@@ -152,6 +159,15 @@ function workspaceTabModule(tab) {
 
 function getSystemTheme() {
   return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
+function readTenantRuntimeConfig() {
+  try {
+    const value = JSON.parse(window.localStorage.getItem('hi5central-tenant-runtime-config-v1') || '{}')
+    return value && typeof value === 'object' ? value : {}
+  } catch {
+    return {}
+  }
 }
 
 function tabFromRoute(route) {
@@ -330,6 +346,7 @@ function addWorkspaceTab(currentTabs, tab) {
 function WorkspaceRuntime() {
   const tenantSurface = resolveTenantSurface()
   const platform = deploymentConfig()
+  const [tenantRuntimeConfig] = useState(readTenantRuntimeConfig)
   const isPortalSurface = tenantSurface.kind === 'portal'
   const isRmmSurface = tenantSurface.kind === 'rmm'
   const [initialTickets] = useState(loadTickets)
@@ -1036,11 +1053,13 @@ function WorkspaceRuntime() {
     .map((part) => part[0]?.toUpperCase())
     .join('') || 'HC'
   const shellPageTitle = activeTab?.title || viewMeta[activeNavId]?.label || 'Dashboard'
+  const workspaceBrandName = tenantRuntimeConfig?.theme?.brandName || session?.tenant?.companyName || session?.tenant?.name || 'Hi5Central'
+  const portalBrandTitle = tenantRuntimeConfig?.theme?.portalTitle || 'IT Help Centre'
 
   useEffect(() => {
-    const title = activeTab?.title || 'Hi5Central'
-    document.title = title === 'Hi5Central' ? title : `${title} · Hi5Central`
-  }, [activeTab?.title])
+    const title = activeTab?.title || workspaceBrandName
+    document.title = title === workspaceBrandName ? title : `${title} · ${workspaceBrandName}`
+  }, [activeTab?.title, workspaceBrandName])
 
   const filteredTickets = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
@@ -1929,14 +1948,14 @@ function WorkspaceRuntime() {
     setToast(`${noteMode === 'customer' ? 'Customer comment' : 'Work note'} added to ${selectedTicket.id}`)
   }
 
-  function handleTicketSubmit(event) {
+  async function handleTicketSubmit(event) {
     event.preventDefault()
     if (!ticketDraft.title.trim() || !ticketDraft.requester.trim()) {
       setToast('Add a title and requester first')
       return
     }
 
-    const createdTicket = {
+    let createdTicket = {
       id: newTicketId(ticketDraft.type),
       type: ticketDraft.type,
       title: ticketDraft.title.trim(),
@@ -2022,6 +2041,38 @@ function WorkspaceRuntime() {
       createdTicket.nextStep = approvalRequired
         ? 'Awaiting required approval before fulfilment tasks are released.'
         : 'Approval not required. The first fulfilment task is ready.'
+    }
+
+    try {
+      if (createdTicket.type === 'Service Request') {
+        const persisted = await createProductionServiceRequest({
+          catalogueItemId: ticketDraft.requestTemplateId || 'CAT-GENERAL',
+          summary: createdTicket.title,
+          requesterPersonId: ticketDraft.requesterId,
+          urgency: ticketDraft.urgency || ticketDraft.priority || 'Medium',
+          fields: {
+            requestType: ticketDraft.category || 'General Request',
+            requestDetails: createdTicket.description,
+            service: createdTicket.service,
+            assignmentGroup: createdTicket.team,
+          },
+          details: {
+            text: createdTicket.description,
+          },
+          requestInformation: createdTicket.requestInformation || [],
+          requestedItems: createdTicket.requestedItems || [],
+        })
+        createdTicket = serviceRequestForWorkspace(persisted)
+      } else {
+        createdTicket = await createProductionItsmRecord({
+          ...createdTicket,
+          requesterId: ticketDraft.requesterId,
+          source: 'analyst-console',
+        })
+      }
+    } catch (error) {
+      setToast(error?.message || 'The record could not be created')
+      return
     }
 
     setTickets((currentTickets) => [createdTicket, ...currentTickets])
@@ -2744,6 +2795,7 @@ function WorkspaceRuntime() {
           handlePortalSubmit={handlePortalSubmit}
           openPortalRequest={openPortalRequest}
           portalDraft={portalDraft}
+          portalTitle={portalBrandTitle}
           portalQuery={portalQuery}
           portalResults={portalResults}
           serviceCatalog={serviceCatalog}
@@ -2917,7 +2969,7 @@ function WorkspaceRuntime() {
           <div className="brand">
             <img src={`${import.meta.env.BASE_URL}hi5central-logo.png`} alt="Hi5Central" />
             <div className="brand-copy">
-              <strong>{session?.tenant?.companyName || session?.tenant?.name || 'Hi5Central'}</strong>
+              <strong>{workspaceBrandName}</strong>
               <span>ITSM</span>
             </div>
           </div>
