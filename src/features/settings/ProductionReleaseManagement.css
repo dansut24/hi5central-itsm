@@ -64,3 +64,26 @@
 .hi5-release-empty { padding:18px; text-align:center; color:var(--muted); font-size:12px; }
 @media (max-width:1100px) { .hi5-release-env-grid { grid-template-columns:1fr 1fr; } .hi5-release-stage-grid { grid-template-columns:1fr 1fr; } .hi5-release-selection { grid-column:1/-1; } }
 @media (max-width:760px) { .hi5-release-env-grid, .hi5-release-stage-grid { grid-template-columns:1fr; } .hi5-release-selection { grid-column:auto; } .hi5-release-feature-head { display:none; } .hi5-release-feature-row { grid-template-columns:1fr auto auto auto; } .hi5-release-toolbar { width:100%; } .hi5-release-toolbar button { flex:1 1 auto; } .hi5-release-action-list > div { grid-template-columns:1fr auto; } .hi5-release-action-list small { text-align:left; grid-column:1/-1; } }
+
+.hi5-release-policy-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.hi5-release-policy-grid > button { min-width:0; display:flex; gap:10px; align-items:flex-start; padding:14px; border:1px solid var(--line); border-radius:11px; background:var(--surface-soft); color:var(--ink); text-align:left; cursor:pointer; }
+.hi5-release-policy-grid > button:hover:not(:disabled) { border-color:var(--settings-accent); }
+.hi5-release-policy-grid > button.is-selected { border-color:var(--settings-accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--settings-accent) 14%,transparent); background:color-mix(in srgb,var(--settings-accent) 5%,var(--surface)); }
+.hi5-release-policy-grid > button > svg { flex:0 0 auto; color:var(--settings-accent); margin-top:2px; }
+.hi5-release-policy-grid > button > span { display:grid; gap:4px; }
+.hi5-release-policy-grid strong { font-size:13px; color:var(--ink); }
+.hi5-release-policy-grid small { font-size:11px; line-height:1.45; color:var(--muted); }
+.hi5-release-policy-fields { display:grid; grid-template-columns:repeat(4,minmax(130px,1fr)); gap:10px; align-items:end; }
+.hi5-release-policy-fields > label { display:grid; gap:5px; color:var(--muted); font-size:10px; font-weight:800; }
+.hi5-release-policy-fields input[type="number"], .hi5-release-policy-fields input[type="time"], .hi5-release-policy-fields input[type="text"], .hi5-release-policy-fields > label > input:not([type]) { min-height:36px; width:100%; border:1px solid var(--line); border-radius:8px; padding:7px 9px; background:var(--surface); color:var(--ink); font:inherit; }
+.hi5-release-policy-fields > label > div { display:flex; align-items:center; border:1px solid var(--line); border-radius:8px; background:var(--surface); overflow:hidden; }
+.hi5-release-policy-fields > label > div input { border:0; border-radius:0; min-width:0; }
+.hi5-release-policy-fields > label > div span { padding:0 9px; color:var(--muted); font-size:10px; }
+.hi5-release-policy-check { grid-column:1 / span 3; display:flex !important; grid-template-columns:none !important; flex-direction:row; align-items:flex-start; gap:8px !important; padding:10px; border:1px solid var(--line); border-radius:9px; background:var(--surface-soft); }
+.hi5-release-policy-check input { margin-top:2px; accent-color:var(--settings-accent); }
+.hi5-release-policy-check > span { display:grid; gap:2px; }
+.hi5-release-policy-check strong { color:var(--ink); font-size:11px; }
+.hi5-release-policy-check small { color:var(--muted); font-size:10px; font-weight:500; line-height:1.4; }
+.hi5-release-policy-save { min-height:36px; border:1px solid var(--settings-accent); border-radius:8px; background:var(--settings-accent); color:white; font:inherit; font-size:11px; font-weight:800; cursor:pointer; }
+@media (max-width:900px) { .hi5-release-policy-fields { grid-template-columns:1fr 1fr; } .hi5-release-policy-check { grid-column:1 / -1; } }
+@media (max-width:760px) { .hi5-release-policy-grid, .hi5-release-policy-fields { grid-template-columns:1fr; } .hi5-release-policy-check { grid-column:auto; } }

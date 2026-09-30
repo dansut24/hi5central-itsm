@@ -4,6 +4,17 @@ import './ProductionReleaseManagement.css'
 
 const API_BASE = window.__HI5_API_BASE__
 
+async function tenantReleaseApi(path = '', options = {}) {
+  const response = await fetch(`${API_BASE}/api/v1/release-management${path}`, {
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+    ...options,
+  })
+  const payload = await response.json().catch(() => ({}))
+  if (!response.ok) throw new Error(payload.error || `Request failed (${response.status})`)
+  return payload
+}
+
 async function releaseApi(path, options = {}) {
   const response = await fetch(`${API_BASE}/api/platform/v1/releases${path}`, {
     credentials: 'include',
@@ -44,6 +55,7 @@ function EnvironmentCard({ item, onReset, busy }) {
 
 export function ProductionReleaseManagement() {
   const [data,setData]=useState({environments:[],features:[],changes:[],actions:[]})
+  const [policy,setPolicy]=useState({updateMode:'admin_controlled',liveDelayHours:24,allowEmergencySecurityUpdates:true,maintenanceWindow:{timezone:'Europe/London',days:[],start:'02:00',end:'05:00'}})
   const [loading,setLoading]=useState(true)
   const [busy,setBusy]=useState('')
   const [error,setError]=useState('')
@@ -53,8 +65,9 @@ export function ProductionReleaseManagement() {
   async function load() {
     setError('')
     try {
-      const payload=await releaseApi('/overview')
+      const [payload,tenantState]=await Promise.all([releaseApi('/overview'),tenantReleaseApi()])
       setData(payload)
+      if(tenantState?.preference)setPolicy(tenantState.preference)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -77,6 +90,24 @@ export function ProductionReleaseManagement() {
     } finally {
       setBusy('')
     }
+  }
+
+
+  async function savePolicy(nextMode = policy.updateMode) {
+    const next={...policy,updateMode:nextMode}
+    setPolicy(next)
+    await action('policy',async()=>{
+      const result=await tenantReleaseApi('/preferences',{
+        method:'PATCH',
+        body:JSON.stringify({
+          updateMode:next.updateMode,
+          liveDelayHours:Number(next.liveDelayHours||0),
+          allowEmergencySecurityUpdates:next.allowEmergencySecurityUpdates!==false,
+          maintenanceWindow:next.maintenanceWindow||{},
+        }),
+      })
+      if(result?.preference)setPolicy(result.preference)
+    },nextMode==='hi5_managed'?'Hi5Central managed updates enabled.':'Admin-controlled updates enabled.')
   }
 
   async function resetTest() {
@@ -124,6 +155,37 @@ export function ProductionReleaseManagement() {
   if(loading)return <section className="production-settings-panel"><div className="hi5-release-loading"><RefreshCw size={18}/>Loading release control…</div></section>
 
   return <div className="hi5-release-settings">
+
+    <section className="production-settings-panel">
+      <header><div><h2>Who manages platform updates?</h2><p>Choose whether your administrators approve each release or Hi5Central handles the release flow automatically using your policy.</p></div></header>
+      <div className="production-settings-panel-body">
+        <div className="hi5-release-policy-grid">
+          <button className={policy.updateMode==='admin_controlled'?'is-selected':''} disabled={Boolean(busy)} onClick={()=>savePolicy('admin_controlled')} type="button">
+            <ShieldCheck size={18}/><span><strong>Admin controlled</strong><small>Hi5Central publishes the update to Test, but your admin chooses what enters UAT and exactly what is promoted to Production.</small></span>
+          </button>
+          <button className={policy.updateMode==='hi5_managed'?'is-selected':''} disabled={Boolean(busy)} onClick={()=>savePolicy('hi5_managed')} type="button">
+            <RefreshCw size={18}/><span><strong>Hi5Central managed</strong><small>The local release operator follows Hi5Central's signed release feed, stages UAT automatically and promotes approved releases inside your update window.</small></span>
+          </button>
+        </div>
+        <div className="hi5-release-policy-fields">
+          <label>Production delay after UAT
+            <div><input type="number" min="0" max="720" value={policy.liveDelayHours??24} onChange={e=>setPolicy({...policy,liveDelayHours:e.target.value})}/><span>hours</span></div>
+          </label>
+          <label>Maintenance window start
+            <input type="time" value={policy.maintenanceWindow?.start||'02:00'} onChange={e=>setPolicy({...policy,maintenanceWindow:{...(policy.maintenanceWindow||{}),start:e.target.value}})}/>
+          </label>
+          <label>Maintenance window end
+            <input type="time" value={policy.maintenanceWindow?.end||'05:00'} onChange={e=>setPolicy({...policy,maintenanceWindow:{...(policy.maintenanceWindow||{}),end:e.target.value}})}/>
+          </label>
+          <label>Time zone
+            <input value={policy.maintenanceWindow?.timezone||'Europe/London'} onChange={e=>setPolicy({...policy,maintenanceWindow:{...(policy.maintenanceWindow||{}),timezone:e.target.value}})}/>
+          </label>
+          <label className="hi5-release-policy-check"><input type="checkbox" checked={policy.allowEmergencySecurityUpdates!==false} onChange={e=>setPolicy({...policy,allowEmergencySecurityUpdates:e.target.checked})}/><span><strong>Allow emergency security updates</strong><small>Critical security fixes can bypass the normal delay, but still use signed release artifacts and audit logging.</small></span></label>
+          <button className="hi5-release-policy-save" disabled={Boolean(busy)} onClick={()=>savePolicy()} type="button">Save update policy</button>
+        </div>
+      </div>
+    </section>
+
     <section className="production-settings-panel">
       <header><div><h2>Release environments</h2><p>Test everything safely, validate selected features in UAT, then explicitly promote approved changes to Live.</p></div><button className="hi5-release-refresh" onClick={load} type="button"><RefreshCw size={15}/>Refresh</button></header>
       <div className="production-settings-panel-body">
