@@ -628,3 +628,65 @@ html[data-hi5-surface='workspace'] .workspace {
     border-radius:7px !important;
   }
 }
+/* Single visible workspace-tab implementation.
+   The native tab DOM remains mounted because WorkspaceShellV2 proxies its
+   actions/state, but it must never render alongside the production dock. */
+html[data-hi5-surface='workspace'] .tabbar > .tabbar-tab-zone {
+  display:none !important;
+}
+
+html[data-hi5-surface='workspace'] .production-workspace-tabdock {
+  width:100% !important;
+  max-width:1280px !important;
+  margin:0 auto !important;
+  border:1px solid var(--rmm-border) !important;
+  border-radius:10px !important;
+  background:var(--rmm-soft) !important;
+  box-sizing:border-box !important;
+}
+
+/* Profile follows Dashboard's one-gutter contract.
+   Remove the generic workspace inset and let Profile own the single page gutter. */
+html[data-hi5-surface='workspace'] .workspace:has(.content-frame.production-profile-mounted) {
+  gap:0 !important;
+  padding:0 !important;
+  background:var(--rmm-bg) !important;
+}
+
+html[data-hi5-surface='workspace'] .content-frame.production-profile-mounted {
+  width:100% !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+
+html[data-hi5-surface='workspace'] .production-profile-content {
+  width:100% !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding:var(--hi5-page-top) var(--hi5-page-gutter) 44px !important;
+  box-sizing:border-box !important;
+}
+
+@media (max-width:900px) {
+  html[data-hi5-surface='workspace'] .production-workspace-tabdock {
+    max-width:none !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:0 auto !important;
+  }
+
+  html[data-hi5-surface='workspace'] .production-profile-content {
+    padding:var(--hi5-page-top-mobile) 13px 32px !important;
+  }
+}
+
+@media (max-width:420px) {
+  html[data-hi5-surface='workspace'] .production-profile-content {
+    padding-inline:11px !important;
+  }
+}
