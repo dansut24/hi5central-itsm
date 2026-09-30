@@ -39,6 +39,20 @@ const accentColours = {
   rose: '#f43f5e',
 }
 
+const defaultNotificationSettings = {
+  channels: { inApp: true, email: true, browser: false },
+  categories: {
+    incidents: true, serviceRequests: true, problems: true, changes: true,
+    assignments: true, approvals: true, tasks: true, customerUpdates: true,
+    liveChat: true, projects: true, calendar: true, rota: true,
+    rmm: true, security: true, platform: true,
+  },
+  requesterEvents: {
+    customerUpdates: true, statusChanges: true, recordCreated: true,
+    approvals: true, taskUpdates: false, systemUpdates: false,
+  },
+}
+
 const defaultPrefixes = {
   incident: 'INC-',
   serviceRequest: 'REQ-',
@@ -54,13 +68,26 @@ const sections = {
   roles: { path: '/settings/roles-permissions', group: 'General', label: 'Roles & permissions', icon: FileKey2, area: 'permissions' },
   security: { path: '/settings/security-mfa', group: 'General', label: 'Security policy', icon: ShieldCheck, area: 'security' },
 
+  'itsm-dashboard': { path: '/settings/itsm/dashboard', group: 'ITSM', label: 'Dashboard', icon: Gauge, area: 'itsm' },
+  'itsm-records': { path: '/settings/itsm/records', group: 'ITSM', label: 'Records & queues', icon: ListChecks, area: 'itsm' },
+  'itsm-incidents': { path: '/settings/itsm/incidents', group: 'ITSM', label: 'Incidents', icon: Wrench, area: 'itsm' },
+  'itsm-requests': { path: '/settings/itsm/service-requests', group: 'ITSM', label: 'Service requests', icon: ListChecks, area: 'itsm' },
+  'itsm-problems': { path: '/settings/itsm/problems', group: 'ITSM', label: 'Problems', icon: ShieldCheck, area: 'itsm' },
+  'itsm-changes': { path: '/settings/itsm/changes', group: 'ITSM', label: 'Changes', icon: GitBranch, area: 'itsm' },
+  'itsm-tasks': { path: '/settings/itsm/tasks', group: 'ITSM', label: 'Tasks', icon: Check, area: 'itsm' },
+  'itsm-catalogue': { path: '/settings/itsm/service-catalogue', group: 'ITSM', label: 'Service catalogue', icon: BookOpen, area: 'itsm' },
+  'itsm-projects': { path: '/settings/itsm/projects', group: 'ITSM', label: 'Projects', icon: GitBranch, area: 'itsm' },
+  'itsm-calendar': { path: '/settings/itsm/calendar-rota', group: 'ITSM', label: 'Calendar & rota', icon: Globe2, area: 'itsm' },
+  'itsm-live-chat': { path: '/settings/itsm/live-chat', group: 'ITSM', label: 'Live Chat', icon: Mail, area: 'itsm' },
+  'itsm-cmdb': { path: '/settings/itsm/cmdb', group: 'ITSM', label: 'CMDB & assets', icon: Server, area: 'itsm' },
+  'itsm-knowledge': { path: '/settings/itsm/knowledge', group: 'ITSM', label: 'Knowledge', icon: BookOpen, area: 'itsm' },
+  'itsm-reports': { path: '/settings/itsm/reports-search', group: 'ITSM', label: 'Reports & search', icon: Gauge, area: 'itsm' },
+  'itsm-attachments': { path: '/settings/itsm/attachments', group: 'ITSM', label: 'Attachments', icon: FileKey2, area: 'itsm' },
   'itsm-numbering': { path: '/settings/itsm/record-numbering', group: 'ITSM', label: 'Record numbering', icon: ListChecks, area: 'itsm' },
   'itsm-slas': { path: '/settings/itsm/slas', group: 'ITSM', label: 'SLAs', icon: Gauge, area: 'itsm' },
   'itsm-service-desk': { path: '/settings/itsm/service-desk', group: 'ITSM', label: 'Service desk', icon: Wrench, area: 'itsm' },
   'itsm-portal': { path: '/settings/itsm/portal', group: 'ITSM', label: 'Portal', icon: Globe2, area: 'itsm' },
-  'itsm-knowledge': { path: '/settings/itsm/knowledge', group: 'ITSM', label: 'Knowledge', icon: BookOpen, area: 'itsm' },
-  'itsm-changes': { path: '/settings/itsm/changes', group: 'ITSM', label: 'Changes', icon: GitBranch, area: 'itsm' },
-  'itsm-notifications': { path: '/settings/itsm/notifications', group: 'ITSM', label: 'Notifications', icon: Bell, area: 'itsm' },
+  'itsm-notifications': { path: '/settings/itsm/notifications', group: 'ITSM', label: 'Notifications', icon: Bell, area: 'notificationSettings' },
 
   'rmm-sites': { path: '/settings/rmm/sites', group: 'RMM', label: 'Sites', icon: Globe2, area: 'rmm' },
   'rmm-agent': { path: '/settings/rmm/agent-defaults', group: 'RMM', label: 'Agent defaults', icon: Server, area: 'rmm' },
@@ -123,6 +150,21 @@ function defaults(session) {
       portalName: 'IT Help Centre', portalKnowledge: true, requesterComments: true, liveChat: true, aiAssistant: false,
       cabName: 'Change Advisory Board', standardChangeAutoApprove: true,
       requesterNotifications: true, slaWarnings: true, knowledgeFeedback: true,
+      dashboard: { defaultRange: 'today', showServiceHealth: true, showRecentActivity: true, showApprovals: true, showProjects: true },
+      queues: { defaultView: 'table', pageSize: '25', rememberFilters: true, allowSavedViews: true, showSla: true, openInTabs: true },
+      incidents: { defaultStatus: 'New', defaultPriority: 'Medium', requireResolutionCode: true, reopenDays: '7', autoAssignDefaultTeam: true },
+      serviceRequests: { defaultStatus: 'New', requesterCanCancel: true, pauseSlaForApproval: true, autoCloseDays: '3', requireCompletionNote: true },
+      problems: { defaultStatus: 'New', requireRootCause: true, requireKnownErrorReview: true, allowIncidentLinking: true },
+      changes: { defaultType: 'Normal', requireImplementationPlan: true, requireTestPlan: true, requireBackoutPlan: true, enforceApproval: true },
+      tasks: { defaultStatus: 'Open', inheritParentTeam: true, requireAssigneeToStart: true, requireCompletionNote: false, showOnCalendar: true },
+      catalogue: { enabled: true, requireOwner: true, showPrices: true, allowOneOffRequests: true, requireApprovalForCost: true },
+      projects: { enabled: true, requireOwner: true, syncCalendar: true, showTaskDueDates: true, showMilestones: true, defaultHealth: 'On track' },
+      calendar: { weekStart: 'monday', workingDayStart: '09:00', workingDayEnd: '17:30', showChanges: true, showProjects: true, showTasks: true, showRota: true },
+      liveChatConfig: { enabled: true, autoClaimOnReply: true, allowTransfer: true, createIncidentFromChat: true, inactivityMinutes: '30' },
+      cmdb: { enabled: true, linkRecords: true, showRmmDevices: true, requireOwnerForManualCi: false, allowManualCi: true },
+      knowledge: { internalEnabled: true, portalEnabled: true, feedbackEnabled: true, requireReview: true, reviewDays: '180' },
+      reports: { enabled: true, allowExport: true, allowSavedViews: true, defaultRangeDays: '30', includeClosed: true },
+      attachments: { maxMb: '5', requesterUploads: true, internalAttachments: true },
     },
     rmm: {
       defaultSite: 'Main site', agentChannel: 'stable', monitoringPolicy: 'Standard endpoint monitoring',
@@ -157,6 +199,9 @@ function mergeConfig(base, stored) {
         next[key].slaTargets = mergeSlaTargets(base[key]?.slaTargets, value.slaTargets)
         next[key].serviceRequestSlaTargets = mergeSlaTargets(base[key]?.serviceRequestSlaTargets, value.serviceRequestSlaTargets)
         next[key].projectSlaTargets = mergeSlaTargets(base[key]?.projectSlaTargets, value.projectSlaTargets)
+        for (const nestedKey of ['dashboard','queues','incidents','serviceRequests','problems','changes','tasks','catalogue','projects','calendar','liveChatConfig','cmdb','knowledge','reports','attachments']) {
+          next[key][nestedKey] = { ...(base[key]?.[nestedKey] || {}), ...(value[nestedKey] || {}) }
+        }
       }
     } else {
       next[key] = value
@@ -223,7 +268,7 @@ function writeRuntimeConfig(session, config) {
   try {
     window.localStorage.setItem(TENANT_RUNTIME_CONFIG_KEY, JSON.stringify({
       tenantSlug: session?.tenant?.slug || '',
-      theme: { mode: theme.mode || 'system', accent: theme.accent || 'amber' },
+      theme: { mode: theme.mode || 'system', accent: theme.accent || 'amber', brandName: theme.brandName || '', portalTitle: theme.portalTitle || 'IT Help Centre' },
       recordNumbering: {
         mode: itsm.numberingMode || 'default',
         prefixes: itsm.recordPrefixes || defaultPrefixes,
@@ -290,6 +335,8 @@ export function ProductionSettingsWorkspace({ currentPath, session, onSessionCha
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState('')
   const [error, setError] = useState('')
+  const [notificationSettings, setNotificationSettings] = useState(defaultNotificationSettings)
+  const [notificationSettingsLoaded, setNotificationSettingsLoaded] = useState(false)
   const [settingsNavVisible, setSettingsNavVisible] = useState(loadSettingsNavVisible)
   const activeId = sectionFromPath(currentPath)
   const active = sections[activeId]
@@ -299,6 +346,23 @@ export function ProductionSettingsWorkspace({ currentPath, session, onSessionCha
   useEffect(() => {
     setConfig(mergeConfig(defaults(session), effectiveSettings(session)))
   }, [session])
+
+  useEffect(() => {
+    let active = true
+    fetch(`${API_BASE}/api/v1/notification-settings`, { credentials: 'include' })
+      .then(async (response) => {
+        const payload = await response.json().catch(() => ({}))
+        if (!response.ok) throw new Error(payload.error || 'Could not load tenant notification settings.')
+        if (active) {
+          setNotificationSettings(payload.settings || defaultNotificationSettings)
+          setNotificationSettingsLoaded(true)
+        }
+      })
+      .catch((loadError) => {
+        if (active && activeId === 'itsm-notifications') setError(loadError.message)
+      })
+    return () => { active = false }
+  }, [session?.tenant?.id])
 
   useEffect(() => {
     try {
@@ -319,6 +383,15 @@ export function ProductionSettingsWorkspace({ currentPath, session, onSessionCha
     setError('')
   }
 
+  function updateNotification(group, field, value) {
+    setNotificationSettings((current) => ({
+      ...current,
+      [group]: { ...(current[group] || {}), [field]: value },
+    }))
+    setSaved('')
+    setError('')
+  }
+
   function updateNested(area, parent, field, value) {
     setConfig((current) => ({
       ...current,
@@ -333,6 +406,29 @@ export function ProductionSettingsWorkspace({ currentPath, session, onSessionCha
 
   async function saveActive() {
     const area = active.area
+
+    if (area === 'notificationSettings') {
+      setSaving(true)
+      setSaved('')
+      setError('')
+      try {
+        const response = await fetch(`${API_BASE}/api/v1/notification-settings`, {
+          method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ settings: notificationSettings }),
+        })
+        const payload = await response.json().catch(() => ({}))
+        if (!response.ok) throw new Error(payload.error || 'Could not save notification settings.')
+        setNotificationSettings(payload.settings || notificationSettings)
+        setNotificationSettingsLoaded(true)
+        setSaved('Saved to tenant')
+      } catch (saveError) {
+        setError(saveError.message)
+      } finally {
+        setSaving(false)
+      }
+      return
+    }
+
     let data = config[area] || {}
 
     if (area === 'itsm') {
@@ -428,13 +524,26 @@ export function ProductionSettingsWorkspace({ currentPath, session, onSessionCha
             {activeId === 'roles' ? <RolesPermissions config={config.permissions} update={(f, v) => updateArea('permissions', f, v)} /> : null}
             {activeId === 'security' ? <Security config={config.security} update={(f, v) => updateArea('security', f, v)} /> : null}
 
+            {activeId === 'itsm-dashboard' ? <ItsmDashboard config={config.itsm} update={(f, v) => updateNested('itsm', 'dashboard', f, v)} /> : null}
+            {activeId === 'itsm-records' ? <ItsmRecords config={config.itsm} update={(f, v) => updateNested('itsm', 'queues', f, v)} /> : null}
+            {activeId === 'itsm-incidents' ? <ItsmIncidents config={config.itsm} update={(f, v) => updateNested('itsm', 'incidents', f, v)} /> : null}
+            {activeId === 'itsm-requests' ? <ItsmRequests config={config.itsm} update={(f, v) => updateNested('itsm', 'serviceRequests', f, v)} /> : null}
+            {activeId === 'itsm-problems' ? <ItsmProblems config={config.itsm} update={(f, v) => updateNested('itsm', 'problems', f, v)} /> : null}
+            {activeId === 'itsm-tasks' ? <ItsmTasks config={config.itsm} update={(f, v) => updateNested('itsm', 'tasks', f, v)} /> : null}
+            {activeId === 'itsm-catalogue' ? <ItsmCatalogue config={config.itsm} update={(f, v) => updateNested('itsm', 'catalogue', f, v)} /> : null}
+            {activeId === 'itsm-projects' ? <ItsmProjects config={config.itsm} update={(f, v) => updateNested('itsm', 'projects', f, v)} /> : null}
+            {activeId === 'itsm-calendar' ? <ItsmCalendar config={config.itsm} update={(f, v) => updateNested('itsm', 'calendar', f, v)} /> : null}
+            {activeId === 'itsm-live-chat' ? <ItsmLiveChat config={config.itsm} update={(f, v) => updateNested('itsm', 'liveChatConfig', f, v)} updateRoot={(f, v) => updateArea('itsm', f, v)} /> : null}
+            {activeId === 'itsm-cmdb' ? <ItsmCmdb config={config.itsm} update={(f, v) => updateNested('itsm', 'cmdb', f, v)} /> : null}
+            {activeId === 'itsm-reports' ? <ItsmReports config={config.itsm} update={(f, v) => updateNested('itsm', 'reports', f, v)} /> : null}
+            {activeId === 'itsm-attachments' ? <ItsmAttachments config={config.itsm} update={(f, v) => updateNested('itsm', 'attachments', f, v)} /> : null}
             {activeId === 'itsm-numbering' ? <ItsmNumbering config={config.itsm} update={(f, v) => updateArea('itsm', f, v)} updateNested={(p, f, v) => updateNested('itsm', p, f, v)} /> : null}
             {activeId === 'itsm-slas' ? <ItsmSlas config={config.itsm} update={(f, v) => updateArea('itsm', f, v)} /> : null}
             {activeId === 'itsm-service-desk' ? <ItsmServiceDesk config={config.itsm} update={(f, v) => updateArea('itsm', f, v)} tenant={session?.tenant} /> : null}
             {activeId === 'itsm-portal' ? <ItsmPortal config={config.itsm} update={(f, v) => updateArea('itsm', f, v)} /> : null}
-            {activeId === 'itsm-knowledge' ? <ItsmKnowledge config={config.itsm} update={(f, v) => updateArea('itsm', f, v)} /> : null}
-            {activeId === 'itsm-changes' ? <ItsmChanges config={config.itsm} update={(f, v) => updateArea('itsm', f, v)} /> : null}
-            {activeId === 'itsm-notifications' ? <ItsmNotifications config={config.itsm} update={(f, v) => updateArea('itsm', f, v)} /> : null}
+            {activeId === 'itsm-knowledge' ? <ItsmKnowledge config={config.itsm} update={(f, v) => updateNested('itsm', 'knowledge', f, v)} updateRoot={(f, v) => updateArea('itsm', f, v)} /> : null}
+            {activeId === 'itsm-changes' ? <ItsmChanges config={config.itsm} update={(f, v) => updateNested('itsm', 'changes', f, v)} updateRoot={(f, v) => updateArea('itsm', f, v)} /> : null}
+            {activeId === 'itsm-notifications' ? <ItsmNotifications config={notificationSettings} loaded={notificationSettingsLoaded} update={updateNotification} /> : null}
 
             {activeId === 'rmm-sites' ? <RmmSites config={config.rmm} update={(f, v) => updateArea('rmm', f, v)} /> : null}
             {activeId === 'rmm-agent' ? <RmmAgent config={config.rmm} update={(f, v) => updateArea('rmm', f, v)} /> : null}
@@ -487,6 +596,73 @@ function Security({ config, update }) {
     </Panel>
     <ProductionTenantSecurityAudit />
   </>
+}
+
+
+function ItsmDashboard({ config, update }) {
+  const value = config.dashboard || {}
+  return <><Panel title="Dashboard" description="Choose the tenant defaults used by the service-management overview. Individual dashboard customisation can still be layered on top."><div className="production-settings-grid"><Field label="Default time range"><select value={value.defaultRange || 'today'} onChange={(e) => update('defaultRange', e.target.value)}><option value="today">Today</option><option value="7d">Last 7 days</option><option value="30d">Last 30 days</option></select></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(value.showServiceHealth)} onChange={(v) => update('showServiceHealth', v)} title="Service health" description="Show workload/SLA health on the Dashboard." /><Toggle checked={Boolean(value.showRecentActivity)} onChange={(v) => update('showRecentActivity', v)} title="Recent activity" description="Show recent ITSM record activity." /><Toggle checked={Boolean(value.showApprovals)} onChange={(v) => update('showApprovals', v)} title="Approvals" description="Show approval workload and pending decisions." /><Toggle checked={Boolean(value.showProjects)} onChange={(v) => update('showProjects', v)} title="Project summary" description="Include project delivery information in the overview." /></div></Panel></>
+}
+
+function ItsmRecords({ config, update }) {
+  const value = config.queues || {}
+  return <><Panel title="Records & queues" description="Shared behaviour for All Records, Incidents, Requests, Problems and Changes."><div className="production-settings-grid"><Field label="Default view"><select value={value.defaultView || 'table'} onChange={(e) => update('defaultView', e.target.value)}><option value="table">Table</option><option value="compact">Compact list</option><option value="cards">Cards</option></select></Field><Field label="Rows per page"><select value={String(value.pageSize || '25')} onChange={(e) => update('pageSize', e.target.value)}><option value="25">25</option><option value="50">50</option><option value="100">100</option></select></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(value.rememberFilters)} onChange={(v) => update('rememberFilters', v)} title="Remember queue filters" description="Restore the last filter/search state when a technician returns." /><Toggle checked={Boolean(value.allowSavedViews)} onChange={(v) => update('allowSavedViews', v)} title="Saved views" description="Allow technicians to create persisted queue views." /><Toggle checked={Boolean(value.showSla)} onChange={(v) => update('showSla', v)} title="Show SLA state" description="Display SLA health within record queues." /><Toggle checked={Boolean(value.openInTabs)} onChange={(v) => update('openInTabs', v)} title="Open records in workspace tabs" description="Keep record navigation inside the ITSM tab workspace." /></div></Panel></>
+}
+
+function ItsmIncidents({ config, update }) {
+  const value = config.incidents || {}
+  return <Panel title="Incidents" description="Defaults and lifecycle rules for Incident Management."><div className="production-settings-grid"><Field label="Default status"><select value={value.defaultStatus || 'New'} onChange={(e) => update('defaultStatus', e.target.value)}><option>New</option><option>Assigned</option><option>In Progress</option></select></Field><Field label="Default priority"><select value={value.defaultPriority || 'Medium'} onChange={(e) => update('defaultPriority', e.target.value)}><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></Field><Field label="Reopen window"><div className="production-prefix-field"><input type="number" min="0" max="90" value={value.reopenDays || '7'} onChange={(e) => update('reopenDays', e.target.value)} /><span>days</span></div></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(value.requireResolutionCode)} onChange={(v) => update('requireResolutionCode', v)} title="Require resolution details" description="Require resolution information before an Incident can be resolved." /><Toggle checked={Boolean(value.autoAssignDefaultTeam)} onChange={(v) => update('autoAssignDefaultTeam', v)} title="Use default assignment team" description="Use the Service Desk default team when no routing rule supplies one." /></div></Panel>
+}
+
+function ItsmRequests({ config, update }) {
+  const value = config.serviceRequests || {}
+  return <Panel title="Service requests" description="Fulfilment, approval and requester behaviour for Service Requests."><div className="production-settings-grid"><Field label="Default status"><select value={value.defaultStatus || 'New'} onChange={(e) => update('defaultStatus', e.target.value)}><option>New</option><option>Assigned</option><option>In Progress</option></select></Field><Field label="Auto-close after completion"><div className="production-prefix-field"><input type="number" min="0" max="90" value={value.autoCloseDays || '3'} onChange={(e) => update('autoCloseDays', e.target.value)} /><span>days</span></div></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(value.requesterCanCancel)} onChange={(v) => update('requesterCanCancel', v)} title="Requester cancellation" description="Allow a requester to cancel an eligible request from the Portal." /><Toggle checked={Boolean(value.pauseSlaForApproval)} onChange={(v) => update('pauseSlaForApproval', v)} title="Pause SLA for approval" description="Pause fulfilment clocks while approval is genuinely pending." /><Toggle checked={Boolean(value.requireCompletionNote)} onChange={(v) => update('requireCompletionNote', v)} title="Completion note required" description="Require a completion note before fulfilment closes." /></div></Panel>
+}
+
+function ItsmProblems({ config, update }) {
+  const value = config.problems || {}
+  return <Panel title="Problems" description="Problem Management defaults and governance."><div className="production-settings-grid"><Field label="Default status"><select value={value.defaultStatus || 'New'} onChange={(e) => update('defaultStatus', e.target.value)}><option>New</option><option>Investigation</option><option>Known Error</option></select></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(value.requireRootCause)} onChange={(v) => update('requireRootCause', v)} title="Root cause required" description="Require root-cause information before a Problem can be resolved." /><Toggle checked={Boolean(value.requireKnownErrorReview)} onChange={(v) => update('requireKnownErrorReview', v)} title="Known Error review" description="Require the Known Error stage to be reviewed before closure." /><Toggle checked={Boolean(value.allowIncidentLinking)} onChange={(v) => update('allowIncidentLinking', v)} title="Related Incidents" description="Allow Incidents to be linked to Problem records." /></div></Panel>
+}
+
+function ItsmTasks({ config, update }) {
+  const value = config.tasks || {}
+  return <Panel title="Tasks" description="Task defaults shared by Incident, Request, Problem, Change and Project work."><div className="production-settings-grid"><Field label="Default status"><select value={value.defaultStatus || 'Open'} onChange={(e) => update('defaultStatus', e.target.value)}><option>Open</option><option>Assigned</option></select></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(value.inheritParentTeam)} onChange={(v) => update('inheritParentTeam', v)} title="Inherit parent team" description="Start new tasks with the parent record or project team." /><Toggle checked={Boolean(value.requireAssigneeToStart)} onChange={(v) => update('requireAssigneeToStart', v)} title="Assignee required to start" description="Prevent an unassigned task from moving to In Progress." /><Toggle checked={Boolean(value.requireCompletionNote)} onChange={(v) => update('requireCompletionNote', v)} title="Completion note required" description="Require evidence/notes before a task completes." /><Toggle checked={Boolean(value.showOnCalendar)} onChange={(v) => update('showOnCalendar', v)} title="Calendar projection" description="Project due tasks onto the shared calendar." /></div></Panel>
+}
+
+function ItsmCatalogue({ config, update }) {
+  const value = config.catalogue || {}
+  return <Panel title="Service catalogue" description="Tenant defaults for customer-facing catalogue items and one-off requests."><div className="production-settings-toggle-list"><Toggle checked={Boolean(value.enabled)} onChange={(v) => update('enabled', v)} title="Service catalogue enabled" description="Expose governed catalogue items to the Portal." /><Toggle checked={Boolean(value.requireOwner)} onChange={(v) => update('requireOwner', v)} title="Item owner required" description="Require an accountable owner for catalogue items." /><Toggle checked={Boolean(value.showPrices)} onChange={(v) => update('showPrices', v)} title="Show prices" description="Display one-off/monthly costs to requesters." /><Toggle checked={Boolean(value.allowOneOffRequests)} onChange={(v) => update('allowOneOffRequests', v)} title="One-off requests" description="Allow non-catalogue request capture." /><Toggle checked={Boolean(value.requireApprovalForCost)} onChange={(v) => update('requireApprovalForCost', v)} title="Cost approval" description="Use the Service Desk approval threshold for chargeable requests." /></div></Panel>
+}
+
+function ItsmProjects({ config, update }) {
+  const value = config.projects || {}
+  return <Panel title="Projects" description="Project-management defaults used across Projects, tasks and Calendar."><div className="production-settings-grid"><Field label="Default health"><select value={value.defaultHealth || 'On track'} onChange={(e) => update('defaultHealth', e.target.value)}><option>On track</option><option>At risk</option><option>Blocked</option></select></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(value.enabled)} onChange={(v) => update('enabled', v)} title="Projects enabled" description="Expose project management to authorised technicians." /><Toggle checked={Boolean(value.requireOwner)} onChange={(v) => update('requireOwner', v)} title="Project owner required" description="Require accountable ownership on active projects." /><Toggle checked={Boolean(value.syncCalendar)} onChange={(v) => update('syncCalendar', v)} title="Calendar integration" description="Project target dates and milestones appear on Calendar." /><Toggle checked={Boolean(value.showTaskDueDates)} onChange={(v) => update('showTaskDueDates', v)} title="Project task dates" description="Project task due dates appear on Calendar." /><Toggle checked={Boolean(value.showMilestones)} onChange={(v) => update('showMilestones', v)} title="Milestones" description="Enable milestone tracking and calendar projection." /></div></Panel>
+}
+
+function ItsmCalendar({ config, update }) {
+  const value = config.calendar || {}
+  return <Panel title="Calendar & rota" description="Shared scheduling defaults for service-management work and technician availability."><div className="production-settings-grid"><Field label="Week starts"><select value={value.weekStart || 'monday'} onChange={(e) => update('weekStart', e.target.value)}><option value="monday">Monday</option><option value="sunday">Sunday</option></select></Field><Field label="Working day starts"><input type="time" value={value.workingDayStart || '09:00'} onChange={(e) => update('workingDayStart', e.target.value)} /></Field><Field label="Working day ends"><input type="time" value={value.workingDayEnd || '17:30'} onChange={(e) => update('workingDayEnd', e.target.value)} /></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(value.showChanges)} onChange={(v) => update('showChanges', v)} title="Changes" description="Show planned Change windows." /><Toggle checked={Boolean(value.showProjects)} onChange={(v) => update('showProjects', v)} title="Projects" description="Show project targets and milestones." /><Toggle checked={Boolean(value.showTasks)} onChange={(v) => update('showTasks', v)} title="Tasks" description="Show dated record/project tasks." /><Toggle checked={Boolean(value.showRota)} onChange={(v) => update('showRota', v)} title="Rota" description="Overlay technician availability/rota information." /></div></Panel>
+}
+
+function ItsmLiveChat({ config, update, updateRoot }) {
+  const value = config.liveChatConfig || {}
+  const setEnabled = (next) => { update('enabled', next); updateRoot('liveChat', next) }
+  return <Panel title="Live Chat" description="Conversation and conversion behaviour for attended customer support."><div className="production-settings-grid"><Field label="Inactivity timeout"><div className="production-prefix-field"><input type="number" min="5" max="240" value={value.inactivityMinutes || '30'} onChange={(e) => update('inactivityMinutes', e.target.value)} /><span>minutes</span></div></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(value.enabled)} onChange={setEnabled} title="Live Chat enabled" description="Enable the Live Chat workspace and customer contact entry point." /><Toggle checked={Boolean(value.autoClaimOnReply)} onChange={(v) => update('autoClaimOnReply', v)} title="Claim on first reply" description="Automatically claim a waiting conversation when a technician replies." /><Toggle checked={Boolean(value.allowTransfer)} onChange={(v) => update('allowTransfer', v)} title="Conversation transfer" description="Allow conversations to be transferred between teams/technicians." /><Toggle checked={Boolean(value.createIncidentFromChat)} onChange={(v) => update('createIncidentFromChat', v)} title="Create Incident from chat" description="Allow a conversation to be converted into an Incident." /></div></Panel>
+}
+
+function ItsmCmdb({ config, update }) {
+  const value = config.cmdb || {}
+  return <Panel title="CMDB & assets" description="How configuration items and RMM assets participate in ITSM records."><div className="production-settings-toggle-list"><Toggle checked={Boolean(value.enabled)} onChange={(v) => update('enabled', v)} title="CMDB enabled" description="Expose Assets & CIs in the ITSM workspace." /><Toggle checked={Boolean(value.linkRecords)} onChange={(v) => update('linkRecords', v)} title="Link records to CIs" description="Allow service records to reference affected configuration items." /><Toggle checked={Boolean(value.showRmmDevices)} onChange={(v) => update('showRmmDevices', v)} title="Show RMM devices" description="Include managed RMM devices as configuration items." /><Toggle checked={Boolean(value.allowManualCi)} onChange={(v) => update('allowManualCi', v)} title="Manual CIs" description="Allow non-RMM configuration items to be maintained." /><Toggle checked={Boolean(value.requireOwnerForManualCi)} onChange={(v) => update('requireOwnerForManualCi', v)} title="Manual CI owner required" description="Require ownership on manually managed CIs." /></div></Panel>
+}
+
+function ItsmReports({ config, update }) {
+  const value = config.reports || {}
+  return <Panel title="Reports & search" description="Tenant-level defaults for reporting, exports and search."><div className="production-settings-grid"><Field label="Default report range"><select value={String(value.defaultRangeDays || '30')} onChange={(e) => update('defaultRangeDays', e.target.value)}><option value="7">7 days</option><option value="30">30 days</option><option value="90">90 days</option><option value="365">365 days</option></select></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(value.enabled)} onChange={(v) => update('enabled', v)} title="Reports enabled" description="Expose operational ITSM reports to authorised users." /><Toggle checked={Boolean(value.allowExport)} onChange={(v) => update('allowExport', v)} title="Record export" description="Allow authorised technicians to export record data." /><Toggle checked={Boolean(value.allowSavedViews)} onChange={(v) => update('allowSavedViews', v)} title="Saved reporting views" description="Allow report/view definitions to be retained." /><Toggle checked={Boolean(value.includeClosed)} onChange={(v) => update('includeClosed', v)} title="Include closed records" description="Include completed/closed work in report totals by default." /></div></Panel>
+}
+
+function ItsmAttachments({ config, update }) {
+  const value = config.attachments || {}
+  return <Panel title="Attachments" description="Tenant defaults and security boundaries enforced by the production attachment endpoints."><div className="production-settings-grid"><Field label="Maximum file size"><div className="production-prefix-field"><input type="number" min="1" max="20" value={value.maxMb || '5'} onChange={(e) => update('maxMb', e.target.value)} /><span>MB</span></div></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(value.requesterUploads)} onChange={(v) => update('requesterUploads', v)} title="Requester uploads" description="Allow requesters to upload customer-visible Service Request attachments." /><Toggle checked={Boolean(value.internalAttachments)} onChange={(v) => update('internalAttachments', v)} title="Internal attachments" description="Allow technician-only Incident, Problem, Change and Service Request attachments." /></div></Panel>
 }
 
 function ItsmNumbering({ config, update, updateNested }) { return <Panel title="Record numbering" description="Control the prefix and numeric length used when Hi5Central creates new service records."><div className="production-settings-grid"><Field label="Numbering mode"><select value={config.numberingMode || 'default'} onChange={(e) => update('numberingMode', e.target.value)}><option value="default">Hi5Central defaults</option><option value="custom">Custom prefixes</option></select></Field><Field label="Numeric digits"><select value={config.recordDigits || '5'} onChange={(e) => update('recordDigits', e.target.value)}>{['4','5','6','7','8'].map((d) => <option key={d} value={d}>{d} digits</option>)}</select></Field>{[['incident','Incident'],['serviceRequest','Service Request'],['problem','Problem'],['change','Change']].map(([key,label]) => <Field key={key} label={`${label} prefix`}><input disabled={config.numberingMode !== 'custom'} value={config.numberingMode === 'custom' ? config.recordPrefixes?.[key] || defaultPrefixes[key] : defaultPrefixes[key]} onChange={(e) => updateNested('recordPrefixes', key, e.target.value)} /></Field>)}</div><div className="production-number-preview"><span>Preview</span><strong>{config.numberingMode === 'custom' ? config.recordPrefixes?.incident || 'INC-' : 'INC-'}{String(1).padStart(Number(config.recordDigits || 5), '0')}</strong></div></Panel> }
@@ -548,11 +724,17 @@ function ItsmServiceDesk({ config, update, tenant }) { return <Panel title="Serv
 
 function ItsmPortal({ config, update }) { return <Panel title="Portal" description="Control the customer-facing self-service experience."><div className="production-settings-grid"><Field label="Portal name"><input value={config.portalName || ''} onChange={(e) => update('portalName', e.target.value)} /></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(config.portalKnowledge)} onChange={(v) => update('portalKnowledge', v)} title="Show knowledge" description="Allow requesters to browse published articles." /><Toggle checked={Boolean(config.requesterComments)} onChange={(v) => update('requesterComments', v)} title="Requester comments" description="Allow users to add customer-visible updates to their requests." /></div></Panel> }
 
-function ItsmKnowledge({ config, update }) { return <Panel title="Knowledge" description="Publishing and feedback defaults for the knowledge base."><div className="production-settings-toggle-list"><Toggle checked={Boolean(config.knowledgeFeedback)} onChange={(v) => update('knowledgeFeedback', v)} title="Article feedback" description="Allow users to mark articles helpful or not helpful." /><Toggle checked={Boolean(config.portalKnowledge)} onChange={(v) => update('portalKnowledge', v)} title="Publish to Portal" description="Make published knowledge available to requesters." /></div></Panel> }
+function ItsmKnowledge({ config, update, updateRoot }) { const value = config.knowledge || {}; return <Panel title="Knowledge" description="Publishing, Portal availability and review defaults for the knowledge base."><div className="production-settings-grid"><Field label="Review interval"><div className="production-prefix-field"><input min="1" max="730" type="number" value={value.reviewDays || '180'} onChange={(e) => update('reviewDays', e.target.value)} /><span>days</span></div></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(value.internalEnabled)} onChange={(v) => update('internalEnabled', v)} title="Internal knowledge" description="Enable technician-facing knowledge articles." /><Toggle checked={Boolean(value.portalEnabled)} onChange={(v) => { update('portalEnabled', v); updateRoot('portalKnowledge', v) }} title="Publish to Portal" description="Make published knowledge available to requesters." /><Toggle checked={Boolean(value.feedbackEnabled)} onChange={(v) => { update('feedbackEnabled', v); updateRoot('knowledgeFeedback', v) }} title="Article feedback" description="Allow users to mark articles helpful or not helpful." /><Toggle checked={Boolean(value.requireReview)} onChange={(v) => update('requireReview', v)} title="Periodic review" description="Require published content to be reviewed on a schedule." /></div></Panel> }
 
-function ItsmChanges({ config, update }) { return <Panel title="Changes" description="Default CAB and standard-change governance."><div className="production-settings-grid"><Field label="CAB name"><input value={config.cabName || ''} onChange={(e) => update('cabName', e.target.value)} /></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(config.standardChangeAutoApprove)} onChange={(v) => update('standardChangeAutoApprove', v)} title="Auto-approve standard changes" description="Use the approved standard-change template as the authority for tenant records." /></div></Panel> }
+function ItsmChanges({ config, update, updateRoot }) { const value = config.changes || {}; return <Panel title="Changes" description="Change Management defaults, evidence requirements and approval governance."><div className="production-settings-grid"><Field label="CAB name"><input value={config.cabName || ''} onChange={(e) => updateRoot('cabName', e.target.value)} /></Field><Field label="Default change type"><select value={value.defaultType || 'Normal'} onChange={(e) => update('defaultType', e.target.value)}><option>Standard</option><option>Normal</option><option>Emergency</option></select></Field></div><div className="production-settings-toggle-list"><Toggle checked={Boolean(config.standardChangeAutoApprove)} onChange={(v) => updateRoot('standardChangeAutoApprove', v)} title="Auto-approve standard changes" description="Use approved Standard Change templates as the approval authority." /><Toggle checked={Boolean(value.enforceApproval)} onChange={(v) => update('enforceApproval', v)} title="Approval required" description="Require an approval decision before scheduled implementation." /><Toggle checked={Boolean(value.requireImplementationPlan)} onChange={(v) => update('requireImplementationPlan', v)} title="Implementation plan required" description="Require an implementation plan before Assessment can complete." /><Toggle checked={Boolean(value.requireTestPlan)} onChange={(v) => update('requireTestPlan', v)} title="Test plan required" description="Require test/validation steps for governed changes." /><Toggle checked={Boolean(value.requireBackoutPlan)} onChange={(v) => update('requireBackoutPlan', v)} title="Backout plan required" description="Require a rollback/backout plan before implementation." /></div></Panel> }
 
-function ItsmNotifications({ config, update }) { return <Panel title="Notifications" description="Tenant defaults for service communications."><div className="production-settings-toggle-list"><Toggle checked={Boolean(config.requesterNotifications)} onChange={(v) => update('requesterNotifications', v)} title="Requester notifications" description="Send updates when request state changes." /><Toggle checked={Boolean(config.slaWarnings)} onChange={(v) => update('slaWarnings', v)} title="SLA warnings" description="Notify analysts about approaching SLA targets." /><Toggle checked={Boolean(config.knowledgeFeedback)} onChange={(v) => update('knowledgeFeedback', v)} title="Knowledge feedback notifications" description="Surface article feedback to knowledge owners." /></div></Panel> }
+function ItsmNotifications({ config, loaded, update }) {
+  const channels = config.channels || defaultNotificationSettings.channels
+  const categories = config.categories || defaultNotificationSettings.categories
+  const requesterEvents = config.requesterEvents || defaultNotificationSettings.requesterEvents
+  const eventLabels = [['incidents','Incidents'],['serviceRequests','Service requests'],['problems','Problems'],['changes','Changes'],['assignments','Assignments'],['approvals','Approvals'],['tasks','Tasks'],['customerUpdates','Customer updates'],['liveChat','Live Chat'],['projects','Projects'],['calendar','Calendar'],['rota','Rota'],['security','Security'],['platform','Platform']]
+  return <><Panel title="Notification channels" description={loaded ? 'These tenant defaults are enforced by the production notification service.' : 'Loading production notification policy…'}><div className="production-settings-toggle-list"><Toggle checked={Boolean(channels.inApp)} onChange={(v) => update('channels', 'inApp', v)} title="Technician notification bell" description="Allow in-app notification-centre delivery." /><Toggle checked={Boolean(channels.email)} onChange={(v) => update('channels', 'email', v)} title="Email delivery" description="Allow email delivery when an event and recipient category are enabled." /><Toggle checked={Boolean(channels.browser)} onChange={(v) => update('channels', 'browser', v)} title="Browser notifications" description="Allow browser notification delivery for opted-in users." /></div></Panel><Panel title="Technician event categories" description="Choose which operational event families can generate notifications."><div className="production-settings-toggle-list">{eventLabels.map(([key,label]) => <Toggle key={key} checked={Boolean(categories[key])} onChange={(v) => update('categories', key, v)} title={label} description={'Allow ' + label.toLowerCase() + ' notification events.'} />)}</div></Panel><Panel title="Requester email policy" description="Control which customer-facing events can reach requesters. Internal/system noise can remain suppressed."><div className="production-settings-toggle-list"><Toggle checked={Boolean(requesterEvents.customerUpdates)} onChange={(v) => update('requesterEvents', 'customerUpdates', v)} title="Customer-visible updates" description="Send genuine technician/customer updates." /><Toggle checked={Boolean(requesterEvents.statusChanges)} onChange={(v) => update('requesterEvents', 'statusChanges', v)} title="Status changes" description="Notify requesters about lifecycle status changes." /><Toggle checked={Boolean(requesterEvents.recordCreated)} onChange={(v) => update('requesterEvents', 'recordCreated', v)} title="Creation acknowledgement" description="Send a confirmation when a requester record is created." /><Toggle checked={Boolean(requesterEvents.approvals)} onChange={(v) => update('requesterEvents', 'approvals', v)} title="Approvals" description="Send approval requests/decisions to requesters where applicable." /><Toggle checked={Boolean(requesterEvents.taskUpdates)} onChange={(v) => update('requesterEvents', 'taskUpdates', v)} title="Task updates" description="Allow fulfilment task events to be sent to requesters." /><Toggle checked={Boolean(requesterEvents.systemUpdates)} onChange={(v) => update('requesterEvents', 'systemUpdates', v)} title="System/internal updates" description="Allow system-generated updates. Recommended off to avoid customer noise." /></div></Panel></>
+}
 
 function RmmSites({ config, update }) { return <Panel title="Sites" description="Tenant-wide defaults used when creating the first managed RMM scope."><div className="production-settings-grid"><Field label="Default site"><input value={config.defaultSite || ''} onChange={(e) => update('defaultSite', e.target.value)} /></Field><Field label="Maintenance window"><input value={config.maintenanceWindow || ''} onChange={(e) => update('maintenanceWindow', e.target.value)} /></Field></div></Panel> }
 function RmmAgent({ config, update }) { return <Panel title="Agent defaults" description="Default channel for newly enrolled endpoints."><div className="production-settings-grid"><Field label="Agent update channel"><select value={config.agentChannel || 'stable'} onChange={(e) => update('agentChannel', e.target.value)}><option value="stable">Stable</option><option value="early">Early access</option></select></Field></div></Panel> }
