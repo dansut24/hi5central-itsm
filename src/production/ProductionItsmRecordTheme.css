@@ -1478,6 +1478,9 @@ html[data-hi5-surface='workspace'] .record-lab-panel > header h3 {
 /* Two compact action menus replace four competing hero buttons. */
 html[data-hi5-surface='workspace'] .record-lab-hero-actions {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   gap: 6px;
 }
 
