@@ -119,7 +119,7 @@
 .sidebar-identity strong { overflow:hidden; font-size:8px; text-overflow:ellipsis; white-space:nowrap; }
 .sidebar-identity small { color:rgba(255,255,255,.52); font-size:7px; }
 
-.main-frame { grid-template-rows:62px 48px 34px minmax(0,1fr) !important; background:var(--rmm-bg); }
+.main-frame { grid-template-rows:62px 52px minmax(0,1fr) !important; background:var(--rmm-bg); }
 .itsm-topbar {
   min-width:0;
   display:grid !important;
@@ -148,10 +148,59 @@
 .itsm-topbar-actions > button:hover { background:var(--rmm-soft) !important; color:var(--rmm-text) !important; }
 .itsm-user { padding:0 !important; }
 .itsm-user > span { width:28px !important; height:28px !important; border-radius:7px !important; background:var(--rmm-accent-soft,rgba(var(--accent-rgb),.12)) !important; color:var(--rmm-accent,rgb(var(--accent-rgb))) !important; }
-.tabbar { gap:8px !important; padding:6px 12px 0 !important; border-bottom:1px solid var(--rmm-border) !important; background:var(--rmm-soft) !important; }
-.workspace-tab { height:42px !important; border-radius:9px 9px 0 0 !important; font-size:10px !important; }
-.workspace-tab.active { background:var(--rmm-bg) !important; border-color:var(--rmm-border) !important; border-bottom-color:var(--rmm-bg) !important; box-shadow:inset 0 2px 0 var(--rmm-accent,rgb(var(--accent-rgb))) !important; }
-.breadcrumbs { min-height:34px !important; padding:0 20px !important; background:var(--rmm-bg) !important; font-size:10px !important; }
+.tabbar {
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:0 !important;
+  height:52px !important;
+  min-height:52px !important;
+  padding:5px 20px !important;
+  border:0 !important;
+  border-bottom:1px solid var(--rmm-border) !important;
+  background:var(--rmm-surface) !important;
+  box-sizing:border-box !important;
+}
+.tabbar-tab-zone {
+  width:100% !important;
+  max-width:100% !important;
+  height:42px !important;
+  display:flex !important;
+  align-items:center !important;
+  margin:0 auto !important;
+  padding:4px !important;
+  border:1px solid var(--rmm-border) !important;
+  border-radius:10px !important;
+  background:var(--rmm-soft) !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+}
+.tabbar-tab-zone > .tab-list {
+  height:34px !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:4px !important;
+}
+.workspace-tab {
+  height:34px !important;
+  border:1px solid transparent !important;
+  border-radius:8px !important;
+  background:transparent !important;
+  font-size:10px !important;
+}
+.workspace-tab.active {
+  background:var(--rmm-surface) !important;
+  border-color:var(--rmm-border) !important;
+  box-shadow:0 1px 4px rgba(19,45,84,.07) !important;
+}
+.workspace-tab.active::before,
+.workspace-tab.active::after { display:none !important; }
+.tab-add {
+  height:34px !important;
+  border-radius:8px !important;
+}
+.tabbar-brand { display:none !important; }
+.breadcrumbs { display:none !important; }
 .workspace,.content-frame { background:var(--rmm-bg) !important; }
 .content-frame { min-height:100%; }
 
@@ -481,5 +530,22 @@ html[data-hi5-surface='workspace'] .sidebar .sidebar-footer {
   }
   html[data-hi5-surface='workspace'] .sidebar.mobile-open {
     transform:translateX(0) !important;
+  }
+}
+/* Compact tab dock: one centred grey tray directly beneath the mobile header. */
+@media (max-width:900px) {
+  html[data-hi5-surface='workspace'] .tabbar-tab-zone {
+    height:40px !important;
+    padding:4px !important;
+    border-radius:10px !important;
+  }
+  html[data-hi5-surface='workspace'] .tabbar-tab-zone > .tab-list {
+    height:32px !important;
+    align-items:center !important;
+  }
+  html[data-hi5-surface='workspace'] .workspace-tab,
+  html[data-hi5-surface='workspace'] .tab-add {
+    height:32px !important;
+    border-radius:7px !important;
   }
 }
