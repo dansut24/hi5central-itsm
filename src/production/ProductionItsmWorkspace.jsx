@@ -162,6 +162,19 @@ function assignmentPeek(record) {
   }
 }
 
+async function fetchSavedViews(route) {
+  const response = await fetch(`${API_BASE}/api/v1/itsm/saved-views?type=${encodeURIComponent(route.type)}`, { credentials: 'include' })
+  const payload = await response.json().catch(() => ({}))
+  if (!response.ok) throw new Error(payload.error || 'Could not load saved views.')
+  return (payload.items || []).map((view) => ({
+    ...view,
+    pageSize: Number(view.columns?.pageSize || 25),
+    columnOrder: view.columns?.order || [],
+    hiddenColumns: view.columns?.hidden || [],
+    columnWidths: view.columns?.widths || {},
+  }))
+}
+
 async function fetchQueue(route, state) {
   const params = new URLSearchParams({
     type: route.type,
@@ -382,6 +395,19 @@ function ProductionQueue({ route }) {
 
   useEffect(() => {
     let active = true
+    fetchSavedViews(route)
+      .then((items) => {
+        if (!active) return
+        setSavedViews(items)
+        const current = readJson(SAVED_VIEWS_KEY, {})
+        window.localStorage.setItem(SAVED_VIEWS_KEY, JSON.stringify({ ...current, [route.type]: items }))
+      })
+      .catch(() => {})
+    return () => { active = false }
+  }, [route])
+
+  useEffect(() => {
+    let active = true
     setLoading(true)
     setError('')
     fetchQueue(route, { query, filters, pageSize, page })
@@ -450,15 +476,24 @@ function ProductionQueue({ route }) {
     setPage(0)
   }
 
-  function saveView() {
+  async function saveView() {
     const name = window.prompt('Name this view')?.trim()
     if (!name) return
-    const id = `${Date.now()}-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
-    const view = { id, name, query, filters, viewStyle, pageSize, columnOrder, hiddenColumns, columnWidths }
-    const next = [...savedViews.filter((item) => item.name.toLowerCase() !== name.toLowerCase()), view]
-    setSavedViews(next)
-    const current = readJson(SAVED_VIEWS_KEY, {})
-    window.localStorage.setItem(SAVED_VIEWS_KEY, JSON.stringify({ ...current, [route.type]: next }))
+    try {
+      const response = await fetch(`${API_BASE}/api/v1/itsm/saved-views`, {
+        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recordType: route.type, name, query, filters, viewStyle, columns: { pageSize, order: columnOrder, hidden: hiddenColumns, widths: columnWidths } }),
+      })
+      const view = await response.json().catch(() => ({}))
+      if (!response.ok) throw new Error(view.error || 'Could not save this view.')
+      const normalized = { ...view, pageSize, columnOrder, hiddenColumns, columnWidths }
+      const next = [...savedViews.filter((item) => item.name.toLowerCase() !== name.toLowerCase()), normalized]
+      setSavedViews(next)
+      const current = readJson(SAVED_VIEWS_KEY, {})
+      window.localStorage.setItem(SAVED_VIEWS_KEY, JSON.stringify({ ...current, [route.type]: next }))
+    } catch (saveError) {
+      setError(saveError.message)
+    }
   }
 
   function applySavedView(view) {
@@ -472,11 +507,18 @@ function ProductionQueue({ route }) {
     if (view.columnWidths) setColumnWidths(view.columnWidths)
   }
 
-  function deleteSavedView(id) {
-    const next = savedViews.filter((view) => view.id !== id)
-    setSavedViews(next)
-    const current = readJson(SAVED_VIEWS_KEY, {})
-    window.localStorage.setItem(SAVED_VIEWS_KEY, JSON.stringify({ ...current, [route.type]: next }))
+  async function deleteSavedView(id) {
+    try {
+      const response = await fetch(`${API_BASE}/api/v1/itsm/saved-views/${encodeURIComponent(id)}`, { method: 'DELETE', credentials: 'include' })
+      const payload = await response.json().catch(() => ({}))
+      if (!response.ok) throw new Error(payload.error || 'Could not delete this view.')
+      const next = savedViews.filter((view) => view.id !== id)
+      setSavedViews(next)
+      const current = readJson(SAVED_VIEWS_KEY, {})
+      window.localStorage.setItem(SAVED_VIEWS_KEY, JSON.stringify({ ...current, [route.type]: next }))
+    } catch (deleteError) {
+      setError(deleteError.message)
+    }
   }
 
   function toggleColumn(key) {
