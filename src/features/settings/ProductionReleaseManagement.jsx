@@ -55,7 +55,7 @@ function EnvironmentCard({ item, onReset, busy }) {
 
 export function ProductionReleaseManagement() {
   const [data,setData]=useState({environments:[],features:[],changes:[],actions:[]})
-  const [policy,setPolicy]=useState({updateMode:'admin_controlled',liveDelayHours:24,allowEmergencySecurityUpdates:true,maintenanceWindow:{timezone:'Europe/London',days:[],start:'02:00',end:'05:00'}})
+  const [policy,setPolicy]=useState({updateMode:'admin_controlled',releaseChannel:'stable',liveDelayHours:24,allowEmergencySecurityUpdates:true,maintenanceWindow:{timezone:'Europe/London',days:[],start:'02:00',end:'05:00'}})
   const [loading,setLoading]=useState(true)
   const [busy,setBusy]=useState('')
   const [error,setError]=useState('')
@@ -67,7 +67,8 @@ export function ProductionReleaseManagement() {
     try {
       const [payload,tenantState]=await Promise.all([releaseApi('/overview'),tenantReleaseApi()])
       setData(payload)
-      if(tenantState?.preference)setPolicy(tenantState.preference)
+      if(payload?.deploymentPolicy)setPolicy(payload.deploymentPolicy)
+      else if(tenantState?.preference)setPolicy(tenantState.preference)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -97,16 +98,18 @@ export function ProductionReleaseManagement() {
     const next={...policy,updateMode:nextMode}
     setPolicy(next)
     await action('policy',async()=>{
-      const result=await tenantReleaseApi('/preferences',{
-        method:'PATCH',
-        body:JSON.stringify({
-          updateMode:next.updateMode,
-          liveDelayHours:Number(next.liveDelayHours||0),
-          allowEmergencySecurityUpdates:next.allowEmergencySecurityUpdates!==false,
-          maintenanceWindow:next.maintenanceWindow||{},
-        }),
-      })
-      if(result?.preference)setPolicy(result.preference)
+      const payload={
+        updateMode:next.updateMode,
+        releaseChannel:next.releaseChannel||'stable',
+        liveDelayHours:Number(next.liveDelayHours||0),
+        allowEmergencySecurityUpdates:next.allowEmergencySecurityUpdates!==false,
+        maintenanceWindow:next.maintenanceWindow||{},
+      }
+      const [deploymentResult]=await Promise.all([
+        releaseApi('/deployment/preferences',{method:'PATCH',body:JSON.stringify(payload)}),
+        tenantReleaseApi('/preferences',{method:'PATCH',body:JSON.stringify(payload)}),
+      ])
+      if(deploymentResult?.preference)setPolicy(deploymentResult.preference)
     },nextMode==='hi5_managed'?'Hi5Central managed updates enabled.':'Admin-controlled updates enabled.')
   }
 
