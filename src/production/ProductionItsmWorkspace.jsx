@@ -562,13 +562,14 @@ function ProductionQueue({ route }) {
 
   function createRecord() {
     persistListState({ returnRecord: '' })
-    navigateWorkspace(`/${route.section}/new`)
+    navigateWorkspace(route.type === 'All' ? '/new-tab' : `/${route.section}/new`)
   }
 
   const pageCount = Math.max(1, Math.ceil(Number(payload.total || 0) / pageSize))
   const renderedViewStyle = isMobileQueue ? 'cards' : 'table'
   const activeFilterCount = [
     query.trim(),
+    route.type === 'All' && filters.recordType !== 'All' ? filters.recordType : '',
     filters.status !== 'All' ? filters.status : '',
     filters.priority !== 'All' ? filters.priority : '',
     filters.team !== 'All' ? filters.team : '',
@@ -608,7 +609,7 @@ function ProductionQueue({ route }) {
       </main>
 
       {mobileFilters ? (
-        <><button className="production-record-filter-backdrop" aria-label="Close filters" onClick={() => setMobileFilters(false)} type="button" /><aside className="production-record-mobile-filter production-motion-drawer"><header><div><span>Queue filters</span><strong>{route.title}</strong></div><button onClick={() => setMobileFilters(false)} type="button"><X size={17} /></button></header><QueueFilters allowSavedViews={queueSettings.allowSavedViews !== false} filterOptions={payload.filters || {}} filters={filters} onChange={changeFilters} onClear={clearFilters} query={query} onQueryChange={changeQuery} savedViews={savedViews} onApplySaved={(view) => { applySavedView(view); setMobileFilters(false) }} onDeleteSaved={deleteSavedView} onSaveView={saveView} /></aside></>
+        <><button className="production-record-filter-backdrop" aria-label="Close filters" onClick={() => setMobileFilters(false)} type="button" /><aside className="production-record-mobile-filter production-motion-drawer"><header><div><span>Queue filters</span><strong>{route.title}</strong></div><button onClick={() => setMobileFilters(false)} type="button"><X size={17} /></button></header><QueueFilters allowSavedViews={queueSettings.allowSavedViews !== false} filterOptions={route.type === 'All' ? (payload.filters || {}) : { ...(payload.filters || {}), types: [] }} filters={filters} onChange={changeFilters} onClear={clearFilters} query={query} onQueryChange={changeQuery} savedViews={savedViews} onApplySaved={(view) => { applySavedView(view); setMobileFilters(false) }} onDeleteSaved={deleteSavedView} onSaveView={saveView} /></aside></>
       ) : null}
     </section>
   )
