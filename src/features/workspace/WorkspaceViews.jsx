@@ -3872,12 +3872,36 @@ export function KnowledgeView({ openArticle, portalQuery, portalResults, setPort
 }
 
 export function ReportsView({ metrics, tickets }) {
-  const byType = metrics.typeCounts
-  const resolution = {
+  const [serverReport, setServerReport] = useState(null)
+  const [reportError, setReportError] = useState('')
+
+  useEffect(() => {
+    let active = true
+    fetch(`${window.__HI5_API_BASE__}/api/v1/itsm/reports/summary`, { credentials: 'include' })
+      .then(async (response) => {
+        const payload = await response.json().catch(() => ({}))
+        if (!response.ok) throw new Error(payload.error || 'Could not load production reporting.')
+        if (active) setServerReport(payload)
+      })
+      .catch((error) => { if (active) setReportError(error.message) })
+    return () => { active = false }
+  }, [])
+
+  const fallbackResolution = {
     Met: tickets.filter((ticket) => ticket.sla === 'Met').length,
-    Watch: tickets.filter((ticket) => ticket.slaPercent >= 60 && ticket.sla !== 'Met').length,
-    Healthy: tickets.filter((ticket) => ticket.slaPercent < 60).length,
+    Breached: tickets.filter((ticket) => ticket.sla === 'Breached').length,
+    Open: tickets.filter((ticket) => !['Met', 'Breached'].includes(ticket.sla)).length,
   }
+  const byType = serverReport?.byType || metrics.typeCounts
+  const resolution = serverReport
+    ? { Met: serverReport.sla?.met || 0, Breached: serverReport.sla?.breached || 0, Open: Math.max(0, (serverReport.open || 0) - (serverReport.sla?.breached || 0)) }
+    : fallbackResolution
+  const workload = serverReport?.workload?.length
+    ? Object.fromEntries(serverReport.workload.map((item) => [item.assignee || 'Unassigned', Number(item.open || 0)]))
+    : {}
+  const trend = serverReport?.trend?.length
+    ? Object.fromEntries(serverReport.trend.map((item) => [item.day, Number(item.count || 0)]))
+    : {}
 
   return (
     <div className="reports-view">
@@ -3886,34 +3910,36 @@ export function ReportsView({ metrics, tickets }) {
           <div>
             <span className="eyebrow">Performance</span>
             <h2>Service Management Snapshot</h2>
+            <p>{serverReport ? 'Live tenant-wide data from PostgreSQL.' : reportError || 'Loading production reporting…'}</p>
           </div>
         </div>
         <div className="metric-row">
-          <MetricCard label="Total Records" value={tickets.length} detail="All active data" icon={ListChecks} tone="blue" />
-          <MetricCard label="SLA Met" value={resolution.Met} detail="Resolved in target" icon={CheckCircle2} tone="blue" />
-          <MetricCard label="Needs Review" value={resolution.Watch} detail="SLA pressure" icon={Clock3} tone="amber" />
+          <MetricCard label="Total Records" value={serverReport?.total ?? tickets.length} detail="All service-management records" icon={ListChecks} tone="blue" />
+          <MetricCard label="Open Records" value={serverReport?.open ?? tickets.filter((ticket) => !['Resolved','Closed','Completed'].includes(ticket.status)).length} detail="Current operational workload" icon={CircleGauge} tone="blue" />
+          <MetricCard label="SLA Met" value={serverReport?.sla?.met ?? resolution.Met} detail="Resolved inside target" icon={CheckCircle2} tone="blue" />
+          <MetricCard label="SLA Breached" value={serverReport?.sla?.breached ?? resolution.Breached} detail="Resolution target exceeded" icon={Clock3} tone="amber" />
         </div>
       </section>
 
       <section className="workload-panel wide">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">Demand</span>
-            <h2>Volume by Process</h2>
-          </div>
-        </div>
+        <div className="section-heading"><div><span className="eyebrow">Demand</span><h2>Volume by Process</h2></div></div>
         <BarList data={byType} />
       </section>
 
       <section className="workload-panel wide">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">Delivery</span>
-            <h2>SLA Health</h2>
-          </div>
-        </div>
+        <div className="section-heading"><div><span className="eyebrow">Delivery</span><h2>SLA Health</h2></div></div>
         <BarList data={resolution} palette="delivery" />
       </section>
+
+      {serverReport ? <section className="workload-panel wide">
+        <div className="section-heading"><div><span className="eyebrow">Operations</span><h2>Open Workload by Technician</h2></div></div>
+        <BarList data={workload} />
+      </section> : null}
+
+      {serverReport ? <section className="workload-panel wide">
+        <div className="section-heading"><div><span className="eyebrow">30-day demand</span><h2>Records Created by Day</h2></div></div>
+        <BarList data={trend} />
+      </section> : null}
     </div>
   )
 }
