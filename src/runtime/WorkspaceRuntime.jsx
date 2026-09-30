@@ -1519,6 +1519,12 @@ function WorkspaceRuntime() {
 
   }
 
+  function requestOrganisationSave(changes, message) {
+    window.dispatchEvent(new CustomEvent('hi5-organisation-save-request', {
+      detail: { changes, message },
+    }))
+  }
+
   function pushOrganisationAudit(entry) {
     if (!entry) return
     if (entry.action === 'updated' && !entry.changes?.length) return
@@ -1532,6 +1538,7 @@ function WorkspaceRuntime() {
     setPeople((current) => exists
       ? current.map((item) => item.id === person.id ? person : item)
       : [person, ...current])
+    requestOrganisationSave({ people: [person] }, `${person.name} saved to PostgreSQL.`)
     pushOrganisationAudit(buildOrganisationAuditEntry({
       actor,
       before: previous,
@@ -1546,6 +1553,9 @@ function WorkspaceRuntime() {
     const previous = teams.find((item) => item.id === team.id)
     const exists = Boolean(previous)
     const actor = resolveCurrentPerson(session, people)
+    const affectedPeople = previous
+      ? people.filter((person) => person.teamId === team.id).map((person) => ({ ...person, team: team.name, departmentId: team.departmentId }))
+      : []
     setTeams((current) => exists
       ? current.map((item) => item.id === team.id ? team : item)
       : [team, ...current])
@@ -1561,6 +1571,11 @@ function WorkspaceRuntime() {
       setTickets((current) => current.map((ticket) => ticket.team === previous.name ? { ...ticket, team: team.name } : ticket))
       setLiveChatConversations((current) => current.map((conversation) => conversation.team === previous.name ? { ...conversation, team: team.name } : conversation))
     }
+
+    requestOrganisationSave(
+      affectedPeople.length ? { teams: [team], people: affectedPeople } : { teams: [team] },
+      `${team.name} saved to PostgreSQL.`,
+    )
 
     pushOrganisationAudit(buildOrganisationAuditEntry({
       actor,
@@ -1579,6 +1594,7 @@ function WorkspaceRuntime() {
     setDepartments((current) => exists
       ? current.map((item) => item.id === department.id ? department : item)
       : [department, ...current])
+    requestOrganisationSave({ departments: [department] }, `${department.name} saved to PostgreSQL.`)
     pushOrganisationAudit(buildOrganisationAuditEntry({
       actor,
       before: previous,
