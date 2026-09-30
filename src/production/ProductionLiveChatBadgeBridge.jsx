@@ -14,7 +14,7 @@ async function unreadCount() {
   return (payload.items || []).reduce((total, item) => total + Number(item.unread || 0), 0)
 }
 
-function applyCount(count) {
+function applyCount(count, { broadcast = true } = {}) {
   document.querySelectorAll(TAB_SELECTOR).forEach((node) => {
     if (!(node instanceof HTMLElement)) return
     node.dataset.hi5LiveUnread = count > 0 ? String(Math.min(99, count)) : ''
@@ -23,9 +23,11 @@ function applyCount(count) {
     if (legacy instanceof HTMLElement) legacy.setAttribute('aria-hidden', 'true')
   })
 
-  window.dispatchEvent(new CustomEvent('hi5-production-live-chat-count', {
-    detail: { unread: count },
-  }))
+  if (broadcast) {
+    window.dispatchEvent(new CustomEvent('hi5-production-live-chat-count', {
+      detail: { unread: count },
+    }))
+  }
 }
 
 export function ProductionLiveChatBadgeBridge() {
@@ -45,7 +47,7 @@ export function ProductionLiveChatBadgeBridge() {
 
     const handleServerCount = (event) => {
       const value = Number(event?.detail?.unread || 0)
-      applyCount(Number.isFinite(value) ? value : 0)
+      applyCount(Number.isFinite(value) ? value : 0, { broadcast: false })
     }
 
     // Hide historical local unread state immediately; the asynchronous
