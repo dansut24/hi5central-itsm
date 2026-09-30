@@ -68,6 +68,7 @@ import './production/ProductionWorkflowGuard.css'
 import './production/ProductionItsmUnifiedShell.css'
 import './production/ProductionItsmUnifiedPages.css'
 import './production/ProductionItsmRecordTheme.css'
+import './production/ProductionRmmThemeParity.css'
 
 installWorkspaceTabSessionIsolation()
 
