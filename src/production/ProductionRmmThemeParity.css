@@ -351,4 +351,102 @@
   :is(.record-lab-shell,.unified-new-record-page,.new-record-page,.production-record-shell,.production-task-experience.task-detail-rmm,.live-chat-view) {
     padding:18px 14px 32px !important;
   }
+}/* RMM shell authority. Legacy floating/glass selectors intentionally have high
+   specificity, so the final parity layer mirrors it to make RMM the source of truth. */
+html[data-hi5-surface='workspace'] .app-shell,
+html[data-hi5-surface='workspace'] .app-shell.sidebar-collapsed,
+html[data-hi5-surface='workspace'] .app-shell.sidebar-hidden {
+  grid-template-columns:248px minmax(0,1fr) !important;
+}
+html[data-hi5-surface='workspace'] .sidebar,
+html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar,
+html[data-hi5-surface='workspace'] .sidebar-hidden .sidebar {
+  position:relative !important;
+  inset:auto !important;
+  align-self:stretch !important;
+  width:auto !important;
+  height:100dvh !important;
+  margin:0 !important;
+  padding:15px 12px 12px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:linear-gradient(180deg,var(--rmm-sidebar),color-mix(in srgb,var(--rmm-sidebar) 88%,#000)) !important;
+  color:#fff !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  overflow:hidden !important;
+}
+html[data-hi5-surface='workspace'] .sidebar::before { display:none !important; }
+html[data-hi5-surface='workspace'] .sidebar .brand {
+  min-height:auto !important;
+  padding:8px !important;
+  border:0 !important;
+  border-radius:9px !important;
+  background:#f8fbff !important;
+  color:#0d2d66 !important;
+  box-shadow:none !important;
+}
+html[data-hi5-surface='workspace'] .sidebar .brand img { width:38px !important; height:38px !important; }
+html[data-hi5-surface='workspace'] .sidebar .brand-copy strong { color:#0d2d66 !important; }
+html[data-hi5-surface='workspace'] .sidebar .brand-copy span { color:#526884 !important; }
+html[data-hi5-surface='workspace'] .sidebar .nav-stack {
+  gap:0 !important;
+  padding:0 2px 0 0 !important;
+}
+html[data-hi5-surface='workspace'] .sidebar .nav-group {
+  gap:3px !important;
+  margin:12px 0 16px !important;
+}
+html[data-hi5-surface='workspace'] .sidebar .nav-group-label,
+html[data-hi5-surface='workspace'] .sidebar .nav-group-active .nav-group-label {
+  padding:0 9px 5px !important;
+  color:rgba(255,255,255,.42) !important;
+}
+html[data-hi5-surface='workspace'] .sidebar .nav-item {
+  min-height:37px !important;
+  padding:0 9px !important;
+  border:0 !important;
+  border-radius:8px !important;
+  background:transparent !important;
+  color:rgba(255,255,255,.74) !important;
+  box-shadow:none !important;
+}
+html[data-hi5-surface='workspace'] .sidebar .nav-item svg { color:inherit !important; }
+html[data-hi5-surface='workspace'] .sidebar .nav-item:hover {
+  border:0 !important;
+  background:rgba(255,255,255,.07) !important;
+  color:#fff !important;
+}
+html[data-hi5-surface='workspace'] .sidebar .nav-item:hover svg { color:#fff !important; }
+html[data-hi5-surface='workspace'] .sidebar .nav-item.active {
+  border:0 !important;
+  background:#fff !important;
+  color:#0d2d66 !important;
+  box-shadow:0 8px 20px rgba(0,0,0,.14) !important;
+}
+html[data-hi5-surface='workspace'] .sidebar .nav-item.active svg { color:#0d2d66 !important; }
+html[data-hi5-surface='workspace'] .sidebar .sidebar-footer {
+  border-top:1px solid rgba(255,255,255,.12) !important;
+  padding-top:10px !important;
+}
+@media (max-width:900px) {
+  html[data-hi5-surface='workspace'] .app-shell,
+  html[data-hi5-surface='workspace'] .app-shell.sidebar-collapsed,
+  html[data-hi5-surface='workspace'] .app-shell.sidebar-hidden {
+    grid-template-columns:minmax(0,1fr) !important;
+  }
+  html[data-hi5-surface='workspace'] .sidebar,
+  html[data-hi5-surface='workspace'] .sidebar-collapsed .sidebar,
+  html[data-hi5-surface='workspace'] .sidebar-hidden .sidebar {
+    position:fixed !important;
+    inset:0 auto 0 0 !important;
+    width:min(310px,86vw) !important;
+    height:100dvh !important;
+    transform:translateX(-102%) !important;
+    box-shadow:18px 0 42px rgba(0,0,0,.25) !important;
+  }
+  html[data-hi5-surface='workspace'] .sidebar.mobile-open {
+    transform:translateX(0) !important;
+  }
 }
