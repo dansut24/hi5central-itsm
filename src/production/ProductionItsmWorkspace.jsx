@@ -27,6 +27,7 @@ import './ProductionItsmWorkspaceEnhancements.css'
 
 const API_BASE = window.__HI5_API_BASE__
 const ROUTES = {
+  '/tickets': { type: 'All', title: 'All Records', singular: 'record', section: 'tickets' },
   '/incidents': { type: 'Incident', title: 'Incidents', singular: 'incident', section: 'incidents' },
   '/requests': { type: 'Service Request', title: 'Service Requests', singular: 'service request', section: 'requests' },
   '/problems': { type: 'Problem', title: 'Problems', singular: 'problem', section: 'problems' },
@@ -48,7 +49,7 @@ const COLUMN_DEFINITIONS = [
   { key: 'assignment', label: 'Assignment', width: 190 },
   { key: 'updated', label: 'Updated', width: 132 },
 ]
-const DEFAULT_FILTERS = { status: 'All', priority: 'All', team: 'All', assignee: 'All', service: 'All', __view: 'all' }
+const DEFAULT_FILTERS = { recordType: 'All', status: 'All', priority: 'All', team: 'All', assignee: 'All', service: 'All', __view: 'all' }
 const QUEUE_QUICK_VIEWS = [['all', 'All records'], ['mine', 'Assigned to me'], ['unassigned', 'Unassigned'], ['high', 'High priority'], ['closed', 'Closed']]
 const LIST_STATE_PREFIX = 'hi5central-record-list-state-v3'
 const SAVED_VIEWS_KEY = 'hi5central-record-saved-views-v3'
@@ -65,6 +66,11 @@ function readJson(key, fallback) {
   } catch {
     return fallback
   }
+}
+
+function readTenantItsmSettings() {
+  const runtime = readJson('hi5central-tenant-runtime-config-v1', {})
+  return runtime?.itsm && typeof runtime.itsm === 'object' ? runtime.itsm : {}
 }
 
 function readSessionJson(key, fallback) {
@@ -177,10 +183,11 @@ async function fetchSavedViews(route) {
 
 async function fetchQueue(route, state) {
   const params = new URLSearchParams({
-    type: route.type,
     limit: String(state.pageSize),
     offset: String(state.page * state.pageSize),
   })
+  const requestedType = route.type === 'All' ? state.filters.recordType : route.type
+  if (requestedType && requestedType !== 'All') params.set('type', requestedType)
   if (state.query.trim()) params.set('search', state.query.trim())
   for (const key of ['status', 'priority', 'team', 'assignee', 'service']) {
     const value = state.filters[key]
@@ -204,7 +211,7 @@ function FilterSelect({ label, options, value, onChange }) {
   )
 }
 
-function QueueFilters({ filterOptions, filters, onChange, onClear, query, onQueryChange, savedViews, onApplySaved, onDeleteSaved, onSaveView }) {
+function QueueFilters({ allowSavedViews = true, filterOptions, filters, onChange, onClear, query, onQueryChange, savedViews, onApplySaved, onDeleteSaved, onSaveView }) {
   return (
     <div className="production-record-filter-content">
       <section>
@@ -212,7 +219,7 @@ function QueueFilters({ filterOptions, filters, onChange, onClear, query, onQuer
         <label className="production-record-drawer-search"><Search size={15} /><input value={query} onChange={(event) => onQueryChange(event.target.value)} placeholder="Search records…" type="search" /></label>
       </section>
 
-      {savedViews.length ? <section>
+      {allowSavedViews && savedViews.length ? <section>
         <span className="production-record-filter-label">Saved views</span>
         <div className="production-record-saved-view-list">
           {savedViews.map((view) => <div key={view.id}>
@@ -224,6 +231,7 @@ function QueueFilters({ filterOptions, filters, onChange, onClear, query, onQuer
 
       <section>
         <span className="production-record-filter-label">Filters</span>
+        {(filterOptions.types || []).length ? <FilterSelect label="Record type" options={filterOptions.types || []} value={filters.recordType} onChange={(value) => onChange({ ...filters, recordType: value, __view: 'custom' })} /> : null}
         <FilterSelect label="Status" options={filterOptions.statuses || []} value={filters.status} onChange={(value) => onChange({ ...filters, status: value, __view: 'custom' })} />
         <FilterSelect label="Priority / risk" options={filterOptions.priorities || []} value={filters.priority} onChange={(value) => onChange({ ...filters, priority: value, __view: 'custom' })} />
         <FilterSelect label="Assignment group" options={filterOptions.teams || []} value={filters.team} onChange={(value) => onChange({ ...filters, team: value, __view: 'custom' })} />
@@ -232,9 +240,9 @@ function QueueFilters({ filterOptions, filters, onChange, onClear, query, onQuer
         <button className="production-record-clear" onClick={onClear} type="button">Clear filters</button>
       </section>
 
-      <section className="production-record-view-actions">
+      {allowSavedViews ? <section className="production-record-view-actions">
         <button type="button" onClick={onSaveView}><BookmarkPlus size={14} />Save current view</button>
-      </section>
+      </section> : null}
     </div>
   )
 }
@@ -353,16 +361,18 @@ function QueueSkeleton({ viewStyle }) {
 
 function ProductionQueue({ route }) {
   const productionSession = readJson('hi5central-production-session-v1', {})
+  const tenantItsmSettings = readTenantItsmSettings()
+  const queueSettings = tenantItsmSettings.queues || {}
   const savedStyles = readJson('hi5central-record-view-style-v1', {})
   const listStateKey = `${LIST_STATE_PREFIX}:${route.type}`
-  const remembered = readSessionJson(listStateKey, {})
+  const remembered = queueSettings.rememberFilters === false ? {} : readSessionJson(listStateKey, {})
   const storedColumns = readJson(COLUMN_STATE_KEY, {})?.[route.type] || {}
   const allSavedViews = readJson(SAVED_VIEWS_KEY, {})
 
   const [query, setQuery] = useState(remembered.query || '')
   const [filters, setFilters] = useState({ ...DEFAULT_FILTERS, ...(remembered.filters || {}) })
-  const [viewStyle, setViewStyle] = useState(remembered.viewStyle || savedStyles[route.type] || (window.matchMedia?.('(max-width: 720px)').matches ? 'cards' : 'table'))
-  const [pageSize, setPageSize] = useState(Number(remembered.pageSize || 25))
+  const [viewStyle, setViewStyle] = useState(remembered.viewStyle || savedStyles[route.type] || queueSettings.defaultView || (window.matchMedia?.('(max-width: 720px)').matches ? 'cards' : 'table'))
+  const [pageSize, setPageSize] = useState(Number(remembered.pageSize || queueSettings.pageSize || 25))
   const [page, setPage] = useState(Number(remembered.page || 0))
   const [payload, setPayload] = useState({ items: [], total: 0, filters: {} })
   const [loading, setLoading] = useState(true)
@@ -598,7 +608,7 @@ function ProductionQueue({ route }) {
       </main>
 
       {mobileFilters ? (
-        <><button className="production-record-filter-backdrop" aria-label="Close filters" onClick={() => setMobileFilters(false)} type="button" /><aside className="production-record-mobile-filter production-motion-drawer"><header><div><span>Queue filters</span><strong>{route.title}</strong></div><button onClick={() => setMobileFilters(false)} type="button"><X size={17} /></button></header><QueueFilters filterOptions={payload.filters || {}} filters={filters} onChange={changeFilters} onClear={clearFilters} query={query} onQueryChange={changeQuery} savedViews={savedViews} onApplySaved={(view) => { applySavedView(view); setMobileFilters(false) }} onDeleteSaved={deleteSavedView} onSaveView={saveView} /></aside></>
+        <><button className="production-record-filter-backdrop" aria-label="Close filters" onClick={() => setMobileFilters(false)} type="button" /><aside className="production-record-mobile-filter production-motion-drawer"><header><div><span>Queue filters</span><strong>{route.title}</strong></div><button onClick={() => setMobileFilters(false)} type="button"><X size={17} /></button></header><QueueFilters allowSavedViews={queueSettings.allowSavedViews !== false} filterOptions={payload.filters || {}} filters={filters} onChange={changeFilters} onClear={clearFilters} query={query} onQueryChange={changeQuery} savedViews={savedViews} onApplySaved={(view) => { applySavedView(view); setMobileFilters(false) }} onDeleteSaved={deleteSavedView} onSaveView={saveView} /></aside></>
       ) : null}
     </section>
   )
