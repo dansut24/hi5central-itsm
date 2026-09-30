@@ -100,6 +100,8 @@ function applyTenantPreferences(apiSession) {
       theme: {
         mode: theme.mode || 'system',
         accent: theme.accent || 'amber',
+        brandName: theme.brandName || apiSession?.tenant?.companyName || '',
+        portalTitle: theme.portalTitle || 'IT Help Centre',
       },
       recordNumbering: {
         mode: itsm.numberingMode || 'default',
@@ -586,6 +588,8 @@ export function ProductionWorkspaceBootstrap() {
       appearanceKey.accentMode === 'personal' ? (appearanceKey.accent || 'amber') : (themeKey.accent || 'amber'),
       appearanceKey.density || 'comfortable',
       navigationKey.sidebarMode || 'expanded',
+      themeKey.brandName || serverSession?.tenant?.companyName || '',
+      themeKey.portalTitle || 'IT Help Centre',
     ].join(':')
 
     return (
