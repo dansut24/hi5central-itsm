@@ -24,6 +24,8 @@ import {
   Wrench,
 } from 'lucide-react'
 import { ProductionTenantSecurityAudit } from './ProductionTenantSecurityAudit.jsx'
+import { ProductionReleaseManagement } from './ProductionReleaseManagement.jsx'
+import { deploymentConfig } from '../../lib/deploymentConfig.js'
 import './ProductionSettingsWorkspace.css'
 
 const API_BASE = window.__HI5_API_BASE__
@@ -96,6 +98,7 @@ const sections = {
   'rmm-remote': { path: '/settings/rmm/remote-access', group: 'RMM', label: 'Remote access', icon: MonitorCog, area: 'rmm' },
 
   integrations: { path: '/settings/integrations', group: 'Platform', label: 'Integrations', icon: Link2, area: 'integrations' },
+  'release-management': { path: '/settings/platform/releases', group: 'Platform', label: 'Releases & environments', icon: GitBranch, area: 'releaseControl', standardOnly: true },
   subscription: { path: '/settings/subscription', group: 'Platform', label: 'Subscription', icon: CreditCard, area: 'billing' },
 }
 
@@ -293,6 +296,7 @@ function loadSettingsNavVisible() {
 }
 
 function SettingsNavigation({ activeId, modules, onNavigate, inline = false }) {
+  const platform = deploymentConfig()
   const navGroups = ['General', 'ITSM', 'RMM', 'Platform']
   return (
     <nav className={inline ? 'production-settings-inline-nav' : 'production-settings-nav'} aria-label="Settings navigation">
@@ -301,6 +305,7 @@ function SettingsNavigation({ activeId, modules, onNavigate, inline = false }) {
           meta.group === group
           && (group !== 'ITSM' || modules.itsm)
           && (group !== 'RMM' || modules.rmm)
+          && (!meta.standardOnly || (platform.deploymentMode === 'self_hosted' && platform.selfHostEdition === 'standard' && platform.runtimeEnvironment === 'live'))
         ))
         if (!items.length) return null
         return (
@@ -509,7 +514,7 @@ export function ProductionSettingsWorkspace({ currentPath, session, onSessionCha
           <div className="production-settings-save-state">
             {saved ? <span className="is-saved"><Check size={14} /> {saved}</span> : null}
             {error ? <span className="is-error">{error}</span> : null}
-            <button disabled={saving} onClick={saveActive} type="button"><Save size={16} /> {saving ? 'Saving…' : 'Save changes'}</button>
+            {activeId !== 'release-management' ? <button disabled={saving} onClick={saveActive} type="button"><Save size={16} /> {saving ? 'Saving…' : 'Save changes'}</button> : null}
           </div>
         </header>
 
@@ -552,6 +557,7 @@ export function ProductionSettingsWorkspace({ currentPath, session, onSessionCha
             {activeId === 'rmm-remote' ? <RmmRemote config={config.rmm} update={(f, v) => updateArea('rmm', f, v)} /> : null}
 
             {activeId === 'integrations' ? <Integrations config={config.integrations} update={(f, v) => updateArea('integrations', f, v)} /> : null}
+            {activeId === 'release-management' ? <ProductionReleaseManagement /> : null}
             {activeId === 'subscription' ? <Subscription config={config.billing} update={(f, v) => updateArea('billing', f, v)} modules={modules} /> : null}
           </div>
         </div>

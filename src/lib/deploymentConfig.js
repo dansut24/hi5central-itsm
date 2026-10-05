@@ -66,6 +66,19 @@ export function deploymentConfig() {
     ['multi', 'single'],
     'multi',
   )
+  const selfHostEdition = deploymentMode === 'self_hosted'
+    ? enumValue(runtime.selfHostEdition || env.VITE_SELF_HOST_EDITION, ['standard', 'msp'], 'standard')
+    : 'managed'
+  const runtimeEnvironment = enumValue(
+    runtime.runtimeEnvironment || env.VITE_RUNTIME_ENVIRONMENT,
+    ['dev', 'test', 'uat', 'live'],
+    'live',
+  )
+  const featureMode = enumValue(
+    runtime.featureMode || env.VITE_FEATURE_MODE,
+    ['all_enabled', 'controlled'],
+    runtimeEnvironment === 'dev' || runtimeEnvironment === 'test' ? 'all_enabled' : 'controlled',
+  )
   const rootDomain = cleanDomain(runtime.rootDomain || env.VITE_ROOT_DOMAIN, DEFAULT_ROOT_DOMAIN)
   const primaryTenantSlug = cleanSlug(runtime.primaryTenantSlug || env.VITE_PRIMARY_TENANT_SLUG)
   const defaultAppUrl = tenancyMode === 'single' ? `https://${rootDomain}` : ''
@@ -81,7 +94,10 @@ export function deploymentConfig() {
 
   return Object.freeze({
     deploymentMode,
+    selfHostEdition,
     tenancyMode,
+    runtimeEnvironment,
+    featureMode,
     rootDomain,
     primaryTenantSlug,
     appUrl,
